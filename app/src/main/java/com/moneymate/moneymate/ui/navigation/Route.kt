@@ -1,4 +1,4 @@
-package com.kuit.moneymate.ui.navigation
+package com.moneymate.moneymate.ui.navigation
 
 sealed class Route(val route: String){
     // 자산 조회(홈)

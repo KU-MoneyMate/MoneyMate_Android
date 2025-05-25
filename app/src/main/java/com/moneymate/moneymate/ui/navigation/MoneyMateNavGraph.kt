@@ -1,14 +1,14 @@
-package com.kuit.moneymate.ui.navigation
+package com.moneymate.moneymate.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.kuit.moneymate.ui.asset.HomeScreen
-import com.kuit.moneymate.ui.finance.FinanceScreen
-import com.kuit.moneymate.ui.manage.ManageScreen
-import com.kuit.moneymate.ui.mypage.MyPageScreen
+import com.moneymate.moneymate.ui.asset.screen.HomeScreen
+import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
+import com.moneymate.moneymate.ui.manage.screen.ManageScreen
+import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 
 @Composable
 fun MoneyMateNavGraph(

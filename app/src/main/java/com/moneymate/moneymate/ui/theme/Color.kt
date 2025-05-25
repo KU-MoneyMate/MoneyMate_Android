@@ -1,4 +1,4 @@
-package com.kuit.moneymate.ui.theme
+package com.moneymate.moneymate.ui.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf

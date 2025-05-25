@@ -1,4 +1,4 @@
-package com.kuit.moneymate.ui.navigation
+package com.moneymate.moneymate.ui.navigation
 
 data class BottomNavItem(
     val label: String,

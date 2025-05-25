@@ -1,4 +1,4 @@
-package com.kuit.moneymate
+package com.moneymate.moneymate
 
 import org.junit.Test
 

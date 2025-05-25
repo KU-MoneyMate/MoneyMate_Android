@@ -1,4 +1,4 @@
-package com.kuit.moneymate.ui.theme
+package com.moneymate.moneymate.ui.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -6,7 +6,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
-import com.kuit.moneymate.R
+import com.moneymate.moneymate.R
 
 val moneyMateFontBold = FontFamily(Font(R.font.pretendard_bold))
 val moneyMateFontSemiBold = FontFamily(Font(R.font.pretendard_semibold))
