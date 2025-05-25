@@ -1,4 +1,4 @@
-package com.kuit.moneymate.ui.mypage
+package com.moneymate.moneymate.ui.mypage.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,11 +8,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kuit.moneymate.ui.theme.MoneyMateTheme
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.moneymate.moneymate.ui.auth.AuthViewModel
+import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun MyPageScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AuthViewModel = hiltViewModel()
+    // 필요한 기능에 따라 다른 viewmodel 추가 될 수 있음
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(

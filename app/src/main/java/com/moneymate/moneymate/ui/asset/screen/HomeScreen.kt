@@ -1,4 +1,4 @@
-package com.kuit.moneymate.ui.asset
+package com.moneymate.moneymate.ui.asset.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,11 +8,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kuit.moneymate.ui.theme.MoneyMateTheme
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import com.moneymate.moneymate.ui.asset.AssetViewModel
+import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: AssetViewModel = hiltViewModel()
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         Text(
