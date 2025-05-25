@@ -86,13 +86,11 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             painter = painterResource(id = item.icon),
                                             contentDescription = item.label,
-//                                            tint = if (selected) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.lightGray
                                         )
                                     },
                                     label = {
                                         Text(
                                             text = item.label,
-//                                            color = if (selected) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.lightGray
                                         )
                                     },
                                     selected = selected,
