@@ -1,11 +1,19 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+}
+
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
 }
 
 android {
-    namespace = "com.kuit.moneymate"
+    namespace = "com.moneymate.moneymate"
     compileSdk = 35
 
     defaultConfig {
@@ -16,6 +24,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String","BASE_URL", properties["base.url"].toString())
     }
 
     buildTypes {
@@ -36,11 +45,11 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -56,4 +65,20 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    // Network
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.kotlinx.serialization.json)
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.core)
+    implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.hilt.manager)
 }
