@@ -22,10 +22,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.moneymate.moneymate.util.toDecimalFormat
 
 @Composable
 fun AccountItem(
     modifier: Modifier = Modifier,
+    name: String,
+    value: Int,
     onClick: () -> Unit
 ) {
     Box(
@@ -47,8 +50,8 @@ fun AccountItem(
             Column(
                 modifier = Modifier,
             ) {
-                Text(text = "KB 국민은행", style = MoneyMateTheme.typography.body_02_R_12)
-                Text(text = "888,888원", style = MoneyMateTheme.typography.head_02_B_20)
+                Text(text = name, style = MoneyMateTheme.typography.body_02_R_12)
+                Text(text = value.toDecimalFormat()+"원", style = MoneyMateTheme.typography.head_02_B_20)
             }
         }
         Button(
@@ -79,7 +82,18 @@ fun AccountItem(
 @Preview(showBackground = true)
 @Composable
 private fun AccountItemPreview() {
-    AccountItem() {
-
+    Column {
+        AccountItem(
+            name = "KB 국민은행",
+            value = 888888,
+        ) { }
+        AccountItem(
+            name = "KB청년도약계좌",
+            value = 888888,
+        ) { }
+        AccountItem(
+            name = "토스증권",
+            value = 888888,
+        ) { }
     }
 }
