@@ -36,8 +36,9 @@ fun AccountContainer(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp)),
+            .clip(RoundedCornerShape(20.dp))
+            .background(MoneyMateTheme.colors.white)
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(

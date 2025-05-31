@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.asset.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +34,9 @@ fun AssetContainer(
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp)),
+            .clip(RoundedCornerShape(20.dp))
+            .background(MoneyMateTheme.colors.white)
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
