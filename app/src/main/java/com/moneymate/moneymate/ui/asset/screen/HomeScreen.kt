@@ -24,6 +24,8 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    onAddAccountClick: (String) -> Unit,
+    onAddAssetClick: (String) -> Unit,
 //    viewModel: AssetViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
@@ -39,7 +41,9 @@ fun HomeScreen(
             name = "입출금 계좌",
             accountList = listOf(""),
             onItemClick = {},
-            onAddClick = {}
+            onAddClick = {
+                onAddAccountClick("입출금 계좌")
+            }
         )
         Spacer(modifier = Modifier.size(30.dp))
         // 적금 계좌
@@ -47,7 +51,9 @@ fun HomeScreen(
             name = "적금 계좌",
             accountList = listOf(),
             onItemClick = {},
-            onAddClick = {}
+            onAddClick = {
+                onAddAccountClick("적금 계좌")
+            }
         )
         Spacer(modifier = Modifier.size(30.dp))
         // 증권 계좌
@@ -55,24 +61,28 @@ fun HomeScreen(
             name = "증권 계좌",
             accountList = listOf(""),
             onItemClick = {},
-            onAddClick = {}
+            onAddClick = {
+                onAddAccountClick("증권 계좌")
+            }
         )
         Spacer(modifier = Modifier.size(30.dp))
         //부동산
         AssetContainer(
             name = "부동산",
-            assetList = listOf("")
-        ) {
-            // TODO
-        }
+            assetList = listOf(""),
+            onAddClick = {
+                onAddAssetClick("부동산")
+            }
+        )
         Spacer(modifier = Modifier.size(30.dp))
         // 투자
         AssetContainer(
-            name = "투자",
-            assetList = listOf()
-        ) {
-            // TODO
-        }
+            name = "투자 자산",
+            assetList = listOf(),
+            onAddClick = {
+                onAddAssetClick("투자 자산")
+            }
+        )
         Spacer(modifier = Modifier.size(30.dp))
     }
 }
@@ -80,5 +90,8 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(
+        onAddAccountClick = {},
+        onAddAssetClick = {}
+    )
 }

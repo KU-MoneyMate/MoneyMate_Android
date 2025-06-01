@@ -2,6 +2,8 @@ package com.moneymate.moneymate.ui.asset.screen
 
 import android.graphics.Paint.Align
 import android.widget.Space
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,6 +46,8 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun AddAccountScreen(
     modifier: Modifier = Modifier,
+    accountType: String,
+    onNavigateBack: () -> Unit,
 //    viewModel: AssetViewModel = hiltViewModel()
 ) {
     var bankName by rememberSaveable { mutableStateOf("") }
@@ -53,20 +57,23 @@ fun AddAccountScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MoneyMateTheme.colors.white)
         ) {
             TopAppBar(
                 modifier = Modifier,
                 title = {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Icon(
-                            modifier = Modifier,
+                            modifier = Modifier
+                                .clickable { onNavigateBack() },
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "back icon"
                         )
                         Text(
                             modifier = Modifier.align(Alignment.Center),
-                            text = "입출금 계좌 등록",
+                            text = "$accountType 등록",
                             style = MoneyMateTheme.typography.head_02_B_20
                         )
                     }
@@ -77,11 +84,13 @@ fun AddAccountScreen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(horizontal = 30.dp)
+                    .background(MoneyMateTheme.colors.white)
             ) {
+                Spacer(modifier = Modifier.size(12.dp))
                 Text(
-                    text = "사용자의 보유 입출금 계좌 등록 절차입니다.\n은행명과 계좌번호를 입력해주세요.",
+                    text = "사용자의 보유 $accountType 등록 절차입니다.\n은행명과 계좌번호를 입력해주세요.",
                     style = MoneyMateTheme.typography.head_03_R_16
                 )
                 // 은행명
@@ -143,5 +152,9 @@ fun AddAccountScreen(
 @Preview(showBackground = true)
 @Composable
 private fun AddAccountScreenPreview() {
-    AddAccountScreen()
+    AddAccountScreen(
+        modifier = Modifier,
+        accountType = "입출금",
+        onNavigateBack = {}
+    )
 }

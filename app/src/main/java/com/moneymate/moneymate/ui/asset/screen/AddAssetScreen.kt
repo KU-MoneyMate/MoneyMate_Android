@@ -1,5 +1,7 @@
 package com.moneymate.moneymate.ui.asset.screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +35,8 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun AddAssetScreen(
     modifier: Modifier = Modifier,
+    assetType: String,
+    onNavigateBack: () -> Unit,
 //    viewModel: AssetViewModel = hiltViewModel()
 ) {
     var assetName by rememberSaveable { mutableStateOf("") }
@@ -42,20 +46,23 @@ fun AddAssetScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MoneyMateTheme.colors.white)
         ) {
             TopAppBar(
                 modifier = Modifier,
                 title = {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Icon(
-                            modifier = Modifier,
+                            modifier = Modifier
+                                .clickable { onNavigateBack() },
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "back icon"
                         )
                         Text(
                             modifier = Modifier.align(Alignment.Center),
-                            text = "자산 등록",
+                            text = "$assetType 정보 등록",
                             style = MoneyMateTheme.typography.head_02_B_20
                         )
                     }
@@ -66,11 +73,13 @@ fun AddAssetScreen(
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .padding(horizontal = 30.dp)
+                    .background(MoneyMateTheme.colors.white)
             ) {
+                Spacer(modifier = Modifier.size(12.dp))
                 Text(
-                    text = "사용자가 보유한 부동산 정보를 등록합니다.\n부동산의 가치와 이름을 입력해주세요.",
+                    text = "사용자가 보유한 $assetType 정보를 등록합니다.\n${assetType}의 가치와 이름을 입력해주세요.",
                     style = MoneyMateTheme.typography.head_03_R_16
                 )
                 // 은행명
@@ -88,7 +97,7 @@ fun AddAssetScreen(
                     },
                     placeholder = {
                         Text(
-                            text = "등록할 계좌의 은행명을 입력해주세요.",
+                            text = "등록할 ${assetType}의 이름을 입력해주세요.",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
                     }
@@ -108,7 +117,7 @@ fun AddAssetScreen(
                     },
                     placeholder = {
                         Text(
-                            text = "등록할 부동산의 자산 가치를 입력해주세요.",
+                            text = "등록할 ${assetType}의 가치를 입력해주세요.",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
                     }
@@ -132,5 +141,9 @@ fun AddAssetScreen(
 @Preview(showBackground = true)
 @Composable
 private fun AddAssetScreenPreview() {
-    AddAssetScreen()
+    AddAssetScreen(
+        modifier = Modifier,
+        assetType = "부동산",
+        onNavigateBack = {}
+    )
 }
