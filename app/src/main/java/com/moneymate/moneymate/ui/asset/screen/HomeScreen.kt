@@ -37,7 +37,7 @@ fun HomeScreen(
         // 입출금 계좌
         AccountContainer(
             name = "입출금 계좌",
-            accountList = listOf(),
+            accountList = listOf(""),
             onItemClick = {},
             onAddClick = {}
         )
