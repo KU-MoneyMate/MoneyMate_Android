@@ -1,9 +1,30 @@
 package com.moneymate.moneymate.data.repository
 
+import com.moneymate.moneymate.data.dto.account.request.TransactionHistoryRequest
 import com.moneymate.moneymate.data.service.AssetService
+import java.sql.Date
 
 class AssetRepository(
     private val assetService: AssetService
 ) {
+    // 전체 계좌 정보 조회
+    suspend fun getAccountList() = runCatching { assetService.getAccountList() }
 
+    // 계좌 내역 조회
+    suspend fun getTransactionHistory(
+        uid: String,
+        startDate: String,
+        endDate: String
+    ) = runCatching {
+        assetService.getTransactionHistory(
+            TransactionHistoryRequest(
+                accountUid = uid,
+                startDate = startDate,
+                endDate = endDate
+            )
+        )
+    }
+
+    // 전체 자산 조회
+    suspend fun getAssetList() = kotlin.runCatching { assetService.getAssetList() }
 }

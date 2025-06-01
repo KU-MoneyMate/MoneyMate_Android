@@ -26,7 +26,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddAccountClick: (String) -> Unit,
     onAddAssetClick: (String) -> Unit,
-//    viewModel: AssetViewModel = hiltViewModel()
+    viewModel: AssetViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
 
