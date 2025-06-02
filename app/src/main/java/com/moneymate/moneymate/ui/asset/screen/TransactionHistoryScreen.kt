@@ -1,6 +1,8 @@
 package com.moneymate.moneymate.ui.asset.screen
 
 import android.widget.Space
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,7 @@ import com.moneymate.moneymate.util.formatDate
 @Composable
 fun TransactionHistoryScreen(
     modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val transactions: List<Transaction> = listOf(
@@ -73,13 +76,19 @@ fun TransactionHistoryScreen(
     // Pass your data here
     val grouped = transactions.groupBy { it.date }
 
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .background(MoneyMateTheme.colors.white)
+    ) {
         TopAppBar(
             modifier = Modifier,
             title = {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Icon(
-                        modifier = Modifier,
+                        modifier = Modifier
+                            .clickable {
+                                onNavigateBack()
+                            },
                         painter = painterResource(id = R.drawable.ic_back),
                         contentDescription = "back icon"
                     )
@@ -144,5 +153,8 @@ fun TransactionHistoryScreen(
 @Preview(showBackground = true)
 @Composable
 private fun TransactionHistoryScreenPreview() {
-    TransactionHistoryScreen()
+    TransactionHistoryScreen(
+        modifier = Modifier,
+        onNavigateBack = {}
+    )
 }
