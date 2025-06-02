@@ -2,6 +2,7 @@ package com.moneymate.moneymate.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.moneymate.moneymate.BuildConfig
+import com.moneymate.moneymate.util.auth.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,20 +20,26 @@ import javax.inject.Singleton
 object NetworkModule {
     @Provides
     @Singleton
-    fun providesOkHttpClient(): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
-    }
+    fun providesOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor,
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(loggingInterceptor)
+            addInterceptor(authInterceptor)
+        }.build()
 
     @Provides
     @Singleton
     fun providesConverterFactory(): Converter.Factory =
         Json.asConverterFactory("application/json".toMediaType())
+
+    @Provides
+    @Singleton
+    fun providesLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
 
     @Provides
     @Singleton

@@ -29,6 +29,7 @@ data class MoneyMateTypography(
     val body_01_R_14: TextStyle,
     val body_02_SB_12: TextStyle,
     val body_02_R_12: TextStyle,
+    val body_03_M_20: TextStyle,
 
     // Caption
     val caption_01_R_10: TextStyle
@@ -92,6 +93,11 @@ val defaultMoneyMateTypography = MoneyMateTypography(
         fontFamily = moneyMateFontRegular,
         fontSize = 12.sp,
         lineHeight = 12.sp
+    ),
+    body_03_M_20 = TextStyle(
+        fontFamily = moneyMateFontMedium,
+        fontSize = 20.sp,
+        lineHeight = 20.sp
     ),
 
     // Caption
