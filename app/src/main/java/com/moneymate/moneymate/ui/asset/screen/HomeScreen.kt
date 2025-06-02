@@ -26,6 +26,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddAccountClick: (String) -> Unit,
     onAddAssetClick: (String) -> Unit,
+    onAccountItemClick: () -> Unit,
     viewModel: AssetViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
@@ -40,7 +41,9 @@ fun HomeScreen(
         AccountContainer(
             name = "입출금 계좌",
             accountList = listOf(""),
-            onItemClick = {},
+            onItemClick = {
+                onAccountItemClick()
+            },
             onAddClick = {
                 onAddAccountClick("입출금 계좌")
             }
@@ -50,7 +53,9 @@ fun HomeScreen(
         AccountContainer(
             name = "적금 계좌",
             accountList = listOf(),
-            onItemClick = {},
+            onItemClick = {
+                onAccountItemClick()
+            },
             onAddClick = {
                 onAddAccountClick("적금 계좌")
             }
@@ -60,7 +65,9 @@ fun HomeScreen(
         AccountContainer(
             name = "증권 계좌",
             accountList = listOf(""),
-            onItemClick = {},
+            onItemClick = {
+                onAccountItemClick()
+            },
             onAddClick = {
                 onAddAccountClick("증권 계좌")
             }
@@ -92,6 +99,7 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     HomeScreen(
         onAddAccountClick = {},
-        onAddAssetClick = {}
+        onAddAssetClick = {},
+        onAccountItemClick = {}
     )
 }
