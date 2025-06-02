@@ -11,6 +11,7 @@ import com.moneymate.moneymate.ui.manage.screen.ManageScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
+import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
 
 @Composable
 fun MoneyMateNavGraph(
@@ -33,6 +34,9 @@ fun MoneyMateNavGraph(
                 },
                 onAddAssetClick = { assetType ->
                     navController.navigate("${Route.AddAsset.route}/$assetType")
+                },
+                onAccountItemClick = {
+                    navController.navigate(Route.TransactionHistory.route)
                 }
             )
         }
@@ -57,6 +61,17 @@ fun MoneyMateNavGraph(
             AddAssetScreen(
                 modifier = modifier,
                 assetType = assetType,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 거래내역 조회 화면
+        composable(
+            route = Route.TransactionHistory.route
+        ){
+            TransactionHistoryScreen(
+                modifier = modifier,
                 onNavigateBack = {
                     navController.navigateUp()
                 }
