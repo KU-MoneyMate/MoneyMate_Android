@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
+import com.moneymate.moneymate.data.dto.account.response.AssetInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.AccountContainer
 import com.moneymate.moneymate.ui.asset.component.AssetContainer
@@ -46,6 +47,20 @@ fun HomeScreen(
 //        ),
 //    )
     // 전체 자산
+//    val totalAssets = listOf(
+//        AssetInfo(
+//            uid = "1",
+//            name = "반포자이",
+//            type = "부동산",
+//            price = 100000000
+//        ),
+//        AssetInfo(
+//            uid = "2",
+//            name = "엔비디아",
+//            type = "투자",
+//            price = 1000000
+//        )
+//    )
     val totalAssets = viewModel.totalAssets.collectAsStateWithLifecycle().value
     // 계좌 유형별 리스트
     val depositList = totalAccounts.filter { it.type == "입출금" }

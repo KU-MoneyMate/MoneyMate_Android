@@ -111,7 +111,7 @@ private fun AssetContainerPreview() {
             name = "부동산",
             assetList = listOf(
                 AssetInfo(
-                    uid = 1,
+                    uid = "1",
                     name = "반포자이",
                     type = "부동산",
                     price = 40000000

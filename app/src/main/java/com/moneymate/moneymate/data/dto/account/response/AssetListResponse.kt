@@ -22,7 +22,7 @@ data class AssetList(
 @Serializable
 data class AssetInfo(
     @SerialName("assetUid")
-    val uid: Int,
+    val uid: String,
     @SerialName("assetName")
     val name: String,
     @SerialName("assetType")
