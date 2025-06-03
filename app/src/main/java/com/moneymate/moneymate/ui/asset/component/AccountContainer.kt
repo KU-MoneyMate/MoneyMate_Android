@@ -33,7 +33,7 @@ fun AccountContainer(
     name: String,
     accountList: List<AccountInfo>,
     onAddClick: () -> Unit,
-    onItemClick: () -> Unit
+    onItemClick: (AccountInfo) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -88,10 +88,11 @@ fun AccountContainer(
             for (asset in accountList) {
                 AccountItem(
                     name = asset.name,
-                    value = asset.balance
-                ) {
-                    onItemClick()
-                }
+                    value = asset.balance,
+                    onClick = {
+                        onItemClick(asset)
+                    }
+                )
             }
         } else {
             Spacer(modifier = Modifier.size(28.dp))
@@ -119,7 +120,7 @@ private fun AccountContainerPreview() {
             name = "입출금 계좌",
             accountList = listOf(
                 AccountInfo(
-                    uid = 2,
+                    uid = "2",
                     bankCode = "004",
                     name = "청년도약계좌",
                     type = "예적금",

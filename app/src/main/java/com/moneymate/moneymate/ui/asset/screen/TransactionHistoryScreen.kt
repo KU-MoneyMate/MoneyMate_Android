@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.asset.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,15 +29,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
+import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.TransactionHistoryItem
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import com.moneymate.moneymate.util.formatDate
+import com.moneymate.moneymate.util.toDecimalFormat
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionHistoryScreen(
     modifier: Modifier = Modifier,
+    accountInfo: AccountInfo,
     viewModel: AssetViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
@@ -74,14 +80,29 @@ fun TransactionHistoryScreen(
 //            afterBalance = 45000,
 //            destination = "CU 건국대점"
 //        ),
-//    )
-    val transactionInfos = viewModel.transactionHistory.collectAsStateWithLifecycle().value
-    // Pass your data here
+//    ).sortedByDescending { it.date }
+    val transactionInfos = viewModel.transactionHistory.collectAsStateWithLifecycle().value.sortedByDescending { it.date }
+    // 날짜로 분류된 데이터
     val grouped = transactionInfos.groupBy { it.date }
 
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(MoneyMateTheme.colors.white)
+    LaunchedEffect(Unit) {
+        val currentDate = LocalDate.now()
+        val startDate = currentDate.withDayOfMonth(1).toString()
+        val endDate = currentDate.withDayOfMonth(currentDate.lengthOfMonth()).toString()
+        Log.d("TransactionHistoryScreen", "startDate : $startDate")
+        Log.d("TransactionHistoryScreen", "endDate : $endDate")
+
+        viewModel.getTransactionHistory(
+            uid = accountInfo.uid,
+            startDate = startDate,
+            endDate = endDate
+        )
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MoneyMateTheme.colors.white)
     ) {
         TopAppBar(
             modifier = Modifier,
@@ -114,13 +135,13 @@ fun TransactionHistoryScreen(
         ) {
             Spacer(modifier = Modifier.size(15.dp))
             Text(
-                text = "KB국민은행 57370104098146",
+                text = "${accountInfo.name} ${accountInfo.number}",
                 style = MoneyMateTheme.typography.head_03_R_16.copy(
                     color = MoneyMateTheme.colors.darkGray
                 )
             )
             Text(
-                text = "888,888원",
+                text = accountInfo.balance.toDecimalFormat()+"원",
                 style = MoneyMateTheme.typography.head_01_B_24
             )
             Spacer(modifier = Modifier.size(20.dp))
@@ -158,6 +179,14 @@ fun TransactionHistoryScreen(
 private fun TransactionHistoryScreenPreview() {
     TransactionHistoryScreen(
         modifier = Modifier,
+        accountInfo = AccountInfo(
+            uid = "1",
+            bankCode = "123",
+            name = "KB 국민은행",
+            type = "입출금",
+            number = "101010101010",
+            balance = 1000000
+        ),
         onNavigateBack = {}
     )
 }

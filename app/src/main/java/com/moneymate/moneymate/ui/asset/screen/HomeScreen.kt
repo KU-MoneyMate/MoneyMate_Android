@@ -8,15 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.AccountContainer
 import com.moneymate.moneymate.ui.asset.component.AssetContainer
@@ -27,16 +25,35 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddAccountClick: (String) -> Unit,
     onAddAssetClick: (String) -> Unit,
-    onAccountItemClick: () -> Unit,
+    onAccountItemClick: (AccountInfo) -> Unit,
     viewModel: AssetViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
-    // viewmodel의 totalAccounts 에서 accountType으로 구분된 리스트들
-    val depositList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "입출금" }
-    val savingsList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "예적금" }
-    val securitiesList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "증권" }
-    val realEstateList = viewModel.totalAssets.collectAsStateWithLifecycle().value.filter { it.type == "부동산" }
-    val investmentList = viewModel.totalAssets.collectAsStateWithLifecycle().value.filter { it.type == "투자" }
+    // 전체 계좌
+    val totalAccounts = viewModel.totalAccounts.collectAsStateWithLifecycle().value
+//    val totalAccounts = listOf(
+//        AccountInfo(
+//            "1","2","KB 국민은행", "입출금", "11111111",1000000
+//        ),
+//        AccountInfo(
+//            "2","3","토스뱅크", "입출금", "22222222",100000
+//        ),
+//        AccountInfo(
+//            "3","3","삼성증권", "증권", "3333333333",400000
+//        ),
+//        AccountInfo(
+//            "4","3","청년도약계좌", "예적금", "44444444",500000
+//        ),
+//    )
+    // 전체 자산
+    val totalAssets = viewModel.totalAssets.collectAsStateWithLifecycle().value
+    // 계좌 유형별 리스트
+    val depositList = totalAccounts.filter { it.type == "입출금" }
+    val savingsList = totalAccounts.filter { it.type == "예적금" }
+    val securitiesList = totalAccounts.filter { it.type == "증권" }
+    // 자산별 리스트
+    val realEstateList = totalAssets.filter { it.type == "부동산" }
+    val investmentList = totalAssets.filter { it.type == "투자" }
 
     Column(modifier = modifier.fillMaxSize()
         .background(MoneyMateTheme.colors.backgroundWhite)
@@ -48,8 +65,8 @@ fun HomeScreen(
         AccountContainer(
             name = "입출금 계좌",
             accountList = depositList,
-            onItemClick = {
-                onAccountItemClick()
+            onItemClick = { accountInfo ->
+                onAccountItemClick(accountInfo)
             },
             onAddClick = {
                 onAddAccountClick("입출금 계좌")
@@ -60,8 +77,8 @@ fun HomeScreen(
         AccountContainer(
             name = "예적금 계좌",
             accountList = savingsList,
-            onItemClick = {
-                onAccountItemClick()
+            onItemClick = { accountInfo ->
+                onAccountItemClick(accountInfo)
             },
             onAddClick = {
                 onAddAccountClick("적금 계좌")
@@ -72,8 +89,8 @@ fun HomeScreen(
         AccountContainer(
             name = "증권 계좌",
             accountList = securitiesList,
-            onItemClick = {
-                onAccountItemClick()
+            onItemClick = { accountInfo ->
+                onAccountItemClick(accountInfo)
             },
             onAddClick = {
                 onAddAccountClick("증권 계좌")

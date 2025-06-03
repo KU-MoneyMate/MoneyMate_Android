@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.ui.asset.screen.HomeScreen
 import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
@@ -12,6 +13,7 @@ import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
+import kotlinx.serialization.json.Json
 
 @Composable
 fun MoneyMateNavGraph(
@@ -35,8 +37,9 @@ fun MoneyMateNavGraph(
                 onAddAssetClick = { assetType ->
                     navController.navigate("${Route.AddAsset.route}/$assetType")
                 },
-                onAccountItemClick = {
-                    navController.navigate(Route.TransactionHistory.route)
+                onAccountItemClick = { accountInfo ->
+                    val accountInfoJson = Json.encodeToString(accountInfo)
+                    navController.navigate("${Route.TransactionHistory.route}/$accountInfoJson")
                 }
             )
         }
@@ -68,10 +71,13 @@ fun MoneyMateNavGraph(
         }
         // 거래내역 조회 화면
         composable(
-            route = Route.TransactionHistory.route
-        ){
+            route = "${Route.TransactionHistory.route}/{accountInfo}",
+        ) { backStackEntry ->
+            val accountInfoJson = backStackEntry.arguments?.getString("accountInfo") ?: ""
+            val accountInfo = Json.decodeFromString<AccountInfo>(accountInfoJson)
             TransactionHistoryScreen(
                 modifier = modifier,
+                accountInfo = accountInfo,
                 onNavigateBack = {
                     navController.navigateUp()
                 }
