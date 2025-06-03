@@ -10,13 +10,19 @@ data class AccountListResponse(
     @SerialName("message")
     val message: String,
     @SerialName("data")
-    val data: List<AccountInfo>
+    val data: AccountList
+)
+
+@Serializable
+data class AccountList(
+    @SerialName("account")
+    val account: List<AccountInfo>
 )
 
 @Serializable
 data class AccountInfo(
     @SerialName("accountUid")
-    val uid : Int,
+    val uid : String,
     @SerialName("accountBank")
     val bankCode: String,
     @SerialName("accountName")

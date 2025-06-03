@@ -23,13 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.moneymate.moneymate.data.dto.account.response.AssetInfo
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun AssetContainer(
     modifier: Modifier = Modifier,
     name: String,
-    assetList: List<String>,
+    assetList: List<AssetInfo>,
     onAddClick: () -> Unit,
 ) {
     Column(
@@ -85,14 +86,15 @@ fun AssetContainer(
             for(asset in assetList) {
                 AssetItem(
                     uId = 1,
-                    name = "반포 자이",
-                    value = 425000
+                    type = asset.type,
+                    name = asset.name,
+                    value = asset.price
                 )
             }
         } else {
             Spacer(modifier = Modifier.size(28.dp))
             Text(
-                text = "등록된 계좌가 없습니다.",
+                text = "등록된 자산이 없습니다.",
                 style = MoneyMateTheme.typography.head_03_SB_16
             )
             Spacer(modifier = Modifier.size(28.dp))
@@ -105,14 +107,16 @@ fun AssetContainer(
 @Composable
 private fun AssetContainerPreview() {
     Column {
-//        AssetContainer(
-//            name = "부동산",
-//            assetList = listOf("","",""),
-//            onAddClick = {}
-//        )
         AssetContainer(
             name = "부동산",
-            assetList = listOf(),
+            assetList = listOf(
+                AssetInfo(
+                    uid = "1",
+                    name = "반포자이",
+                    type = "부동산",
+                    price = 40000000
+                )
+            ),
             onAddClick = {}
         )
     }
