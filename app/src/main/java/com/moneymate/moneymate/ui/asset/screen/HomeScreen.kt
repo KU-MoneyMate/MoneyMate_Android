@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.AccountContainer
 import com.moneymate.moneymate.ui.asset.component.AssetContainer
@@ -30,6 +31,10 @@ fun HomeScreen(
     viewModel: AssetViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
+    // viewmodel의 totalAccounts 에서 accountType으로 구분된 리스트들
+    val depositList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "입출금" }
+    val savingsList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "예적금" }
+    val securitiesList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "증권" }
 
     Column(modifier = modifier.fillMaxSize()
         .background(MoneyMateTheme.colors.backgroundWhite)
@@ -40,7 +45,7 @@ fun HomeScreen(
         // 입출금 계좌
         AccountContainer(
             name = "입출금 계좌",
-            accountList = listOf(""),
+            accountList = depositList,
             onItemClick = {
                 onAccountItemClick()
             },
@@ -51,8 +56,8 @@ fun HomeScreen(
         Spacer(modifier = Modifier.size(30.dp))
         // 적금 계좌
         AccountContainer(
-            name = "적금 계좌",
-            accountList = listOf(),
+            name = "예적금 계좌",
+            accountList = savingsList,
             onItemClick = {
                 onAccountItemClick()
             },
@@ -64,7 +69,7 @@ fun HomeScreen(
         // 증권 계좌
         AccountContainer(
             name = "증권 계좌",
-            accountList = listOf(""),
+            accountList = securitiesList,
             onItemClick = {
                 onAccountItemClick()
             },

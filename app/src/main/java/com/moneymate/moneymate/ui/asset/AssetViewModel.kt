@@ -20,14 +20,18 @@ class AssetViewModel @Inject constructor(
     private val assetRepository: AssetRepository
 ) : ViewModel() {
     // 홈 화면에서 조회할 전체 계좌 정보
-    private val _totalAccounts = MutableStateFlow<List<AccountInfo>?>(emptyList())
+    private val _totalAccounts = MutableStateFlow<List<AccountInfo>>(emptyList())
     val totalAccounts = _totalAccounts.asStateFlow()
     // 홈 화면에서 조회할 전체 자산 정보
-    private val _totalAssets= MutableStateFlow<List<AssetInfo>?>(emptyList())
+    private val _totalAssets= MutableStateFlow<List<AssetInfo>>(emptyList())
     val totalAssets = _totalAssets.asStateFlow()
     // 계좌 거래 내역 정보
-    private val _transactionHistory = MutableStateFlow<List<Transaction>?>(emptyList())
+    private val _transactionHistory = MutableStateFlow<List<Transaction>>(emptyList())
 
+    init {
+        getTotalAccountList()
+        getAssetList()
+    }
 
     // 전체 계좌 정보 조회
     fun getTotalAccountList() {
@@ -35,9 +39,10 @@ class AssetViewModel @Inject constructor(
             assetRepository.getAccountList()
                 .onSuccess { response ->
                     _totalAccounts.value = response.data
+                    Log.d("AssetViewModel", response.data.toString())
                 }
                 .onFailure { response ->
-                    response.message?.let { Log.d("AssetViewModel", "게좌 조회 실패") }
+                    response.message?.let { Log.d("AssetViewModel", response.message.toString()) }
                 }
         }
     }
