@@ -1,7 +1,7 @@
 package com.moneymate.moneymate.ui.mypage.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,11 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -36,12 +33,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.auth.AuthViewModel
+import com.moneymate.moneymate.ui.common.BottomFullWidthButton
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun RetireInputScreen(
     modifier: Modifier = Modifier,
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
+    onNavigateBack: () -> Boolean
 ){
     val scrollState = rememberScrollState()
 
@@ -63,7 +62,9 @@ fun RetireInputScreen(
                 Icon(
                     painter = painterResource(R.drawable.ic_mypage_arrow),
                     contentDescription = "뒤로가기",
-                    modifier = Modifier.rotate(180f)
+                    modifier = Modifier
+                        .rotate(180f)
+                        .clickable{onNavigateBack()}
                 )
             }
             Box(
@@ -121,19 +122,18 @@ fun RetireInputScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         // 조회하기 버튼
-        Button(
-            onClick = { /* TODO: 시뮬레이션 실행 */ },
+        BottomFullWidthButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MoneyMateTheme.colors.deepBlue)
+                .align(Alignment.CenterHorizontally)
+                .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+            containerColor = MoneyMateTheme.colors.deepBlue,
+            contentColor = MoneyMateTheme.colors.white,
+            text = "조회하기"
         ) {
-            Text(text = "조회하기", color = Color.White,
-                style = TextStyle(
-                    fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-                    fontSize = 16.sp
-                ))
+            // TODO
         }
+        Spacer(modifier=Modifier.height(63.dp))
     }
 }
 

@@ -37,6 +37,7 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun MyPageScreen(
     modifier: Modifier = Modifier,
+    onRetireClick : () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
     // 필요한 기능에 따라 다른 viewmodel 추가 될 수 있음
 ) {
@@ -48,21 +49,22 @@ fun MyPageScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MenuCard(text = "노후 설계 시뮬레이션")
-        MenuCard(text = "또래 자산 통계 조회하기")
-        MenuCard(text = "자산 변동 통계 조회하기")
+        MenuCard(text = "노후 설계 시뮬레이션", onRetireClick)
+        MenuCard(text = "또래 자산 통계 조회하기", onRetireClick) /*나중에 함수 바꾸기*/
+        MenuCard(text = "자산 변동 통계 조회하기", onRetireClick)
     }
 }
 
 @Composable
 fun MenuCard(
     text: String,
+    onClick : () ->Unit
 ) {
     Card(
         modifier = Modifier
             .height(67.dp)
             .width(360.dp)
-            .clickable { },
+            .clickable {onClick()},
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(

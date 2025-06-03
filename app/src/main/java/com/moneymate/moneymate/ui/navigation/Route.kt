@@ -15,4 +15,6 @@ sealed class Route(val route: String){
 
     // 마이페이지
     object MyPage: Route(route = "myPage")
+    object RetireInput : Route(route = "myPage/retireInput")
+    object RetireResult : Route(route = "myPage/retireResult")
 }
