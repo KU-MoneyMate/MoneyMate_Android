@@ -1,11 +1,9 @@
 package com.moneymate.moneymate.ui.asset.screen
 
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moneymate.moneymate.R
-import com.moneymate.moneymate.data.dto.account.response.Transaction
+import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
 import com.moneymate.moneymate.ui.asset.component.TransactionHistoryItem
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import com.moneymate.moneymate.util.formatDate
@@ -38,8 +36,8 @@ fun TransactionHistoryScreen(
     onNavigateBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val transactions: List<Transaction> = listOf(
-        Transaction(
+    val transactionInfos: List<TransactionInfo> = listOf(
+        TransactionInfo(
             date = "2025-05-01",
             time = "12:34:56",
             outAmount = 4000,
@@ -47,7 +45,7 @@ fun TransactionHistoryScreen(
             afterBalance = 45000,
             destination = "CU 건국대점"
         ),
-        Transaction(
+        TransactionInfo(
             date = "2025-05-01",
             time = "13:34:56",
             outAmount = 4000,
@@ -55,7 +53,7 @@ fun TransactionHistoryScreen(
             afterBalance = 45000,
             destination = "학생식당"
         ),
-        Transaction(
+        TransactionInfo(
             date = "2025-05-01",
             time = "14:34:56",
             outAmount = 0,
@@ -64,7 +62,7 @@ fun TransactionHistoryScreen(
             destination = "카카오페이"
         ),
 
-        Transaction(
+        TransactionInfo(
             date = "2025-05-03",
             time = "13:34:56",
             outAmount = 4000,
@@ -74,7 +72,7 @@ fun TransactionHistoryScreen(
         ),
     )
     // Pass your data here
-    val grouped = transactions.groupBy { it.date }
+    val grouped = transactionInfos.groupBy { it.date }
 
     Column(modifier = modifier
         .fillMaxSize()
@@ -141,7 +139,7 @@ fun TransactionHistoryScreen(
                     .forEach { transactions ->
                         TransactionHistoryItem(
                             modifier = Modifier,
-                            transaction = transactions
+                            transactionInfo = transactions
                         )
                     }
             }

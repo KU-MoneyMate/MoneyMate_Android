@@ -1,13 +1,11 @@
 package com.moneymate.moneymate.ui.asset
 
 import android.util.Log
-import androidx.compose.ui.text.resolveDefaults
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.data.dto.account.response.AssetInfo
-import com.moneymate.moneymate.data.dto.account.response.Transaction
-import com.moneymate.moneymate.data.dto.account.response.TransactionHistoryResponse
+import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
 import com.moneymate.moneymate.data.repository.AssetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +24,7 @@ class AssetViewModel @Inject constructor(
     private val _totalAssets= MutableStateFlow<List<AssetInfo>>(emptyList())
     val totalAssets = _totalAssets.asStateFlow()
     // 계좌 거래 내역 정보
-    private val _transactionHistory = MutableStateFlow<List<Transaction>>(emptyList())
+    private val _transactionInfoHistory = MutableStateFlow<List<TransactionInfo>>(emptyList())
 
     init {
         getTotalAccountList()
@@ -38,7 +36,7 @@ class AssetViewModel @Inject constructor(
         viewModelScope.launch {
             assetRepository.getAccountList()
                 .onSuccess { response ->
-                    _totalAccounts.value = response.data
+                    _totalAccounts.value = response.data.account
                     Log.d("AssetViewModel", response.data.toString())
                 }
                 .onFailure { response ->
@@ -56,8 +54,8 @@ class AssetViewModel @Inject constructor(
         viewModelScope.launch {
             assetRepository.getTransactionHistory(uid = uid, startDate = startDate, endDate = endDate)
                 .onSuccess { response ->
-                    _transactionHistory.value = response.data
-                    Log.d("AssetViewModel", response.data.size.toString())
+                    _transactionInfoHistory.value = response.data.transaction.sortedByDescending { it.date }
+                    Log.d("AssetViewModel", response.data.transaction.size.toString())
                 }
                 .onFailure { response ->
                     response.message?.let { Log.d("AssetViewModel", "계좌 내역 조회 실패") }
@@ -70,7 +68,7 @@ class AssetViewModel @Inject constructor(
         viewModelScope.launch {
             assetRepository.getAssetList()
                 .onSuccess { response ->
-                    _totalAssets.value = response.data
+                    _totalAssets.value = response.data.asset
                 }
                 .onFailure { response ->
                     response.message?.let { Log.d("AssetViewModel", "자산 조회 실패") }

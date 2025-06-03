@@ -10,7 +10,13 @@ data class AssetListResponse(
     @SerialName("message")
     val message: String,
     @SerialName("data")
-    val data: List<AssetInfo>
+    val data: AssetList
+)
+
+@Serializable
+data class AssetList(
+    @SerialName("asset")
+    val asset: List<AssetInfo>
 )
 
 @Serializable

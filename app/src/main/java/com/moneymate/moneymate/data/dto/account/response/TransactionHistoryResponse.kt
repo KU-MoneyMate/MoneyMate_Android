@@ -10,11 +10,17 @@ data class TransactionHistoryResponse(
     @SerialName("message")
     val message: String,
     @SerialName("data")
-    val data: List<Transaction>
+    val data: TransactionList
 )
 
 @Serializable
-data class Transaction(
+data class TransactionList(
+    @SerialName("transaction")
+    val transaction: List<TransactionInfo>
+)
+
+@Serializable
+data class TransactionInfo(
     @SerialName("trDate")
     val date: String,
     @SerialName("trTime")
