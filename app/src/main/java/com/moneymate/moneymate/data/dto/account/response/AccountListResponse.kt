@@ -22,7 +22,7 @@ data class AccountList(
 @Serializable
 data class AccountInfo(
     @SerialName("accountUid")
-    val uid : Int,
+    val uid : String,
     @SerialName("accountBank")
     val bankCode: String,
     @SerialName("accountName")
