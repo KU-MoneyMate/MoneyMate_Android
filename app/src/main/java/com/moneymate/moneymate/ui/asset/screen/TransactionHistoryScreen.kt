@@ -23,8 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
+import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.TransactionHistoryItem
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import com.moneymate.moneymate.util.formatDate
@@ -33,44 +36,46 @@ import com.moneymate.moneymate.util.formatDate
 @Composable
 fun TransactionHistoryScreen(
     modifier: Modifier = Modifier,
+    viewModel: AssetViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-    val transactionInfos: List<TransactionInfo> = listOf(
-        TransactionInfo(
-            date = "2025-05-01",
-            time = "12:34:56",
-            outAmount = 4000,
-            inAmount = 0,
-            afterBalance = 45000,
-            destination = "CU 건국대점"
-        ),
-        TransactionInfo(
-            date = "2025-05-01",
-            time = "13:34:56",
-            outAmount = 4000,
-            inAmount = 0,
-            afterBalance = 45000,
-            destination = "학생식당"
-        ),
-        TransactionInfo(
-            date = "2025-05-01",
-            time = "14:34:56",
-            outAmount = 0,
-            inAmount = 1000000,
-            afterBalance = 45000,
-            destination = "카카오페이"
-        ),
-
-        TransactionInfo(
-            date = "2025-05-03",
-            time = "13:34:56",
-            outAmount = 4000,
-            inAmount = 0,
-            afterBalance = 45000,
-            destination = "CU 건국대점"
-        ),
-    )
+//    val transactionInfos: List<TransactionInfo> = listOf(
+//        TransactionInfo(
+//            date = "2025-05-01",
+//            time = "12:34:56",
+//            outAmount = 4000,
+//            inAmount = 0,
+//            afterBalance = 45000,
+//            destination = "CU 건국대점"
+//        ),
+//        TransactionInfo(
+//            date = "2025-05-01",
+//            time = "13:34:56",
+//            outAmount = 4000,
+//            inAmount = 0,
+//            afterBalance = 45000,
+//            destination = "학생식당"
+//        ),
+//        TransactionInfo(
+//            date = "2025-05-01",
+//            time = "14:34:56",
+//            outAmount = 0,
+//            inAmount = 1000000,
+//            afterBalance = 45000,
+//            destination = "카카오페이"
+//        ),
+//
+//        TransactionInfo(
+//            date = "2025-05-03",
+//            time = "13:34:56",
+//            outAmount = 4000,
+//            inAmount = 0,
+//            afterBalance = 45000,
+//            destination = "CU 건국대점"
+//        ),
+//    )
+    val transactionInfos = viewModel.transactionHistory.collectAsStateWithLifecycle().value
     // Pass your data here
     val grouped = transactionInfos.groupBy { it.date }
 

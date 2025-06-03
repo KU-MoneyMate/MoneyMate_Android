@@ -25,6 +25,7 @@ class AssetViewModel @Inject constructor(
     val totalAssets = _totalAssets.asStateFlow()
     // 계좌 거래 내역 정보
     private val _transactionInfoHistory = MutableStateFlow<List<TransactionInfo>>(emptyList())
+    val transactionHistory = _transactionInfoHistory.asStateFlow()
 
     init {
         getTotalAccountList()
@@ -55,7 +56,7 @@ class AssetViewModel @Inject constructor(
             assetRepository.getTransactionHistory(uid = uid, startDate = startDate, endDate = endDate)
                 .onSuccess { response ->
                     _transactionInfoHistory.value = response.data.transaction.sortedByDescending { it.date }
-                    Log.d("AssetViewModel", response.data.transaction.size.toString())
+                    Log.d("AssetViewModel", response.data.transaction.toString())
                 }
                 .onFailure { response ->
                     response.message?.let { Log.d("AssetViewModel", "계좌 내역 조회 실패") }
@@ -69,6 +70,7 @@ class AssetViewModel @Inject constructor(
             assetRepository.getAssetList()
                 .onSuccess { response ->
                     _totalAssets.value = response.data.asset
+                    Log.d("AssetViewModel", response.data.asset.toString())
                 }
                 .onFailure { response ->
                     response.message?.let { Log.d("AssetViewModel", "자산 조회 실패") }

@@ -35,6 +35,8 @@ fun HomeScreen(
     val depositList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "입출금" }
     val savingsList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "예적금" }
     val securitiesList = viewModel.totalAccounts.collectAsStateWithLifecycle().value.filter { it.type == "증권" }
+    val realEstateList = viewModel.totalAssets.collectAsStateWithLifecycle().value.filter { it.type == "부동산" }
+    val investmentList = viewModel.totalAssets.collectAsStateWithLifecycle().value.filter { it.type == "투자" }
 
     Column(modifier = modifier.fillMaxSize()
         .background(MoneyMateTheme.colors.backgroundWhite)
@@ -81,7 +83,7 @@ fun HomeScreen(
         //부동산
         AssetContainer(
             name = "부동산",
-            assetList = listOf(""),
+            assetList = realEstateList,
             onAddClick = {
                 onAddAssetClick("부동산")
             }
@@ -90,7 +92,7 @@ fun HomeScreen(
         // 투자
         AssetContainer(
             name = "투자 자산",
-            assetList = listOf(),
+            assetList = investmentList,
             onAddClick = {
                 onAddAssetClick("투자 자산")
             }
