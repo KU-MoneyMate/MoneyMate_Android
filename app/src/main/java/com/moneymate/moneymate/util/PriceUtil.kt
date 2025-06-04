@@ -6,3 +6,8 @@ fun Int.toDecimalFormat() : String {
     val decimalFormat = DecimalFormat("#,###")
     return decimalFormat.format(this)
 }
+
+fun Long.toDecimalFormat() : String {
+    val decimalFormat = DecimalFormat("#,###")
+    return decimalFormat.format(this)
+}

@@ -28,6 +28,6 @@ data class AssetInfo(
     @SerialName("assetType")
     val type: String,
     @SerialName("assetPrice")
-    val price: Int
+    val price: Long
 )
 
