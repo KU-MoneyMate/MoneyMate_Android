@@ -25,7 +25,7 @@ fun AssetItem(
     uId: Int,
     type: String,
     name: String,
-    value: Int
+    value: Long
 ) {
     Box(
         modifier = modifier
@@ -64,7 +64,7 @@ private fun AssetItemPreview() {
             uId = 1,
             type = "부동산",
             name = "반포 자이",
-            value = 425000000
+            value = 4250000000
         )
         AssetItem(
             uId = 2,
