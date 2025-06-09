@@ -3,8 +3,10 @@ package com.moneymate.moneymate.ui.asset.screen
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,8 +22,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,49 +54,15 @@ fun TransactionHistoryScreen(
     onNavigateBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-//    val transactionInfos: List<TransactionInfo> = listOf(
-//        TransactionInfo(
-//            date = "2025-05-01",
-//            time = "12:34:56",
-//            outAmount = 4000,
-//            inAmount = 0,
-//            afterBalance = 45000,
-//            destination = "CU 건국대점"
-//        ),
-//        TransactionInfo(
-//            date = "2025-05-01",
-//            time = "13:34:56",
-//            outAmount = 4000,
-//            inAmount = 0,
-//            afterBalance = 45000,
-//            destination = "학생식당"
-//        ),
-//        TransactionInfo(
-//            date = "2025-05-01",
-//            time = "14:34:56",
-//            outAmount = 0,
-//            inAmount = 1000000,
-//            afterBalance = 45000,
-//            destination = "카카오페이"
-//        ),
-//
-//        TransactionInfo(
-//            date = "2025-05-03",
-//            time = "13:34:56",
-//            outAmount = 4000,
-//            inAmount = 0,
-//            afterBalance = 45000,
-//            destination = "CU 건국대점"
-//        ),
-//    ).sortedByDescending { it.date }
     val transactionInfos = viewModel.transactionHistory.collectAsStateWithLifecycle().value.sortedByDescending { it.date }
     // 날짜로 분류된 데이터
     val grouped = transactionInfos.groupBy { it.date }
+    
+    var currentMonth by remember { mutableStateOf(LocalDate.now()) }
 
-    LaunchedEffect(Unit) {
-        val currentDate = LocalDate.now()
-        val startDate = currentDate.withDayOfMonth(1).toString()
-        val endDate = currentDate.withDayOfMonth(currentDate.lengthOfMonth()).toString()
+    LaunchedEffect(currentMonth) {
+        val startDate = currentMonth.withDayOfMonth(1).toString()
+        val endDate = currentMonth.withDayOfMonth(currentMonth.lengthOfMonth()).toString()
         Log.d("TransactionHistoryScreen", "startDate : $startDate")
         Log.d("TransactionHistoryScreen", "endDate : $endDate")
 
@@ -150,6 +124,34 @@ fun TransactionHistoryScreen(
                 thickness = 1.dp,
                 color = MoneyMateTheme.colors.deepBlue
             )
+            Spacer(modifier = Modifier.size(20.dp))
+            // 월 변경
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_back),
+                    contentDescription = "previous month",
+                    modifier = Modifier.clickable {
+                        currentMonth = currentMonth.minusMonths(1)
+                    }
+                )
+                Text(
+                    text = "${currentMonth.year}년 ${currentMonth.monthValue}월",
+                    style = MoneyMateTheme.typography.head_03_SB_16
+                )
+                Icon(
+                    painter = painterResource(R.drawable.ic_back),
+                    contentDescription = "next month",
+                    modifier = Modifier
+                        .rotate(180f)
+                        .clickable {
+                            currentMonth = currentMonth.plusMonths(1)
+                        }
+                )
+            }
             Spacer(modifier = Modifier.size(20.dp))
             // 날짜별로 거래내역 그룹화
             grouped.forEach { (date, transactionsOnDate) ->
