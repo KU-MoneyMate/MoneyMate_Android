@@ -1,4 +1,4 @@
-package com.moneymate.moneymate.data.dto.account.response
+package com.moneymate.moneymate.data.dto.asset.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

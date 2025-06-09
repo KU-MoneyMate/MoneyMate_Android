@@ -2,7 +2,7 @@ package com.moneymate.moneymate.data.service
 
 import com.moneymate.moneymate.data.dto.account.request.TransactionHistoryRequest
 import com.moneymate.moneymate.data.dto.account.response.AccountListResponse
-import com.moneymate.moneymate.data.dto.account.response.AssetListResponse
+import com.moneymate.moneymate.data.dto.asset.response.AssetListResponse
 import com.moneymate.moneymate.data.dto.account.response.TransactionHistoryResponse
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.moneymate.moneymate.data.dto.account.response.AssetInfo
+import com.moneymate.moneymate.data.dto.asset.response.AssetInfo
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
-import com.moneymate.moneymate.data.dto.account.response.AssetInfo
+import com.moneymate.moneymate.data.dto.asset.response.AssetInfo
 import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
 import com.moneymate.moneymate.data.repository.AssetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

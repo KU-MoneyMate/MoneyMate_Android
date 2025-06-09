@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
-import com.moneymate.moneymate.data.dto.account.response.AssetInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.AccountContainer
 import com.moneymate.moneymate.ui.asset.component.AssetContainer
