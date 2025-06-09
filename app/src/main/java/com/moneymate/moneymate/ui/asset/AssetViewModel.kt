@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
-import com.moneymate.moneymate.data.dto.account.response.AssetInfo
+import com.moneymate.moneymate.data.dto.asset.response.AssetInfo
 import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
 import com.moneymate.moneymate.data.repository.AssetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,6 +75,26 @@ class AssetViewModel @Inject constructor(
                 .onFailure { response ->
                     response.message?.let { Log.d("AssetViewModel", "자산 조회 실패") }
                 }
+        }
+    }
+
+    // 자산 등록
+    fun registerAsset(
+        name: String,
+        type: String,
+        price: Long
+    ){
+        viewModelScope.launch {
+            assetRepository.registerAsset(
+                name = name,
+                type = type,
+                price = price
+            ).onSuccess { response ->
+                Log.d("AssetViewModel", response.message)
+                getAssetList() // 자산 업데이트
+            }.onFailure { response ->
+                response.message?.let { Log.d("AssetViewModel", it) }
+            }
         }
     }
 }
