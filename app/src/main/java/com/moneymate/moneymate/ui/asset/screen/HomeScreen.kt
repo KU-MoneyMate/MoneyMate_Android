@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,36 +32,13 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     // 전체 계좌
     val totalAccounts = viewModel.totalAccounts.collectAsStateWithLifecycle().value
-//    val totalAccounts = listOf(
-//        AccountInfo(
-//            "1","2","KB 국민은행", "입출금", "11111111",1000000
-//        ),
-//        AccountInfo(
-//            "2","3","토스뱅크", "입출금", "22222222",100000
-//        ),
-//        AccountInfo(
-//            "3","3","삼성증권", "증권", "3333333333",400000
-//        ),
-//        AccountInfo(
-//            "4","3","청년도약계좌", "예적금", "44444444",500000
-//        ),
-//    )
-    // 전체 자산
-//    val totalAssets = listOf(
-//        AssetInfo(
-//            uid = "1",
-//            name = "반포자이",
-//            type = "부동산",
-//            price = 100000000
-//        ),
-//        AssetInfo(
-//            uid = "2",
-//            name = "엔비디아",
-//            type = "투자",
-//            price = 1000000
-//        )
-//    )
     val totalAssets = viewModel.totalAssets.collectAsStateWithLifecycle().value
+
+    LaunchedEffect(Unit) {
+        viewModel.getAssetList()
+        viewModel.getTotalAccountList()
+    }
+
     // 계좌 유형별 리스트
     val depositList = totalAccounts.filter { it.type == "입출금" }
     val savingsList = totalAccounts.filter { it.type == "예적금" }

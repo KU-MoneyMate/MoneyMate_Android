@@ -37,7 +37,7 @@ fun AddAssetScreen(
     modifier: Modifier = Modifier,
     assetType: String,
     onNavigateBack: () -> Unit,
-//    viewModel: AssetViewModel = hiltViewModel()
+    viewModel: AssetViewModel = hiltViewModel()
 ) {
     var assetName by rememberSaveable { mutableStateOf("") }
     var assetValue by rememberSaveable { mutableStateOf("") }
@@ -133,7 +133,13 @@ fun AddAssetScreen(
             contentColor = MoneyMateTheme.colors.white,
             text = "등록"
         ) {
-            // TODO
+            val type = if(assetType == "부동산") "부동산" else "투자"
+            viewModel.registerAsset(
+                name = assetName,
+                type = type,
+                price = assetValue.toLong()
+            )
+            onNavigateBack()
         }
     }
 }
@@ -144,6 +150,6 @@ private fun AddAssetScreenPreview() {
     AddAssetScreen(
         modifier = Modifier,
         assetType = "부동산",
-        onNavigateBack = {}
+        onNavigateBack = {},
     )
 }
