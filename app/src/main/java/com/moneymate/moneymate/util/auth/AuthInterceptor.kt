@@ -13,11 +13,9 @@ class AuthInterceptor @Inject constructor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
-        val accessToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmNkIiwidWlkIjoiNjYzNDM3NjEtNjMzMS0zMDYyLTJkMzUtMzg2MzYzMmQzNDMzIiwiZXhwIjoxNzQ4OTczMTU1fQ.JEkRb8mkQVRqaqEIOJV6MwAmqjsZzsgbVPYc36lo9fE"
-/*
         val accessToken =
             runBlocking { tokenManager.getAccessToken().flowOn(Dispatchers.IO).first() }
-*/
+
 
         accessToken?.let {
             // header에 토큰을 추가

@@ -13,6 +13,7 @@ import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
 import com.moneymate.moneymate.ui.manage.screen.RetireInputScreen
+import com.moneymate.moneymate.ui.manage.screen.RetireResultScreen
 
 @Composable
 fun MoneyMateNavGraph(
@@ -91,22 +92,33 @@ fun MoneyMateNavGraph(
             ManageScreen(
                 modifier = modifier,
                 onRetireClick = {
-                    navController.navigate(Route.RetireInput.route)
+                    navController.navigate(Route.RetireGraph.route)
                 }
             )
         }
+        retireNavGraph(navController,modifier)
+//        //은퇴시뮬레이션
+//        composable(route = Route.RetireInput.route) {
+//            RetireInputScreen(
+//                modifier = modifier,
+//                onNavigateBack = { navController.navigateUp() },
+//                onNavigateToRetireResult = {
+//                    navController.navigate(Route.RetireResult.route)
+//                }
+//            )
+//        }
+//        //은퇴시뮬레이션 결과
+//        composable(route = Route.RetireResult.route) {
+//            RetireResultScreen(
+//                modifier = modifier,
+//                onNavigateBack = { navController.navigateUp() }
+//            )
+//        }
 
         /* 마이페이지 */
         composable(route = Route.MyPage.route) {
             MyPageScreen(
                 modifier = modifier
-            )
-        }
-        //은퇴시뮬레이션
-        composable(route = Route.RetireInput.route) {
-            RetireInputScreen(
-                modifier = modifier,
-                onNavigateBack = { navController.navigateUp() }
             )
         }
     }

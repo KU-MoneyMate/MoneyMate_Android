@@ -1,4 +1,4 @@
-package com.moneymate.moneymate.data.dto.mypage.request
+package com.moneymate.moneymate.data.dto.manage.request
 
 import kotlinx.serialization.Serializable
 

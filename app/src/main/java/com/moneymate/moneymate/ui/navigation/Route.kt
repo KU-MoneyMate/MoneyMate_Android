@@ -12,9 +12,11 @@ sealed class Route(val route: String){
 
     // 자산 관리
     object Manage: Route(route = "manage")
+    object RetireGraph : Route(route = "retire_graph")
+    object RetireInput : Route(route = "myPage/retireInput")
+    object RetireResult : Route(route = "myPage/retireResult")
 
     // 마이페이지
     object MyPage: Route(route = "myPage")
-    object RetireInput : Route(route = "myPage/retireInput")
-    object RetireResult : Route(route = "myPage/retireResult")
+
 }

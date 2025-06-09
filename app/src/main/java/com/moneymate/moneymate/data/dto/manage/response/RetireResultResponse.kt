@@ -1,11 +1,6 @@
-package com.moneymate.moneymate.data.dto.mypage.response
+package com.moneymate.moneymate.data.dto.manage.response
 
 import kotlinx.serialization.Serializable
-
-@Serializable
-data class RetireResultResponse(
-    val assets: List<Asset>
-)
 
 @Serializable
 data class Asset(
