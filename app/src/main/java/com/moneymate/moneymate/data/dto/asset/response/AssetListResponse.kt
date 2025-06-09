@@ -1,4 +1,4 @@
-package com.moneymate.moneymate.data.dto.account.response
+package com.moneymate.moneymate.data.dto.asset.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -10,18 +10,24 @@ data class AssetListResponse(
     @SerialName("message")
     val message: String,
     @SerialName("data")
-    val data: List<AssetInfo>
+    val data: AssetList
+)
+
+@Serializable
+data class AssetList(
+    @SerialName("asset")
+    val asset: List<AssetInfo>
 )
 
 @Serializable
 data class AssetInfo(
     @SerialName("assetUid")
-    val uid: Int,
+    val uid: String,
     @SerialName("assetName")
     val name: String,
     @SerialName("assetType")
     val type: String,
     @SerialName("assetPrice")
-    val price: Int
+    val price: Long
 )
 

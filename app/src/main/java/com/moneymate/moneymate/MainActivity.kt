@@ -60,57 +60,70 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
+                //BottomNavigation을 보여줄 화면들
+                val bottomNavRoutes = listOf(
+                    Route.Home.route,
+                    Route.Finance.route,
+                    Route.Manage.route,
+                    Route.MyPage.route
+                )
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
                 Scaffold(
                     modifier = Modifier.systemBarsPadding(),
                     bottomBar = {
-                        NavigationBar(
-                            modifier = Modifier
-                                .drawBehind {
-                                    val strokeWidth = 1.dp.toPx()
-                                    drawLine(
-                                        color = Color(0xFFF5F5F5), // NavigationBar의 상단 테두리
-                                        start = Offset(0f, 0f),
-                                        end = Offset(size.width, 0f),
-                                        strokeWidth = strokeWidth,
-                                    )
-                                },
-                            containerColor = Color.White
-                        ) {
-                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-                            val currentDestination = navBackStackEntry?.destination
+                        if (currentRoute in bottomNavRoutes) {
+                            NavigationBar(
+                                modifier = Modifier
+                                    .drawBehind {
+                                        val strokeWidth = 1.dp.toPx()
+                                        drawLine(
+                                            color = Color(0xFFF5F5F5), // NavigationBar의 상단 테두리
+                                            start = Offset(0f, 0f),
+                                            end = Offset(size.width, 0f),
+                                            strokeWidth = strokeWidth,
+                                        )
+                                    },
+                                containerColor = Color.White
+                            ) {
+                                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                                val currentDestination = navBackStackEntry?.destination
 
-                            navBarItems.forEach { item ->
-                                val selected = currentDestination?.hierarchy?.any { it.route == item.route } == true
-                                NavigationBarItem(
-                                    icon = {
-                                        Icon(
-                                            painter = painterResource(id = item.icon),
-                                            contentDescription = item.label,
-                                        )
-                                    },
-                                    label = {
-                                        Text(
-                                            text = item.label,
-                                        )
-                                    },
-                                    selected = selected,
-                                    onClick = {
-                                        navController.navigate(item.route) {
-                                            popUpTo(navController.graph.findStartDestination().id) {
-                                                saveState = true
+                                navBarItems.forEach { item ->
+                                    val selected =
+                                        currentDestination?.hierarchy?.any { it.route == item.route } == true
+                                    NavigationBarItem(
+                                        icon = {
+                                            Icon(
+                                                painter = painterResource(id = item.icon),
+                                                contentDescription = item.label,
+                                            )
+                                        },
+                                        label = {
+                                            Text(
+                                                text = item.label,
+                                            )
+                                        },
+                                        selected = selected,
+                                        onClick = {
+                                            navController.navigate(item.route) {
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = true
+                                                }
+                                                launchSingleTop = true
+                                                restoreState = true
                                             }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    },
-                                    colors = NavigationBarItemDefaults.colors(
-                                        indicatorColor = Color.Transparent,
-                                        selectedIconColor = MoneyMateTheme.colors.deepBlue,
-                                        selectedTextColor = MoneyMateTheme.colors.deepBlue,
-                                        unselectedIconColor = MoneyMateTheme.colors.lightGray,
-                                        unselectedTextColor = MoneyMateTheme.colors.lightGray
+                                        },
+                                        colors = NavigationBarItemDefaults.colors(
+                                            indicatorColor = Color.Transparent,
+                                            selectedIconColor = MoneyMateTheme.colors.deepBlue,
+                                            selectedTextColor = MoneyMateTheme.colors.deepBlue,
+                                            unselectedIconColor = MoneyMateTheme.colors.lightGray,
+                                            unselectedTextColor = MoneyMateTheme.colors.lightGray
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }

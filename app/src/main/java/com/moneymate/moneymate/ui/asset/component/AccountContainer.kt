@@ -24,15 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun AccountContainer(
     modifier: Modifier = Modifier,
     name: String,
-    accountList: List<String>,
+    accountList: List<AccountInfo>,
     onAddClick: () -> Unit,
-    onItemClick: () -> Unit
+    onItemClick: (AccountInfo) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -83,14 +84,15 @@ fun AccountContainer(
                 color = MoneyMateTheme.colors.deepBlue
             )
         }
-        if (accountList.isNotEmpty()){
-            for(asset in accountList) {
+        if (accountList.isNotEmpty()) {
+            for (asset in accountList) {
                 AccountItem(
-                    name = "KB 국민은행",
-                    value = 888888
-                ) {
-                    onItemClick()
-                }
+                    name = asset.name,
+                    value = asset.balance,
+                    onClick = {
+                        onItemClick(asset)
+                    }
+                )
             }
         } else {
             Spacer(modifier = Modifier.size(28.dp))
@@ -107,21 +109,25 @@ fun AccountContainer(
 @Preview(showBackground = true)
 @Composable
 private fun AccountContainerPreview() {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MoneyMateTheme.colors.backgroundWhite)
-        .padding(horizontal = 30.dp),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MoneyMateTheme.colors.backgroundWhite)
+            .padding(horizontal = 30.dp),
         verticalArrangement = Arrangement.Center
     ) {
-//        AccountContainer(
-//            name = "입출금 계좌",
-//            accountList = listOf(),
-//            onAddClick = {},
-//            onItemClick = {}
-//        )
         AccountContainer(
             name = "입출금 계좌",
-            accountList = listOf("", "", ""),
+            accountList = listOf(
+                AccountInfo(
+                    uid = "2",
+                    bankCode = "004",
+                    name = "청년도약계좌",
+                    type = "예적금",
+                    number = "02004200000000",
+                    balance = 1000000
+                )
+            ),
             onAddClick = {},
             onItemClick = {}
         )

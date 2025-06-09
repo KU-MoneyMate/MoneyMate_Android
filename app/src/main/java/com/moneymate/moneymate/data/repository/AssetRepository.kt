@@ -1,8 +1,8 @@
 package com.moneymate.moneymate.data.repository
 
 import com.moneymate.moneymate.data.dto.account.request.TransactionHistoryRequest
+import com.moneymate.moneymate.data.dto.asset.request.AssetRegisterRequest
 import com.moneymate.moneymate.data.service.AssetService
-import java.sql.Date
 
 class AssetRepository(
     private val assetService: AssetService
@@ -26,5 +26,20 @@ class AssetRepository(
     }
 
     // 전체 자산 조회
-    suspend fun getAssetList() = kotlin.runCatching { assetService.getAssetList() }
+    suspend fun getAssetList() = runCatching { assetService.getAssetList() }
+
+    // 자산 등록
+    suspend fun registerAsset(
+        name: String,
+        type: String,
+        price: Long
+    ) = runCatching {
+        assetService.registerAsset(
+            AssetRegisterRequest(
+                name = name,
+                type = type,
+                price = price,
+            )
+        )
+    }
 }

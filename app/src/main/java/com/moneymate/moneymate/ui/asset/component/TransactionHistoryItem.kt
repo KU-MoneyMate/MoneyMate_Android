@@ -1,6 +1,5 @@
 package com.moneymate.moneymate.ui.asset.component
 
-import android.widget.Space
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,13 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.moneymate.moneymate.data.dto.account.response.Transaction
+import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun TransactionHistoryItem(
     modifier: Modifier = Modifier,
-    transaction: Transaction
+    transactionInfo: TransactionInfo
 ) {
     Row(
         modifier = modifier
@@ -26,17 +25,17 @@ fun TransactionHistoryItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = transaction.time.substring(0,5),
+            text = transactionInfo.time.substring(0,5),
             style = MoneyMateTheme.typography.body_01_R_14,
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = transaction.destination,
+            text = transactionInfo.destination,
             style = MoneyMateTheme.typography.body_01_M_14,
             modifier = Modifier.weight(1f)
         )
 
-        val amount = if (transaction.outAmount > 0) "- %,d원".format(transaction.outAmount) else "+ %,d원".format(transaction.inAmount)
+        val amount = if (transactionInfo.outAmount > 0) "- %,d원".format(transactionInfo.outAmount) else "+ %,d원".format(transactionInfo.inAmount)
 
         Text(
             text = amount,
