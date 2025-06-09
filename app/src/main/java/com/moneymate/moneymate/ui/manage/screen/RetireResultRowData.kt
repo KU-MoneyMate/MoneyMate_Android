@@ -1,4 +1,4 @@
-package com.moneymate.moneymate.ui.mypage.screen
+package com.moneymate.moneymate.ui.manage.screen
 
 data class RetireResultRowData(
     val age: Int,

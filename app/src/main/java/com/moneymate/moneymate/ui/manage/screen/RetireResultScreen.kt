@@ -1,9 +1,10 @@
-package com.moneymate.moneymate.ui.mypage.screen
+package com.moneymate.moneymate.ui.manage.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,8 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -26,23 +29,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.auth.AuthViewModel
+import com.moneymate.moneymate.ui.manage.ManageViewModel
+import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun RetireResultScreen(
     modifier: Modifier = Modifier,
-    viewModel: AuthViewModel = hiltViewModel()
+    navController: NavHostController,
+    viewModel: ManageViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit
 ) {
-    val mockData = listOf(
-        RetireResultRowData(30, "10,000", "4,000", "6,000"),
-        RetireResultRowData(31, "10,000", "4,000", "6,000"),
-        RetireResultRowData(32, "10,000", "4,000", "6,000"),
-        RetireResultRowData(33, "10,000", "4,000", "6,000"),
-        RetireResultRowData(34, "10,000", "4,000", "6,000"),
-        RetireResultRowData(35, "10,000", "4,000", "6,000")
-    )
+    val parentEntry = remember { navController.getBackStackEntry(Route.RetireGraph.route) }
+    val viewModel: ManageViewModel = hiltViewModel(parentEntry)
+
+    val result = viewModel.retireResult.collectAsState().value
 
     LazyColumn(
         modifier = Modifier
@@ -64,7 +69,9 @@ fun RetireResultScreen(
                     Icon(
                         painter = painterResource(R.drawable.ic_mypage_arrow),
                         contentDescription = "뒤로가기",
-                        modifier = Modifier.rotate(180f)
+                        modifier = Modifier
+                            .rotate(180f)
+                            .clickable { onNavigateBack() }
                     )
                 }
                 Box(
@@ -108,17 +115,17 @@ fun RetireResultScreen(
             Divider(color = Color.Gray.copy(alpha = 0.4f), thickness = 1.dp)
         }
 
-        items(mockData) { row ->
+        items(result.orEmpty()) { row ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                TableCell(row.age.toString())
-                TableCell(row.asset)
-                TableCell(row.spending)
-                TableCell(row.income)
+                TableCell("${row.age}")
+                TableCell("${row.asset / 10_000}")
+                TableCell("${row.expense / 10_000}")
+                TableCell("${row.income / 10_000}")
             }
         }
     }

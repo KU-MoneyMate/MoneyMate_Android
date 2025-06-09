@@ -16,6 +16,7 @@ class AuthInterceptor @Inject constructor(
         val accessToken =
             runBlocking { tokenManager.getAccessToken().flowOn(Dispatchers.IO).first() }
 
+
         accessToken?.let {
             // header에 토큰을 추가
             request
