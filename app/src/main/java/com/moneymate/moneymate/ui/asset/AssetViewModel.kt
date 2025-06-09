@@ -77,4 +77,24 @@ class AssetViewModel @Inject constructor(
                 }
         }
     }
+
+    // 자산 등록
+    fun registerAsset(
+        name: String,
+        type: String,
+        price: Long
+    ){
+        viewModelScope.launch {
+            assetRepository.registerAsset(
+                name = name,
+                type = type,
+                price = price
+            ).onSuccess { response ->
+                Log.d("AssetViewModel", response.message)
+                getAssetList() // 자산 업데이트
+            }.onFailure { response ->
+                response.message?.let { Log.d("AssetViewModel", it) }
+            }
+        }
+    }
 }
