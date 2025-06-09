@@ -12,7 +12,7 @@ import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
-import com.moneymate.moneymate.ui.mypage.screen.RetireInputScreen
+import com.moneymate.moneymate.ui.manage.screen.RetireInputScreen
 
 @Composable
 fun MoneyMateNavGraph(
@@ -89,17 +89,17 @@ fun MoneyMateNavGraph(
         /* 자산 관리 */
         composable(route = Route.Manage.route) {
             ManageScreen(
-                modifier = modifier
+                modifier = modifier,
+                onRetireClick = {
+                    navController.navigate(Route.RetireInput.route)
+                }
             )
         }
 
         /* 마이페이지 */
         composable(route = Route.MyPage.route) {
             MyPageScreen(
-                modifier = modifier,
-                onRetireClick = {
-                    navController.navigate(Route.RetireInput.route)
-                }
+                modifier = modifier
             )
         }
         //은퇴시뮬레이션

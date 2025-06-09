@@ -37,61 +37,15 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun MyPageScreen(
     modifier: Modifier = Modifier,
-    onRetireClick : () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
     // 필요한 기능에 따라 다른 viewmodel 추가 될 수 있음
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        MenuCard(text = "노후 설계 시뮬레이션", onRetireClick)
-        MenuCard(text = "또래 자산 통계 조회하기", onRetireClick) /*나중에 함수 바꾸기*/
-        MenuCard(text = "자산 변동 통계 조회하기", onRetireClick)
-    }
-}
-
-@Composable
-fun MenuCard(
-    text: String,
-    onClick : () ->Unit
-) {
-    Card(
-        modifier = Modifier
-            .height(67.dp)
-            .width(360.dp)
-            .clickable {onClick()},
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MoneyMateTheme.colors.white
+    Column(modifier = modifier.fillMaxSize()) {
+        Text(
+            text = "MyPageScreen",
+            style = MoneyMateTheme.typography.head_02_B_20,
+            color = MoneyMateTheme.colors.black
         )
-
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 29.dp, end = 21.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = text,
-                color = MoneyMateTheme.colors.darkGray,
-                style = TextStyle(
-                    fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
-                    fontSize = 20.sp
-                )
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.ic_mypage_arrow),
-                contentDescription = "화살표 아이콘",
-                tint = Color.Gray
-            )
-        }
+        Spacer(modifier = Modifier.size(10.dp))
     }
 }
