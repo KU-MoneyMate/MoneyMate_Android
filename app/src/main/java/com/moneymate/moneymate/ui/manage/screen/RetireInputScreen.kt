@@ -68,24 +68,24 @@ fun RetireInputScreen(
         }
     }
 
-    val age = remember { mutableStateOf("30") }
-    val retireAge = remember { mutableStateOf("60") }
+    val age = remember { mutableStateOf("40") }
+    val retireAge = remember { mutableStateOf("55") }
     val endAge = remember { mutableStateOf("90") }
-    val currentAssets = remember { mutableStateOf("56000000") }
-    val annualIncome = remember { mutableStateOf("0") }
-    val annualExpense = remember { mutableStateOf("0") }
-    val pensionPerYear = remember { mutableStateOf("0") }
-    val accounts = remember { mutableStateOf("0") }
-    val realEstate = remember { mutableStateOf("0") }
-    val stocks = remember { mutableStateOf("0") }
-    val assetReturnRate = remember { mutableStateOf("7.0") }
-    val incomeGrowthRate = remember { mutableStateOf("4.0") }
-    val inflationRate = remember { mutableStateOf("2.0") }
+    val currentAssets = remember { mutableStateOf("100000000") }
+    val annualIncome = remember { mutableStateOf("50000000") }
+    val annualExpense = remember { mutableStateOf("30000000") }
+    val pensionPerYear = remember { mutableStateOf("24000000") }
+    val accounts = remember { mutableStateOf("20000000") }
+    val realEstate = remember { mutableStateOf("50000000") }
+    val stocks = remember { mutableStateOf("30000000") }
+    val assetReturnRate = remember { mutableStateOf("0.05") }
+    val incomeGrowthRate = remember { mutableStateOf("0.03") }
+    val inflationRate = remember { mutableStateOf("0.02") }
     val pensionStartAge = remember { mutableStateOf("65") }
-    val consumptionDropAge = remember { mutableStateOf("75") }
-    val consumptionDropRate = remember { mutableStateOf("-20.0") }
-    val crashCycle = remember { mutableStateOf("6") }
-    val crashImpactRate = remember { mutableStateOf("-10.0") }
+    val consumptionDropAge = remember { mutableStateOf("65") }
+    val consumptionDropRate = remember { mutableStateOf("0.2") }
+    val crashCycle = remember { mutableStateOf("10") }
+    val crashImpactRate = remember { mutableStateOf("0.15") }
 
     Column(
         modifier = Modifier
@@ -169,7 +169,7 @@ fun RetireInputScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
-                .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                .padding(start = 20.dp, end = 20.dp),
             containerColor = MoneyMateTheme.colors.deepBlue,
             contentColor = MoneyMateTheme.colors.white,
             text = "조회하기"
@@ -198,7 +198,7 @@ fun RetireInputScreen(
             viewModel.postRetirementSimulation(request)
 
         }
-        Spacer(modifier=Modifier.height(63.dp))
+        Spacer(modifier=Modifier.height(28.dp))
     }
 }
 
