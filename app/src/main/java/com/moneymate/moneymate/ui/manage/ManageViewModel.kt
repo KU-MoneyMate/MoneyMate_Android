@@ -1,6 +1,8 @@
 package com.moneymate.moneymate.ui.manage
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.manage.request.RetireInputRequest
@@ -16,10 +18,25 @@ import javax.inject.Inject
 class ManageViewModel @Inject constructor(
     private val manageRepository: ManageRepository
 ): ViewModel() {
-
+    //총자산조회 결과
+    private val _totalAsset = mutableStateOf<Long?>(null)
+    val totalAsset: State<Long?> = _totalAsset
     // 시뮬레이션 결과 전체 응답을 담는 상태
     val _retireResult = MutableStateFlow<List<Asset>>(emptyList())
     val retireResult = _retireResult.asStateFlow()
+
+    //총자산 조회
+    fun getTotalAsset() {
+        viewModelScope.launch {
+            try {
+                _totalAsset.value = manageRepository.getTotalAssetPrice()
+                Log.d("totalAsset", "${_totalAsset.value}" )
+            } catch (e: Exception) {
+                Log.d("totalAsset", "${e}")
+                // 에러 처리
+            }
+        }
+    }
 
     // 시뮬레이션 요청
     fun postRetirementSimulation(request: RetireInputRequest) {

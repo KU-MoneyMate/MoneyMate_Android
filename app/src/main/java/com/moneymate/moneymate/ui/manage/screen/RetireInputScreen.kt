@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -41,6 +42,7 @@ import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.manage.request.RetireInputRequest
 import com.moneymate.moneymate.ui.auth.AuthViewModel
 import com.moneymate.moneymate.ui.common.BottomFullWidthButton
+import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.manage.ManageViewModel
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
@@ -59,9 +61,11 @@ fun RetireInputScreen(
 
     val scrollState = rememberScrollState()
 
+    val totalAsset by viewModel.totalAsset
     val retireResult by viewModel.retireResult.collectAsState()
 
-    // 결과가 수신되면 자동으로 결과 화면으로 전환
+
+    // 은퇴시뮬레이션 결과 수신시 화면전환
     LaunchedEffect(retireResult) {
         if (retireResult.isNotEmpty()) {
             onNavigateToRetireResult()
@@ -86,6 +90,16 @@ fun RetireInputScreen(
     val consumptionDropRate = remember { mutableStateOf("20") }
     val crashCycle = remember { mutableStateOf("10") }
     val crashImpactRate = remember { mutableStateOf("15") }
+
+    //총자산조회 결과 조회, 반영
+    LaunchedEffect(Unit){
+        viewModel.getTotalAsset()
+    }
+    LaunchedEffect(totalAsset) {
+        totalAsset?.let {
+            currentAssets.value = it.toString()
+        }
+    }
 
     Column(
         modifier = Modifier
