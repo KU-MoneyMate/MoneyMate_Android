@@ -3,7 +3,6 @@ package com.moneymate.moneymate.ui.manage.screen
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -71,7 +70,10 @@ fun RetireResultScreen(
                         contentDescription = "뒤로가기",
                         modifier = Modifier
                             .rotate(180f)
-                            .clickable { onNavigateBack() }
+                            .clickable {
+                                viewModel.clearRetireResult()
+                                onNavigateBack()
+                            }
                     )
                 }
                 Box(
@@ -103,13 +105,12 @@ fun RetireResultScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(vertical = 8.dp)
             ) {
-                TableHeader("나이")
-                TableHeader("자산")
-                TableHeader("연 소비")
-                TableHeader("연 수입")
+                TableHeader("나이", modifier=Modifier.weight(1f))
+                TableHeader("자산", modifier=Modifier.weight(4f))
+                TableHeader("연 소비", modifier=Modifier.weight(2.5f))
+                TableHeader("연 수입", modifier=Modifier.weight(2.5f))
             }
 
             Divider(color = Color.Gray.copy(alpha = 0.4f), thickness = 1.dp)
@@ -119,32 +120,33 @@ fun RetireResultScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(vertical = 8.dp)
             ) {
-                TableCell("${row.age}")
-                TableCell("${row.asset / 10_000}")
-                TableCell("${row.expense / 10_000}")
-                TableCell("${row.income / 10_000}")
+                TableCell("${row.age}", modifier=Modifier.weight(1f))
+                TableCell("${row.asset / 10_000}", modifier=Modifier.weight(4f))
+                TableCell("${row.expense / 10_000}", modifier=Modifier.weight(2.5f))
+                TableCell("${row.income / 10_000}", modifier=Modifier.weight(2.5f))
             }
         }
     }
 }
 
 @Composable
-fun TableHeader(text: String) {
+fun TableHeader(text: String, modifier:Modifier = Modifier) {
     Text(
         text = text,
         fontSize = 14.sp,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        modifier = modifier
     )
 }
 
 @Composable
-fun TableCell(text: String) {
+fun TableCell(text: String, modifier: Modifier=Modifier) {
     Text(
         text = text,
         fontSize = 14.sp,
-        textAlign = TextAlign.Center
+        textAlign = TextAlign.Center,
+        modifier = modifier
     )
 }
