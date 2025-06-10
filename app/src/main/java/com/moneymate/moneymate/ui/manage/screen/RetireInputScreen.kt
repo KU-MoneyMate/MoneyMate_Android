@@ -106,7 +106,7 @@ fun RetireInputScreen(
             .fillMaxSize()
             .verticalScroll(scrollState)
             .background(MoneyMateTheme.colors.white)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 20.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -144,7 +144,7 @@ fun RetireInputScreen(
         Text(
             text = "노후 자금 설계 시뮬레이션입니다.\n아래 입력되어 있는 기본값들을 수정할 수 있습니다.",
             color = Color.Gray,
-            modifier = Modifier.padding(bottom = 24.dp),
+            modifier = Modifier.padding(bottom = 24.dp, start = 21.dp),
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_regular)),
                 fontSize = 16.sp
@@ -169,12 +169,12 @@ fun RetireInputScreen(
         OutlinedInputField("예상 연금 수령 시작 나이", pensionStartAge.value, { pensionStartAge.value = it }, "세", 1)
         OutlinedInputField("예상 연금 수령액", pensionPerYear.value, { pensionPerYear.value = it }, "원", 2)
         OutlinedInputField("소비 감소 시작 나이", consumptionDropAge.value, { consumptionDropAge.value = it }, "세", 1)
-        OutlinedInputField("소비 감소율", consumptionDropRate.value, { consumptionDropRate.value = it }, "%", 1)
+        OutlinedInputField("소비 감소율", consumptionDropRate.value, { consumptionDropRate.value = it }, "%", 3)
 
         SectionTitle("기타")
         OutlinedInputField("연간 인플레이션", inflationRate.value, { inflationRate.value = it }, "%", 1)
         OutlinedInputField("경기침체 주기", crashCycle.value, { crashCycle.value = it }, "년", 1)
-        OutlinedInputField("침체시 자산 손실률", crashImpactRate.value, { crashImpactRate.value = it }, "%", 1)
+        OutlinedInputField("침체시 자산 손실률", crashImpactRate.value, { crashImpactRate.value = it }, "%", 3)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -224,17 +224,24 @@ fun SectionTitle(title: String) {
             fontFamily = FontFamily(Font(R.font.pretendard_medium)),
             fontSize = 18.sp
         ),
-        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
+        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp, start = 21.dp)
     )
 }
 
 @Composable
-fun OutlinedInputField(label: String, value: String, onValueChange: (String) -> Unit, unit: String? = null, type: Int) {
+fun OutlinedInputField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    unit: String? = null,
+    type: Int
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .padding(vertical = 4.dp)
             .fillMaxWidth()
+            .padding(start = 33.dp, end = 27.dp)
     ) {
         Text(
             text = label,
@@ -245,23 +252,36 @@ fun OutlinedInputField(label: String, value: String, onValueChange: (String) -> 
         )
 
         Spacer(modifier = Modifier.weight(1f))
-
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier.width(if (type == 2) 141.dp else 66.dp),
-            textStyle = TextStyle(
-                textAlign = TextAlign.Center,
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_regular))
+        if (type == 3) {
+            Text(
+                text = "-",
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    fontSize = 18.sp
+                )
             )
+            Spacer(modifier = Modifier.width(5.dp))
+        }
+
+        MoneyMateTextField(
+            text = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.width(if (type == 2) 141.dp else 66.dp).height(56.dp),
+            placeholder = {
+                Text(
+                    text = label,
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         )
 
         if (unit != null) {
             Spacer(modifier = Modifier.width(5.dp))
             Text(
                 text = unit,
-                modifier = Modifier.padding(top = 20.dp),
                 style = TextStyle(
                     fontFamily = FontFamily(Font(R.font.pretendard_regular)),
                     fontSize = 18.sp
@@ -282,22 +302,74 @@ fun RowWithTwoInputs(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+        modifier = Modifier
+            .padding(vertical = 4.dp)
+            .fillMaxWidth()
+            .padding(start = 33.dp)
     ) {
-        OutlinedTextField(
-            value = value1,
-            onValueChange = onValue1Change,
-            label = { Text(label1) },
-            modifier = Modifier.weight(1f)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        OutlinedTextField(
-            value = value2,
-            onValueChange = onValue2Change,
-            label = { Text(label2) },
-            modifier = Modifier.weight(1f)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "", modifier = Modifier.padding(top = 20.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .weight(1f)
+        ){
+            Text(
+                text = label1,
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    fontSize = 18.sp
+                )
+            )
+            Spacer(modifier = Modifier.width(7.dp))
+            MoneyMateTextField(
+                text = value1,
+                onValueChange = onValue1Change,
+                modifier = Modifier
+                    .width(66.dp)
+                    .height(56.dp),
+                placeholder = {
+                    Text(
+                        text = label1,
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            )
+        }
+
+
+        Spacer(modifier = Modifier.width(17.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .weight(1f)
+        ){
+            Text(
+                text = label2,
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    fontSize = 18.sp
+                )
+            )
+            Spacer(modifier = Modifier.width(7.dp))
+            MoneyMateTextField(
+                text = value2,
+                onValueChange = onValue2Change,
+                modifier = Modifier
+                    .width(66.dp)
+                    .height(56.dp),
+                placeholder = {
+                    Text(
+                        text = label2,
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            )
+        }
     }
 }
