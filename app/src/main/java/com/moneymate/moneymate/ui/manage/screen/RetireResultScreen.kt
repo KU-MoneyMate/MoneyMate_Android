@@ -70,7 +70,10 @@ fun RetireResultScreen(
                         contentDescription = "뒤로가기",
                         modifier = Modifier
                             .rotate(180f)
-                            .clickable { onNavigateBack() }
+                            .clickable {
+                                viewModel.clearRetireResult()
+                                onNavigateBack()
+                            }
                     )
                 }
                 Box(

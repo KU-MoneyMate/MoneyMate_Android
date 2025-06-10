@@ -51,4 +51,9 @@ class ManageViewModel @Inject constructor(
                 }
         }
     }
+
+    //뒤로가기를 위한 초기화 함수
+    fun clearRetireResult() {
+        _retireResult.value = emptyList()
+    }
 }
