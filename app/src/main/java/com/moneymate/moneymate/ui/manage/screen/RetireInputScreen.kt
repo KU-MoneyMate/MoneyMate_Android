@@ -78,14 +78,14 @@ fun RetireInputScreen(
     val accounts = remember { mutableStateOf("20000000") }
     val realEstate = remember { mutableStateOf("50000000") }
     val stocks = remember { mutableStateOf("30000000") }
-    val assetReturnRate = remember { mutableStateOf("0.05") }
-    val incomeGrowthRate = remember { mutableStateOf("0.03") }
-    val inflationRate = remember { mutableStateOf("0.02") }
+    val assetReturnRate = remember { mutableStateOf("5") }
+    val incomeGrowthRate = remember { mutableStateOf("3") }
+    val inflationRate = remember { mutableStateOf("2") }
     val pensionStartAge = remember { mutableStateOf("65") }
     val consumptionDropAge = remember { mutableStateOf("65") }
-    val consumptionDropRate = remember { mutableStateOf("0.2") }
+    val consumptionDropRate = remember { mutableStateOf("20") }
     val crashCycle = remember { mutableStateOf("10") }
-    val crashImpactRate = remember { mutableStateOf("0.15") }
+    val crashImpactRate = remember { mutableStateOf("15") }
 
     Column(
         modifier = Modifier
@@ -185,14 +185,14 @@ fun RetireInputScreen(
                 realEstate = realEstate.value.replace(",", "").toLongOrNull() ?: 0L,
                 stocks = stocks.value.replace(",", "").toLongOrNull() ?: 0L,
                 endAge = endAge.value.toIntOrNull() ?: 0,
-                assetReturnRate = assetReturnRate.value.toDoubleOrNull() ?: 0.0,
-                incomeGrowthRate = incomeGrowthRate.value.toDoubleOrNull() ?: 0.0,
-                inflationRate = inflationRate.value.toDoubleOrNull() ?: 0.0,
+                assetReturnRate = assetReturnRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
+                incomeGrowthRate = incomeGrowthRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
+                inflationRate = inflationRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
                 pensionStartAge = pensionStartAge.value.toIntOrNull() ?: 0,
                 consumptionDropAge = consumptionDropAge.value.toIntOrNull() ?: 0,
-                consumptionDropRate = consumptionDropRate.value.toDoubleOrNull() ?: 0.0,
+                consumptionDropRate = consumptionDropRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
                 crashCycle = crashCycle.value.toIntOrNull() ?: 0,
-                crashImpactRate = crashImpactRate.value.toDoubleOrNull() ?: 0.0
+                crashImpactRate = crashImpactRate.value.toDoubleOrNull()?.div(100) ?: 0.0
             )
 
             viewModel.postRetirementSimulation(request)
