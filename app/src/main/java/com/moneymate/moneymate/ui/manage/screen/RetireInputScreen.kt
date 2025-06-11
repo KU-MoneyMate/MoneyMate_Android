@@ -46,6 +46,7 @@ import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.manage.ManageViewModel
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.moneymate.moneymate.util.toDecimalFormat
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
@@ -264,8 +265,16 @@ fun OutlinedInputField(
         }
 
         MoneyMateTextField(
-            text = value,
-            onValueChange = onValueChange,
+            text = if (type == 2) value.toLongOrNull()?.toDecimalFormat() ?: value else value,
+            onValueChange = { newValue ->
+                if (type == 2) {
+                    // 숫자로 포매팅
+                    val numericValue = newValue.replace(Regex("[^0-9]"), "")
+                    onValueChange(numericValue)
+                } else {
+                    onValueChange(newValue)
+                }
+            },
             modifier = Modifier.width(if (type == 2) 141.dp else 66.dp).height(56.dp),
             placeholder = {
                 Text(
@@ -322,7 +331,11 @@ fun RowWithTwoInputs(
             Spacer(modifier = Modifier.width(7.dp))
             MoneyMateTextField(
                 text = value1,
-                onValueChange = onValue1Change,
+                onValueChange = { newValue ->
+                    // 숫자로 포매팅
+                    val numericValue = newValue.replace(Regex("[^0-9]"), "")
+                    onValue1Change(numericValue)
+                },
                 modifier = Modifier
                     .width(66.dp)
                     .height(56.dp),
@@ -356,7 +369,11 @@ fun RowWithTwoInputs(
             Spacer(modifier = Modifier.width(7.dp))
             MoneyMateTextField(
                 text = value2,
-                onValueChange = onValue2Change,
+                onValueChange = { newValue ->
+                    // 숫자로 포매팅
+                    val numericValue = newValue.replace(Regex("[^0-9]"), "")
+                    onValue2Change(numericValue)
+                },
                 modifier = Modifier
                     .width(66.dp)
                     .height(56.dp),
