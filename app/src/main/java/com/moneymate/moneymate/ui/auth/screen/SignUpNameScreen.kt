@@ -2,7 +2,6 @@ package com.moneymate.moneymate.ui.auth.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +14,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,13 +26,21 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.common.BottomFullWidthButton
+import com.moneymate.moneymate.ui.common.MoneyMateTextField
+import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun SignInNameScreen(
-    modifier: Modifier
+fun SignUpNameScreen(
+    modifier: Modifier,
+    navController: NavHostController
 ) {
+    var name by remember { mutableStateOf("") }
+    var birth by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,34 +74,45 @@ fun SignInNameScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            CustomTextField(hint = "이름를 입력해주세요")
+            MoneyMateTextField(
+                text = name,
+                onValueChange = { name = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = "이름을 입력해주세요",
+                        style = MoneyMateTheme.typography.body_01_M_14
+                    )
+                }
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            CustomTextField(hint = "생년월일을 입력해주세요 ex)980102")
-
-
+            MoneyMateTextField(
+                text = birth,
+                onValueChange = { birth = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = "생년월일을 입력해주세요 ex)980102",
+                        style = MoneyMateTheme.typography.body_01_M_14
+                    )
+                }
+            )
         }
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { //TODO 다음
-                },
+            BottomFullWidthButton(
+                containerColor = MoneyMateTheme.colors.deepBlue,
+                contentColor = Color.White,
+                text = "다음",
                 modifier = Modifier
                     .width(320.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MoneyMateTheme.colors.deepBlue),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                    .padding(bottom = 30.dp)
             ) {
-                Text(text = "다음",
-                    color = Color.White,
-                    style = TextStyle (
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.pretendard_bold))
-                    )
-                )
+                navController.navigate(Route.SignUpPhone.route)
             }
 
         }

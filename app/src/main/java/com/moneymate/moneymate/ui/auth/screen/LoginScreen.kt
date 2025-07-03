@@ -2,6 +2,7 @@ package com.moneymate.moneymate.ui.auth.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,13 +34,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.common.BottomFullWidthButton
+import com.moneymate.moneymate.ui.common.MoneyMateTextField
+import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier
+    modifier: Modifier,
+    navController: NavHostController
 ) {
+    var id by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,79 +70,63 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(30.dp))
 
-            CustomTextField(hint = "ID / E-mail")
+            MoneyMateTextField(
+                text = id,
+                onValueChange = { id = it },
+                placeholder = {
+                    Text(
+                        text = "ID / E-mail",
+                        style = MoneyMateTheme.typography.body_01_M_14
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
-            CustomTextField(hint = "Password")
+
+            MoneyMateTextField(
+                text = password,
+                onValueChange = { password = it },
+                placeholder = {
+                    Text(
+                        text = "Password",
+                        style = MoneyMateTheme.typography.body_01_M_14
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
+
 
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { //TODO 로그인
-                          },
-                modifier = Modifier
-                    .width(320.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MoneyMateTheme.colors.deepBlue),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+            BottomFullWidthButton(
+                containerColor = MoneyMateTheme.colors.deepBlue,
+                contentColor = Color.White,
+                text = "로그인",
+                modifier = Modifier.width(320.dp)
             ) {
-                Text(text = "로그인",
-                    color = Color.White,
-                    style = TextStyle (
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.pretendard_bold))
-                    )
-                )
+                // TODO 로그인
+                navController.navigate(Route.Home.route)
             }
 
-            OutlinedButton(
-                onClick = {
-                    //TODO 회원가입
-                },
+            BottomFullWidthButton(
+                containerColor = Color.White,
+                contentColor = MoneyMateTheme.colors.deepBlue,
+                text = "회원가입",
                 modifier = Modifier
                     .width(320.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(1.2.dp, MoneyMateTheme.colors.deepBlue),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MoneyMateTheme.colors.deepBlue)
-            ) {
-                Text(text = "회원가입",
-                    color = MoneyMateTheme.colors.deepBlue,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.pretendard_bold))
+                    .padding(bottom = 30.dp)
+                    .border(
+                        BorderStroke(1.2.dp, MoneyMateTheme.colors.deepBlue),
+                        shape = RoundedCornerShape(8.dp)
                     )
-                )
+            ) {
+                navController.navigate(Route.SignUpID.route)
             }
         }
-    }
-}
-
-@Composable
-fun CustomTextField(
-    hint: String,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(44.dp)
-            .background(color = MoneyMateTheme.colors.neutral100, shape = RoundedCornerShape(10.dp))
-            .padding(horizontal = 28.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        Text(
-            text = hint,
-            color = MoneyMateTheme.colors.neutral500,
-            style = TextStyle(
-                fontSize = 12.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_bold))
-            ),
-
-        )
     }
 }

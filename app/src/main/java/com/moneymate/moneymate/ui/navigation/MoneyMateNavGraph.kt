@@ -13,6 +13,12 @@ import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
+import com.moneymate.moneymate.ui.auth.screen.LoginScreen
+import com.moneymate.moneymate.ui.auth.screen.SignUpIDScreen
+import com.moneymate.moneymate.ui.auth.screen.SignUpNameScreen
+import com.moneymate.moneymate.ui.auth.screen.SignUpPWScreen
+import com.moneymate.moneymate.ui.auth.screen.SignUpPhoneScreen
+import com.moneymate.moneymate.ui.auth.screen.SignUpVerificationScreen
 import kotlinx.serialization.json.Json
 import com.moneymate.moneymate.ui.manage.screen.RetireInputScreen
 import com.moneymate.moneymate.ui.manage.screen.RetireResultScreen
@@ -24,10 +30,45 @@ fun MoneyMateNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Route.Home.route
+        startDestination = Route.Login.route
     ){
         /* 인증/인가 */
-
+        composable(route = Route.Login.route) {
+            LoginScreen(
+                modifier = modifier,
+                navController = navController
+            )
+        }
+        composable(route = Route.SignUpID.route) {
+            SignUpIDScreen(
+                modifier = modifier,
+                navController = navController
+            )
+        }
+        composable(route = Route.SignUpPW.route) {
+            SignUpPWScreen(
+                modifier = modifier,
+                navController = navController
+            )
+        }
+        composable(route = Route.SignUpName.route) {
+            SignUpNameScreen(
+                modifier = modifier,
+                navController = navController
+            )
+        }
+        composable(route = Route.SignUpPhone.route) {
+            SignUpPhoneScreen(
+                modifier = modifier,
+                navController = navController
+            )
+        }
+        composable(route = Route.SignUpVerification.route) {
+            SignUpVerificationScreen(
+                modifier = modifier,
+                navController = navController
+            )
+        }
 
         /*자산 조회(홈)*/
         composable(route = Route.Home.route) {
