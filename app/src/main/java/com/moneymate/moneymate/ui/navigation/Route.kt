@@ -1,6 +1,14 @@
 package com.moneymate.moneymate.ui.navigation
 
 sealed class Route(val route: String){
+    //로그인, 회원가입
+    object Login : Route(route = "login")
+    object SignUpID : Route(route = "signUpID")
+    object SignUpPW : Route(route = "signUpPW")
+    object SignUpName : Route(route = "signUpName")
+    object SignUpPhone : Route(route = "signUpPhone")
+    object SignUpVerification : Route(route = "signUpVerification")
+
     // 자산 조회(홈)
     object Home: Route(route = "home")
     object AddAccount: Route(route = "home/addAccount")

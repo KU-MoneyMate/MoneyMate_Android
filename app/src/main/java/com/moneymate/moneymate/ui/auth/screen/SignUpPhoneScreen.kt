@@ -2,22 +2,10 @@ package com.moneymate.moneymate.ui.auth.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,13 +15,22 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.common.BottomFullWidthButton
+import com.moneymate.moneymate.ui.common.MoneyMateTextField
+import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun SignInPhoneScreen(
-    modifier: Modifier
+fun SignUpPhoneScreen(
+    modifier: Modifier,
+    navController: NavHostController
 ) {
+    var phone1 by remember { mutableStateOf("") }
+    var phone2 by remember { mutableStateOf("") }
+    var phone3 by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,74 +54,74 @@ fun SignInPhoneScreen(
 
             Spacer(modifier = Modifier.height(33.dp))
 
-            Row (
-                modifier = Modifier,
+            Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
-                CustomTextFieldForPhoneNum("010")
-                Image(
-                    painter = painterResource(id = R.drawable.img_signin_dash),
-                    contentDescription = "phone num dash",
-                    modifier = Modifier.size(16.dp).padding(horizontal = 4.dp)
+            ) {
+                MoneyMateTextField(
+                    text = phone1,
+                    onValueChange = { phone1 = it },
+                    modifier = Modifier.width(100.dp),
+                    placeholder = {
+                        Text(
+                            text = "010",
+                            style = MoneyMateTheme.typography.body_01_M_14
+                        )
+                    }
                 )
-                CustomTextFieldForPhoneNum("1234")
-                Image(
-                    painter = painterResource(id = R.drawable.img_signin_dash),
-                    contentDescription = "phone num dash",
-                    modifier = Modifier.size(16.dp).padding(horizontal = 4.dp)
-                )
-                CustomTextFieldForPhoneNum("1234")
-            }
 
+                Image(
+                    painter = painterResource(id = R.drawable.img_signin_dash),
+                    contentDescription = "phone num dash",
+                    modifier = Modifier.size(16.dp).padding(horizontal = 4.dp)
+                )
+
+                MoneyMateTextField(
+                    text = phone2,
+                    onValueChange = { phone2 = it },
+                    modifier = Modifier.width(100.dp),
+                    placeholder = {
+                        Text(
+                            text = "1234",
+                            style = MoneyMateTheme.typography.body_01_M_14
+                        )
+                    }
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.img_signin_dash),
+                    contentDescription = "phone num dash",
+                    modifier = Modifier.size(16.dp).padding(horizontal = 4.dp)
+                )
+
+                MoneyMateTextField(
+                    text = phone3,
+                    onValueChange = { phone3 = it },
+                    modifier = Modifier.width(100.dp),
+                    placeholder = {
+                        Text(
+                            text = "1234",
+                            style = MoneyMateTheme.typography.body_01_M_14
+                        )
+                    }
+                )
+            }
         }
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(30.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { //TODO 다음
-                },
+            BottomFullWidthButton(
+                containerColor = MoneyMateTheme.colors.deepBlue,
+                contentColor = Color.White,
+                text = "인증번호 전송",
                 modifier = Modifier
                     .width(320.dp)
-                    .height(48.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MoneyMateTheme.colors.deepBlue),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                    .padding(bottom = 30.dp)
             ) {
-                Text(text = "인증번호 전송",
-                    color = Color.White,
-                    style = TextStyle (
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.pretendard_bold))
-                    )
-                )
+                navController.navigate(Route.SignUpVerification.route)
             }
-
         }
-    }
-}
-
-@Composable
-fun CustomTextFieldForPhoneNum (
-    hint: String,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .width(100.dp)
-            .height(44.dp)
-            .background(color = MoneyMateTheme.colors.neutral100, shape = RoundedCornerShape(16.dp)),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = hint,
-            color = MoneyMateTheme.colors.neutral500,
-            style = TextStyle(
-                fontSize = 12.sp,
-                fontFamily = FontFamily(Font(R.font.pretendard_regular))
-            ),
-
-            )
     }
 }
