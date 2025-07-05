@@ -36,37 +36,55 @@ fun MoneyMateNavGraph(
         composable(route = Route.Login.route) {
             LoginScreen(
                 modifier = modifier,
-                navController = navController
+                onLoginClick = {
+                    // TODO: 로그인 로직 구현
+                    navController.navigate(Route.Home.route)
+                },
+                onRegisterClick = {
+                    navController.navigate(Route.SignUpID.route)
+                }
             )
         }
         composable(route = Route.SignUpID.route) {
             SignUpIDScreen(
                 modifier = modifier,
-                navController = navController
+                onNext = {
+                    navController.navigate(Route.SignUpPW.route)
+                }
             )
         }
         composable(route = Route.SignUpPW.route) {
             SignUpPWScreen(
                 modifier = modifier,
-                navController = navController
+                onNext = {
+                    navController.navigate(Route.SignUpName.route)
+                }
             )
         }
         composable(route = Route.SignUpName.route) {
             SignUpNameScreen(
                 modifier = modifier,
-                navController = navController
+                onNext = {
+                    navController.navigate(Route.SignUpPhone.route)
+                }
             )
         }
         composable(route = Route.SignUpPhone.route) {
             SignUpPhoneScreen(
                 modifier = modifier,
-                navController = navController
+                onNext = {
+                    navController.navigate(Route.SignUpVerification.route)
+                }
             )
         }
         composable(route = Route.SignUpVerification.route) {
             SignUpVerificationScreen(
                 modifier = modifier,
-                navController = navController
+                onComplete = {
+                    navController.navigate(Route.Login.route) {
+                        popUpTo(Route.Login.route) { inclusive = true }
+                    }
+                }
             )
         }
 
