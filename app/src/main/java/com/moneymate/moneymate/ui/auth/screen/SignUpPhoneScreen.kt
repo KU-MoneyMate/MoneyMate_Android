@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,8 +16,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.auth.AuthViewModel
 import com.moneymate.moneymate.ui.common.BottomFullWidthButton
 import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.navigation.Route
@@ -25,11 +27,12 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpPhoneScreen(
     modifier: Modifier,
-    navController: NavHostController
+    viewModel: AuthViewModel,
+    onNext: () -> Unit
 ) {
-    var phone1 by remember { mutableStateOf("") }
-    var phone2 by remember { mutableStateOf("") }
-    var phone3 by remember { mutableStateOf("") }
+    var phone1 by rememberSaveable { mutableStateOf("") }
+    var phone2 by rememberSaveable { mutableStateOf("") }
+    var phone3 by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -120,7 +123,10 @@ fun SignUpPhoneScreen(
                     .width(320.dp)
                     .padding(bottom = 30.dp)
             ) {
-                navController.navigate(Route.SignUpVerification.route)
+                val formattedPhoneNumber = "${phone1}-${phone2}-${phone3}"
+                viewModel.saveSignupPhone(formattedPhoneNumber) {
+                    onNext()
+                }
             }
         }
     }

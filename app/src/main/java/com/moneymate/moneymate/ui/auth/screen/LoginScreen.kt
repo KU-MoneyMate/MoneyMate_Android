@@ -34,8 +34,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.auth.AuthViewModel
 import com.moneymate.moneymate.ui.common.BottomFullWidthButton
 import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.navigation.Route
@@ -44,7 +46,9 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun LoginScreen(
     modifier: Modifier,
-    navController: NavHostController
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit,
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     var id by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -109,8 +113,11 @@ fun LoginScreen(
                 text = "로그인",
                 modifier = Modifier.width(320.dp)
             ) {
-                // TODO 로그인
-                navController.navigate(Route.Home.route)
+                viewModel.login(
+                    userId = id,
+                    password = password,
+                    onLoginSuccess = onLoginClick
+                )
             }
 
             BottomFullWidthButton(
@@ -125,7 +132,7 @@ fun LoginScreen(
                         shape = RoundedCornerShape(8.dp)
                     )
             ) {
-                navController.navigate(Route.SignUpID.route)
+                onRegisterClick()
             }
         }
     }

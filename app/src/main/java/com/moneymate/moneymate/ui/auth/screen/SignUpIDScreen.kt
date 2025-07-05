@@ -13,8 +13,10 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.auth.AuthViewModel
 import com.moneymate.moneymate.ui.common.BottomFullWidthButton
 import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.navigation.Route
@@ -23,7 +25,8 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpIDScreen(
     modifier: Modifier,
-    navController: NavHostController
+    viewModel: AuthViewModel,
+    onNext: () -> Unit
 ) {
     var id by rememberSaveable { mutableStateOf("") }
 
@@ -85,7 +88,11 @@ fun SignUpIDScreen(
                 text = "다음",
                 modifier = Modifier.width(320.dp).padding(bottom = 30.dp)
             ) {
-                navController.navigate(Route.SignUpPW.route)
+                viewModel.saveSignupId(
+                    userId = id
+                ){
+                    onNext()
+                }
             }
         }
     }

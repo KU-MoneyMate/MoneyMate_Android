@@ -16,7 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +26,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.auth.AuthViewModel
 import com.moneymate.moneymate.ui.common.BottomFullWidthButton
 import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.navigation.Route
@@ -36,10 +37,11 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpNameScreen(
     modifier: Modifier,
-    navController: NavHostController
+    viewModel: AuthViewModel,
+    onNext: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var birth by remember { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var birth by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -92,7 +94,7 @@ fun SignUpNameScreen(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = {
                     Text(
-                        text = "생년월일을 입력해주세요 ex)980102",
+                        text = "생년월일을 입력해주세요 ex)19980102",
                         style = MoneyMateTheme.typography.body_01_M_14
                     )
                 }
@@ -112,9 +114,13 @@ fun SignUpNameScreen(
                     .width(320.dp)
                     .padding(bottom = 30.dp)
             ) {
-                navController.navigate(Route.SignUpPhone.route)
+                val formattedBirth = "${birth.substring(0, 4)}-${birth.substring(4, 6)}-${birth.substring(6, 8)}"
+                viewModel.saveSignupName(name) {
+                    viewModel.saveSignupBirthday(formattedBirth) {
+                        onNext()
+                    }
+                }
             }
-
         }
     }
 }
