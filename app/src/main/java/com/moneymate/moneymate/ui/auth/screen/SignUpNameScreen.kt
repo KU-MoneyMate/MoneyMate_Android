@@ -37,7 +37,7 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpNameScreen(
     modifier: Modifier,
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: AuthViewModel,
     onNext: () -> Unit
 ) {
     var name by rememberSaveable { mutableStateOf("") }
@@ -94,7 +94,7 @@ fun SignUpNameScreen(
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = {
                     Text(
-                        text = "생년월일을 입력해주세요 ex)980102",
+                        text = "생년월일을 입력해주세요 ex)19980102",
                         style = MoneyMateTheme.typography.body_01_M_14
                     )
                 }
@@ -114,8 +114,9 @@ fun SignUpNameScreen(
                     .width(320.dp)
                     .padding(bottom = 30.dp)
             ) {
+                val formattedBirth = "${birth.substring(0, 4)}-${birth.substring(4, 6)}-${birth.substring(6, 8)}"
                 viewModel.saveSignupName(name) {
-                    viewModel.saveSignupBirthday(birth) {
+                    viewModel.saveSignupBirthday(formattedBirth) {
                         onNext()
                     }
                 }
