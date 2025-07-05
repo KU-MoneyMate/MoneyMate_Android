@@ -27,7 +27,7 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpPhoneScreen(
     modifier: Modifier,
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: AuthViewModel,
     onNext: () -> Unit
 ) {
     var phone1 by rememberSaveable { mutableStateOf("") }
@@ -123,8 +123,8 @@ fun SignUpPhoneScreen(
                     .width(320.dp)
                     .padding(bottom = 30.dp)
             ) {
-                val phoneNumber = "$phone1$phone2$phone3"
-                viewModel.saveSignupPhone(phoneNumber) {
+                val formattedPhoneNumber = "${phone1}-${phone2}-${phone3}"
+                viewModel.saveSignupPhone(formattedPhoneNumber) {
                     onNext()
                 }
             }
