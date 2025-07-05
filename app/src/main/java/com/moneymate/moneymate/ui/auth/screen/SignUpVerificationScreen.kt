@@ -25,7 +25,7 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpVerificationScreen(
     modifier: Modifier,
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: AuthViewModel,
     onComplete: () -> Unit
 ) {
     var verificationCode by rememberSaveable { mutableStateOf("") }

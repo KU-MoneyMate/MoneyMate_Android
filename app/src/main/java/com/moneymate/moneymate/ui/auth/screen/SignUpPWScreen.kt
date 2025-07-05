@@ -37,7 +37,7 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpPWScreen(
     modifier: Modifier,
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: AuthViewModel,
     onNext: () -> Unit
 ) {
     var pw by rememberSaveable { mutableStateOf("") }

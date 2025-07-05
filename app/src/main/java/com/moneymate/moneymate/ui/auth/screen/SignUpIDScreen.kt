@@ -25,7 +25,7 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SignUpIDScreen(
     modifier: Modifier,
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: AuthViewModel,
     onNext: () -> Unit
 ) {
     var id by rememberSaveable { mutableStateOf("") }

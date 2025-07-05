@@ -71,10 +71,10 @@ class AuthViewModel @Inject constructor(
                 phoneNumber = _signupPhone.value,
                 birthday = _signupBirthday.value
             ).onSuccess { response ->
-                Log.d("AuthViewModel", "회원가입) 성공:${response}")
+                Log.d("AuthViewModel", "회원가입 성공:${response}")
                 onSignupSuccess()
             }.onFailure { response ->
-                Log.d("AuthViewModel", "회원가입) 실패:${response.message.toString()}")
+                Log.d("AuthViewModel", "회원가입 실패:${response.message.toString()}")
             }
         }
     }
