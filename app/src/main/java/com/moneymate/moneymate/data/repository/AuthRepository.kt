@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.data.repository
 
+import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
 import com.moneymate.moneymate.data.service.AuthService
 
@@ -21,6 +22,19 @@ class AuthRepository(
                 password = password,
                 phoneNumber = phoneNumber,
                 birthday = birthday
+            )
+        )
+    }
+
+    // 로그인
+    suspend fun login(
+        userId: String,
+        password: String
+    ) = runCatching {
+        authService.login(
+            LoginRequest(
+                userId = userId,
+                password = password
             )
         )
     }
