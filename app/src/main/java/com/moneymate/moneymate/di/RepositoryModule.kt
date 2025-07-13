@@ -8,6 +8,7 @@ import com.moneymate.moneymate.data.service.AssetService
 import com.moneymate.moneymate.data.service.AuthService
 import com.moneymate.moneymate.data.service.FinanceService
 import com.moneymate.moneymate.data.service.ManageService
+import com.moneymate.moneymate.util.auth.TokenManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +20,10 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun providesAuthRepository(authService: AuthService): AuthRepository = AuthRepository(authService)
+    fun providesAuthRepository(
+        authService: AuthService,
+        tokenManager: TokenManager
+    ): AuthRepository = AuthRepository(authService, tokenManager)
 
     @Provides
     @Singleton

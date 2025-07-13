@@ -49,4 +49,7 @@ interface AuthService {
         @Body request: LoginRequest
     ): LoginResponse
 
+    // TODO: 토큰재발급 로직
+
+
 }

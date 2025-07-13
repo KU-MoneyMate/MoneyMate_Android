@@ -5,6 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginResponse(
-    @SerialName("token") // TODO: 변경 예정
-    val token: String,
+    @SerialName("accessToken")
+    val accessToken: String,
+    @SerialName("refreshToken")
+    val refreshToken: String,
+    @SerialName("grantType")
+    val grantType: String,
 )
