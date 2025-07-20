@@ -45,8 +45,9 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun NewsPublisherHomeScreen(
     modifier: Modifier,
-    publisher : String,
+    publisher: String,
     viewModel: FinanceViewModel = hiltViewModel(),
+    onArticleClick: (String) -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val publisherData = PublisherProvider.publisherList.find { it.enum == publisher }
@@ -67,7 +68,7 @@ fun NewsPublisherHomeScreen(
     val categoryNews = viewModel.categoryNewsList.value
     val scrollState = rememberScrollState()
 
-    if (publisherData != null){
+    if (publisherData != null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -136,32 +137,26 @@ fun NewsPublisherHomeScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(start = 33.dp, end = 33.dp)
                     .background(MoneyMateTheme.colors.white)
+                    .horizontalScroll(scrollState),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Spacer(Modifier.width(33.dp))
-                Row (
-                    modifier = Modifier
-                        .horizontalScroll(scrollState),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    if (categoryState != null) {
-                        categoryState.forEachIndexed { index, category ->
-                            NewsCategoryButton(
-                                category = category.categoryName,
-                                isSelected = category.isSelected,
-                                onClick = {
-                                    categoryState.replaceAll { it.copy(isSelected = false) }
-                                    categoryState[index] = category.copy(isSelected = true)
+                if (categoryState != null) {
+                    categoryState.forEachIndexed { index, category ->
+                        NewsCategoryButton(
+                            category = category.categoryName,
+                            isSelected = category.isSelected,
+                            onClick = {
+                                categoryState.replaceAll { it.copy(isSelected = false) }
+                                categoryState[index] = category.copy(isSelected = true)
 
-                                    // TODO: 이 지점에서 선택된 카테고리에 따라 API 요청 가능
-                                    viewModel.getCategoryNews(publisher, category.categoryName)
+                                viewModel.getCategoryNews(publisher, category.categoryName)
 
-                                }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
-                Spacer(Modifier.width(33.dp))
             }
 
             Spacer(modifier = Modifier.height(17.dp))
@@ -180,7 +175,7 @@ fun NewsPublisherHomeScreen(
                         url = article.link,
                         isLastArticle = isLast,
                         onArticleClick = {
-                            // TODO
+                            onArticleClick(article.link)
                         }
                     )
                 }

@@ -11,11 +11,14 @@ import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.HomeScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
 import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
+import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import kotlinx.serialization.json.Json
+import java.net.URLDecoder
+import java.net.URLEncoder
 
 @Composable
 fun MoneyMateNavGraph(
@@ -101,6 +104,10 @@ fun MoneyMateNavGraph(
                 onAddClick = { enum ->
                     navController.navigate("${Route.NewsPublisherHome.route}/$enum")
                 },
+                onArticleClick = { url ->
+                    val encodedUrl = URLEncoder.encode(url, "UTF-8")
+                    navController.navigate("${Route.NewsArticle.route}/$encodedUrl")
+                },
                 onNavigateBack = {
                     navController.navigateUp()
                 }
@@ -114,6 +121,24 @@ fun MoneyMateNavGraph(
             NewsPublisherHomeScreen(
                 modifier = modifier,
                 publisher = publisher,
+                onArticleClick = { url ->
+                    val encodedUrl = URLEncoder.encode(url, "UTF-8")
+                    navController.navigate("${Route.NewsArticle.route}/$encodedUrl")
+                },
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        //기사 화면
+        composable (
+            route = "${Route.NewsArticle.route}/{url}",
+        ) { backStackEntry ->
+            val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
+            val url = URLDecoder.decode(encodedUrl, "UTF-8")
+            NewsArticleScreen (
+                modifier = modifier,
+                url = url,
                 onNavigateBack = {
                     navController.navigateUp()
                 }
