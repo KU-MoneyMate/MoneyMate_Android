@@ -146,10 +146,10 @@ fun NewsPublisherHomeScreen(
                     .horizontalScroll(scrollState),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                NewsCategoryButton("경제", true) { }
-                NewsCategoryButton("증권", false) { }
-                NewsCategoryButton("금융", false) { }
-                NewsCategoryButton("부동산", false) { }
+                NewsCategoryButton("economy", true) { }
+                NewsCategoryButton("stock", false) { }
+                NewsCategoryButton("finance", false) { }
+                NewsCategoryButton("business", false) { }
             }
             Spacer(Modifier.width(33.dp))
         }

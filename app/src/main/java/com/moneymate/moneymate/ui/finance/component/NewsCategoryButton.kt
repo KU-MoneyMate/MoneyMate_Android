@@ -27,6 +27,14 @@ fun NewsCategoryButton(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
+    var categoryToKorean = "economy"
+    if (category=="economy") categoryToKorean = "경제"
+    else if (category=="finance") categoryToKorean = "금융"
+    else if (category=="stock") categoryToKorean = "증권"
+    else if (category=="realestate") categoryToKorean = "부동산"
+    else if (category=="business") categoryToKorean = "기업/경영"
+
+
     Row(
         modifier = Modifier
             .height(42.dp)
@@ -42,7 +50,7 @@ fun NewsCategoryButton(
 
     ) {
         Text(
-            text = category,
+            text = categoryToKorean,
             style = TextStyle(
                 color = if (isSelected) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue,
                 fontSize = 18.sp,
@@ -56,7 +64,7 @@ fun NewsCategoryButton(
 @Composable
 fun NewsCategoryButtonPreview(
     modifier: Modifier = Modifier,
-    category: String = "경제",
+    category: String = "부동산",
     isSelected: Boolean = false,
     onClick: () -> Unit = {},
 ) {
