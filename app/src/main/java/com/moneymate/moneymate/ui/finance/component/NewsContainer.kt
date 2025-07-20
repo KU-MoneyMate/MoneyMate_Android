@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -26,9 +25,9 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun NewsContainer(
-    publisher: String,
-    articles: List<String>, //TODO 수정할것
-    onAddClick: () -> Unit,
+    news: NewsContainerData,
+    onAddClick: (String) -> Unit,
+    onArticleClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -45,7 +44,7 @@ fun NewsContainer(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = publisher,
+                text = news.publisher,
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.pretendard_regular))
@@ -53,7 +52,7 @@ fun NewsContainer(
             )
             Row(
                 modifier = Modifier
-                    .clickable { onAddClick() },
+                    .clickable { onAddClick(news.publisher) }, //언론사 홈으로
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -76,13 +75,14 @@ fun NewsContainer(
             modifier = Modifier
                 .padding(bottom = 12.dp, start = 28.dp, end = 28.dp)
         ) {
-            articles.take(4).forEachIndexed { index, article ->
-                val isLast = index == articles.take(4).lastIndex
+
+            news.articles.take(4).forEachIndexed { index, article ->
+                val isLast = index == news.articles.take(4).lastIndex
                 NewsItem(
-                    title = article,
-                    url = "",
+                    title = article.title,
+                    url = article.url,
                     isLastArticle = isLast,
-                    onClick = { }
+                    onArticleClick = { onArticleClick(article.url) } //기사 링크로 이동
                 )
             }
         }

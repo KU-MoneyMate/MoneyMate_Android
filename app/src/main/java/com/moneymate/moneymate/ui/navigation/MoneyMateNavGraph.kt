@@ -11,6 +11,8 @@ import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.HomeScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
 import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
+import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
+import com.moneymate.moneymate.ui.finance.screen.NewsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import kotlinx.serialization.json.Json
@@ -88,7 +90,33 @@ fun MoneyMateNavGraph(
         composable(route = Route.Finance.route) {
             FinanceScreen(
                 modifier = modifier,
-                onNewsClick = {}
+                onNewsClick = { navController.navigate(Route.News.route) }
+            )
+        }
+        //경제뉴스 조회 화면
+        composable (
+            route = Route.News.route,
+        ) { NewsScreen(
+                modifier = modifier,
+                onAddClick = { publisher ->
+                    navController.navigate("${Route.NewsPublisherHome.route}/$publisher")
+                },
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        //언론사별 홈 화면
+        composable (
+            route = "${Route.NewsPublisherHome.route}/{publisher}",
+        ) { backStackEntry ->
+            val publisher = backStackEntry.arguments?.getString("publisher") ?: ""
+            NewsPublisherHomeScreen(
+                modifier = modifier,
+                publisher = publisher,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
             )
         }
 

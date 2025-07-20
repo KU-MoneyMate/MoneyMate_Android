@@ -14,9 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,20 +28,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 import com.moneymate.moneymate.ui.finance.component.NewsCategoryButton
-import com.moneymate.moneymate.ui.finance.component.NewsContainer
 import com.moneymate.moneymate.ui.finance.component.NewsItem
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun NewsPublisherHomeScreen(
     modifier: Modifier,
-    navController: NavHostController,
+    publisher : String,
     viewModel: FinanceViewModel = hiltViewModel(),
-    onNavigateBack: () -> Boolean,
+    onNavigateBack: () -> Unit,
 ) {
     val dummyArticle = listOf(
         "20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070",
@@ -121,7 +117,7 @@ fun NewsPublisherHomeScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "한국경제",
+                text = publisher,
                 style = TextStyle(
                     fontFamily = FontFamily(Font(R.font.pretendard_bold)),
                     fontSize = 32.sp,
@@ -173,7 +169,7 @@ fun NewsPublisherHomeScreen(
                     title = article,
                     url = "",
                     isLastArticle = isLast,
-                    onClick = {
+                    onArticleClick = {
                         // TODO
                     }
                 )

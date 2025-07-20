@@ -13,7 +13,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moneymate.moneymate.R
@@ -25,7 +24,7 @@ fun NewsItem(
     title: String,
     url: String,
     isLastArticle: Boolean,
-    onClick: () -> Unit,
+    onArticleClick: (String) -> Unit,
 ) {
     val dividerColor = MoneyMateTheme.colors.lightGray
 
@@ -42,7 +41,7 @@ fun NewsItem(
                     )
                 }
             }
-            .clickable { onClick() }
+            .clickable { onArticleClick(url) } //클릭했을 때 기사 웹뷰로 넘어감
             .padding(vertical = 10.dp)
     ) {
         Text(

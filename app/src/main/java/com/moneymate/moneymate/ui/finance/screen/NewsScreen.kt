@@ -31,19 +31,51 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
+import com.moneymate.moneymate.ui.finance.component.ArticleData
 import com.moneymate.moneymate.ui.finance.component.NewsContainer
+import com.moneymate.moneymate.ui.finance.component.NewsContainerData
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun NewsOverallScreen(
+fun NewsScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     viewModel: FinanceViewModel = hiltViewModel(),
-    onNavigateBack: () -> Boolean,
+    onAddClick : (String) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
-    val dummyNewsSections = listOf(
+    val dummyNewsData = listOf(
+        NewsContainerData("pulisher",
+            listOf(
+                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""),
+                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""),
+                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""),
+                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""))
+        ), NewsContainerData("secondPublisher",
+            listOf(ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ","")
+            )
+        ),
+        NewsContainerData("secondPublisher",
+            listOf(ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ","")
+            )
+        ),
+        NewsContainerData("secondPublisher",
+            listOf(ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
+                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ","")
+            )
+        ),
+    )
+
+/*    val dummyNewsSections = listOf(
         listOf(
             "20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070",
             "지방 집주인 서울 아파트 산다",
@@ -80,7 +112,7 @@ fun NewsOverallScreen(
             "연금 개편안, 당신의 은퇴는?",
             "전세 사기 피해자들 구제책은?"
         )
-    )
+    )*/
 
     Column(
         modifier = Modifier
@@ -130,13 +162,13 @@ fun NewsOverallScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier.weight(1f)
         ) {
-            items(dummyNewsSections) { articles ->
+            items(dummyNewsData) { articles ->
                 NewsContainer(
-                    publisher = "한국경제",
-                    articles = articles,
+                    news = articles,
                     onAddClick = {
-                        // TODO: 웹뷰 이동 처리
-                    }
+                        onAddClick(articles.publisher)
+                    },
+                    onArticleClick = { }
                 )
             }
         }
