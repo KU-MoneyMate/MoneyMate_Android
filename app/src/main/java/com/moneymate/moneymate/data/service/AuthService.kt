@@ -4,6 +4,7 @@ import com.moneymate.moneymate.data.dto.auth.request.IdPhoneCheckRequest
 import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
 import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
+import com.moneymate.moneymate.data.dto.auth.request.TokenReissueRequest
 import com.moneymate.moneymate.data.dto.auth.response.IdPhoneCheckResponse
 import com.moneymate.moneymate.data.dto.auth.response.LoginResponse
 import com.moneymate.moneymate.data.dto.auth.response.PhoneVerificationCodeResponse
@@ -49,7 +50,9 @@ interface AuthService {
         @Body request: LoginRequest
     ): LoginResponse
 
-    // TODO: 토큰재발급 로직
-
+    @POST("user/reissue-token")
+    suspend fun reissueAccessToken(
+        @Body request: TokenReissueRequest
+    ): LoginResponse
 
 }
