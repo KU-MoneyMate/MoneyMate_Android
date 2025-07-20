@@ -87,7 +87,8 @@ fun MoneyMateNavGraph(
         /* 금융 정보 */
         composable(route = Route.Finance.route) {
             FinanceScreen(
-                modifier = modifier
+                modifier = modifier,
+                onNewsClick = {}
             )
         }
 
