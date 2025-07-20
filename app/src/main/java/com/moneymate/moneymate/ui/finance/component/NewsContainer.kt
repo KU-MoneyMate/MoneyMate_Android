@@ -44,7 +44,7 @@ fun NewsContainer(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = news.publisher,
+                text = news.publisher.publisherName,
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.pretendard_regular))
@@ -52,7 +52,7 @@ fun NewsContainer(
             )
             Row(
                 modifier = Modifier
-                    .clickable { onAddClick(news.publisher) }, //언론사 홈으로
+                    .clickable { onAddClick(news.publisher.publisherName) }, //언론사 홈으로
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(

@@ -28,12 +28,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 import com.moneymate.moneymate.ui.finance.component.ArticleData
 import com.moneymate.moneymate.ui.finance.component.NewsContainer
 import com.moneymate.moneymate.ui.finance.component.NewsContainerData
+import com.moneymate.moneymate.ui.finance.component.PublisherProvider
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
@@ -45,74 +45,20 @@ fun NewsScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    val dummyNewsData = listOf(
-        NewsContainerData("pulisher",
-            listOf(
-                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""),
-                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""),
-                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""),
-                ArticleData("20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070", ""))
-        ), NewsContainerData("secondPublisher",
-            listOf(ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ","")
-            )
-        ),
-        NewsContainerData("secondPublisher",
-            listOf(ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ","")
-            )
-        ),
-        NewsContainerData("secondPublisher",
-            listOf(ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",""),
-                ArticleData("부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ","")
-            )
-        ),
-    )
+    val newsList = viewModel.newsList.value
+    val newsGroupedByPublisher = newsList.groupBy { it.publisher }
 
-/*    val dummyNewsSections = listOf(
-        listOf(
-            "20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070",
-            "지방 집주인 서울 아파트 산다",
-            "놀아도 월 198만 원 받는데…",
-            "골프 대신 해외주식? 새로운 트렌드"
-        ),
-        listOf(
-            "청년 투자 심리 위축",
-            "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-            "연금 개편안, 당신의 은퇴는?",
-            "전세 사기 피해자들 구제책은?"
-        ),
-        listOf(
-            "청년 투자 심리 위축",
-            "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-            "연금 개편안, 당신의 은퇴는?",
-            "전세 사기 피해자들 구제책은?"
-        ),
-        listOf(
-            "청년 투자 심리 위축",
-            "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-            "연금 개편안, 당신의 은퇴는?",
-            "전세 사기 피해자들 구제책은?"
-        ),
-        listOf(
-            "청년 투자 심리 위축",
-            "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-            "연금 개편안, 당신의 은퇴는?",
-            "전세 사기 피해자들 구제책은?"
-        ),
-        listOf(
-            "청년 투자 심리 위축",
-            "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-            "연금 개편안, 당신의 은퇴는?",
-            "전세 사기 피해자들 구제책은?"
-        )
-    )*/
+    val newsData = newsGroupedByPublisher.mapNotNull { (publisherCode, articles) ->
+        val publisherData = PublisherProvider.publisherMap[publisherCode]
+        publisherData?.let {
+            NewsContainerData(
+                publisher = it,
+                articles = articles.map { article ->
+                    ArticleData(article.title, article.link)
+                }
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -162,11 +108,11 @@ fun NewsScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier.weight(1f)
         ) {
-            items(dummyNewsData) { articles ->
+            items(newsData) { articles ->
                 NewsContainer(
                     news = articles,
                     onAddClick = {
-                        onAddClick(articles.publisher)
+                        //onAddClick(articles.publisher) TODO 오류 수정
                     },
                     onArticleClick = { }
                 )

@@ -12,7 +12,7 @@ object PublisherProvider {
         ),
         PublisherData(
             "MK",
-            "메일경제",
+            "매일경제",
             "Make Knowledge",
             "",
             listOf("economy", "stock", "realestate", "business")
@@ -60,4 +60,7 @@ object PublisherProvider {
             listOf(" ")
         ),
     )
+
+    //enum - 언론사 이름 매칭에 용이하도록
+    val publisherMap: Map<String, PublisherData> = publisherList.associateBy { it.enum }
 }
