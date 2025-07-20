@@ -42,8 +42,8 @@ class AuthRepository(
             )
         )
         // 로그인 성공 시 토큰 저장
-        tokenManager.saveAccessToken(response.accessToken)
-        tokenManager.saveRefreshToken(response.refreshToken)
+        tokenManager.saveAccessToken(response.data.accessToken)
+        tokenManager.saveRefreshToken(response.data.refreshToken)
         Log.d("AuthRepository", "Access Token: ${tokenManager.getAccessToken().first()}")
         Log.d("AuthRepository", "Refresh Token: ${tokenManager.getRefreshToken().first()}")
     }
