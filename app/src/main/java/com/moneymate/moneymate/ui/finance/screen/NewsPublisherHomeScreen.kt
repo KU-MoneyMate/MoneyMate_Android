@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.finance.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -18,6 +19,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -32,6 +37,9 @@ import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 import com.moneymate.moneymate.ui.finance.component.NewsCategoryButton
 import com.moneymate.moneymate.ui.finance.component.NewsItem
+import com.moneymate.moneymate.ui.finance.component.PublisherData
+import com.moneymate.moneymate.ui.finance.component.PublisherProvider
+import com.moneymate.moneymate.ui.finance.component.PublisherProvider.publisherList
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
@@ -41,140 +49,144 @@ fun NewsPublisherHomeScreen(
     viewModel: FinanceViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
 ) {
-    val dummyArticle = listOf(
-        "20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070",
-        "지방 집주인 서울 아파트 산다",
-        "놀아도 월 198만 원 받는데…",
-        "골프 대신 해외주식? 새로운 트렌드",
-        "청년 투자 심리 위축",
-        "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-        "연금 개편안, 당신의 은퇴는?",
-        "전세 사기 피해자들 구제책은?",
-        "20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070",
-        "지방 집주인 서울 아파트 산다",
-        "놀아도 월 198만 원 받는데…",
-        "골프 대신 해외주식? 새로운 트렌드",
-        "청년 투자 심리 위축",
-        "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-        "연금 개편안, 당신의 은퇴는?",
-        "전세 사기 피해자들 구제책은?",
-        "20년 살던 집 팔아 수십억 벌었다…강남 떠나는 5070",
-        "지방 집주인 서울 아파트 산다",
-        "놀아도 월 198만 원 받는데…",
-        "골프 대신 해외주식? 새로운 트렌드",
-        "청년 투자 심리 위축",
-        "부동산 시장 급변, 어떻게 대응할까ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ",
-        "연금 개편안, 당신의 은퇴는?",
-        "전세 사기 피해자들 구제책은?"
-    )
+    val publisherData = PublisherProvider.publisherList.find { it.enum == publisher }
 
+    val categoryState = remember {
+        publisherData?.category?.toMutableStateList()
+    }
+
+    LaunchedEffect(Unit) {
+        if (!categoryState.isNullOrEmpty()) {
+            val selected = categoryState.firstOrNull { it.isSelected }
+            selected?.let {
+                viewModel.getCategoryNews(publisher, it.categoryName)
+            }
+        }
+    }
+
+    val categoryNews = viewModel.categoryNewsList.value
     val scrollState = rememberScrollState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MoneyMateTheme.colors.white)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+    if (publisherData != null){
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 20.dp)
+                .fillMaxSize()
+                .background(MoneyMateTheme.colors.white)
         ) {
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.CenterStart
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_mypage_arrow),
-                    contentDescription = "뒤로가기",
-                    modifier = Modifier
-                        .rotate(180f)
-                        .clickable { onNavigateBack() }
-                )
+                Box(
+                    modifier = Modifier.weight(1f),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_mypage_arrow),
+                        contentDescription = "뒤로가기",
+                        modifier = Modifier
+                            .rotate(180f)
+                            .clickable { onNavigateBack() }
+                    )
+                }
+                Box(
+                    modifier = Modifier.weight(2f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "경제 뉴스 조회",
+                        color = MoneyMateTheme.colors.darkGray,
+                        style = TextStyle(
+                            fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+                            fontSize = 20.sp
+                        )
+                    )
+                }
+                Box(modifier = Modifier.weight(1f))
             }
-            Box(
-                modifier = Modifier.weight(2f),
-                contentAlignment = Alignment.Center
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+                    .padding(vertical = 33.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "경제 뉴스 조회",
-                    color = MoneyMateTheme.colors.darkGray,
+                    text = publisherData.publisherName,
                     style = TextStyle(
-                        fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
-                        fontSize = 20.sp
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                        fontSize = 32.sp,
+                        color = MoneyMateTheme.colors.black
+                    )
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                Text(
+                    text = publisherData.introduction,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                        color = MoneyMateTheme.colors.black
                     )
                 )
             }
-            Box(modifier = Modifier.weight(1f))
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-                .padding(vertical = 33.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = publisher,
-                style = TextStyle(
-                    fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-                    fontSize = 32.sp,
-                    color = MoneyMateTheme.colors.black
-                )
-            )
-            Spacer(modifier = Modifier.height(14.dp))
-            Text(
-                text = "성공을 부르는 습관",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
-                    color = MoneyMateTheme.colors.black
-                )
-            )
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MoneyMateTheme.colors.white)
-        ) {
-            Spacer(Modifier.width(33.dp))
-            Row (
+            Row(
                 modifier = Modifier
-                    .horizontalScroll(scrollState),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    .fillMaxWidth()
+                    .background(MoneyMateTheme.colors.white)
             ) {
-                NewsCategoryButton("economy", true) { }
-                NewsCategoryButton("stock", false) { }
-                NewsCategoryButton("finance", false) { }
-                NewsCategoryButton("business", false) { }
-            }
-            Spacer(Modifier.width(33.dp))
-        }
+                Spacer(Modifier.width(33.dp))
+                Row (
+                    modifier = Modifier
+                        .horizontalScroll(scrollState),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    if (categoryState != null) {
+                        categoryState.forEachIndexed { index, category ->
+                            NewsCategoryButton(
+                                category = category.categoryName,
+                                isSelected = category.isSelected,
+                                onClick = {
+                                    categoryState.replaceAll { it.copy(isSelected = false) }
+                                    categoryState[index] = category.copy(isSelected = true)
 
-        Spacer(modifier = Modifier.height(17.dp))
+                                    // TODO: 이 지점에서 선택된 카테고리에 따라 API 요청 가능
+                                    viewModel.getCategoryNews(publisher, category.categoryName)
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(horizontal = 28.dp)
-                .weight(1f)
-        ) {
-            items(dummyArticle.size) { index ->
-                val article = dummyArticle[index]
-                val isLast = index == dummyArticle.lastIndex
-
-                NewsItem(
-                    title = article,
-                    url = "",
-                    isLastArticle = isLast,
-                    onArticleClick = {
-                        // TODO
+                                }
+                            )
+                        }
                     }
-                )
+                }
+                Spacer(Modifier.width(33.dp))
             }
-        }
 
+            Spacer(modifier = Modifier.height(17.dp))
+
+            LazyColumn(
+                modifier = Modifier
+                    .padding(horizontal = 28.dp)
+                    .weight(1f)
+            ) {
+                items(categoryNews.size) { index ->
+                    val article = categoryNews[index]
+                    val isLast = index == categoryNews.lastIndex
+
+                    NewsItem(
+                        title = article.title,
+                        url = article.link,
+                        isLastArticle = isLast,
+                        onArticleClick = {
+                            // TODO
+                        }
+                    )
+                }
+            }
+
+        }
     }
+
 }

@@ -33,7 +33,6 @@ fun NewsContainer(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = MoneyMateTheme.colors.white)
-            .height(224.dp)
     ) {
         Row(
             modifier = Modifier
@@ -52,7 +51,7 @@ fun NewsContainer(
             )
             Row(
                 modifier = Modifier
-                    .clickable { onAddClick(news.publisher.publisherName) }, //언론사 홈으로
+                    .clickable { onAddClick(news.publisher.enum) }, //언론사 홈으로
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(

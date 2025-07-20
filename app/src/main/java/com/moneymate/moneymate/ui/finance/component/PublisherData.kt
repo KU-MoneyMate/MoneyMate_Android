@@ -5,5 +5,10 @@ data class PublisherData(
     val publisherName : String,
     val introduction : String,
     val imageUrl : String,
-    val category: List<String>,
+    val category: List<CategoryData>,
+)
+
+data class CategoryData(
+    val categoryName : String,
+    val isSelected : Boolean,
 )

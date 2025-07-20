@@ -112,9 +112,9 @@ fun NewsScreen(
                 NewsContainer(
                     news = articles,
                     onAddClick = {
-                        //onAddClick(articles.publisher) TODO 오류 수정
+                        onAddClick(articles.publisher.enum)
                     },
-                    onArticleClick = { }
+                    onArticleClick = { } //TODO?
                 )
             }
         }

@@ -98,8 +98,8 @@ fun MoneyMateNavGraph(
             route = Route.News.route,
         ) { NewsScreen(
                 modifier = modifier,
-                onAddClick = { publisher ->
-                    navController.navigate("${Route.NewsPublisherHome.route}/$publisher")
+                onAddClick = { enum ->
+                    navController.navigate("${Route.NewsPublisherHome.route}/$enum")
                 },
                 onNavigateBack = {
                     navController.navigateUp()
@@ -108,9 +108,9 @@ fun MoneyMateNavGraph(
         }
         //언론사별 홈 화면
         composable (
-            route = "${Route.NewsPublisherHome.route}/{publisher}",
+            route = "${Route.NewsPublisherHome.route}/{enum}",
         ) { backStackEntry ->
-            val publisher = backStackEntry.arguments?.getString("publisher") ?: ""
+            val publisher = backStackEntry.arguments?.getString("enum") ?: ""
             NewsPublisherHomeScreen(
                 modifier = modifier,
                 publisher = publisher,
