@@ -3,6 +3,7 @@ package com.moneymate.moneymate.di
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.moneymate.moneymate.BuildConfig
 import com.moneymate.moneymate.util.auth.AuthInterceptor
+import com.moneymate.moneymate.util.auth.TokenAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,10 +24,12 @@ object NetworkModule {
     fun providesOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         authInterceptor: AuthInterceptor,
+        tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient =
         OkHttpClient.Builder().apply {
             addInterceptor(loggingInterceptor)
             addInterceptor(authInterceptor)
+            authenticator(tokenAuthenticator)
         }.build()
 
     @Provides

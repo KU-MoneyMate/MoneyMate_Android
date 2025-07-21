@@ -1,5 +1,8 @@
 package com.moneymate.moneymate.ui.finance.screen
 
+import android.annotation.SuppressLint
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,6 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -20,6 +27,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
@@ -71,15 +79,16 @@ fun NewsArticleScreen(
             Box(modifier = Modifier.weight(1f))
         }
 
-        //TODO 웹뷰 자리
-        Text(
-            text = url,
-            color = MoneyMateTheme.colors.darkGray,
-            style = TextStyle(
-                fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
-                fontSize = 20.sp
-            )
+        // WebView 컴포넌트가 들어갈 자리
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                WebView(context).apply {
+                    webViewClient = WebViewClient()
+                    settings.javaScriptEnabled = true
+                    loadUrl(url)
+                }
+            }
         )
-
     }
 }

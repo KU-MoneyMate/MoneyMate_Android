@@ -48,8 +48,4 @@ interface AuthService {
     suspend fun login(
         @Body request: LoginRequest
     ): LoginResponse
-
-    // TODO: 토큰재발급 로직
-
-
 }
