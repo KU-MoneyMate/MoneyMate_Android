@@ -1,6 +1,7 @@
 package com.moneymate.moneymate.ui.finance.screen
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -115,14 +118,31 @@ fun NewsPublisherHomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = publisherData.publisherName,
-                    style = TextStyle(
-                        fontFamily = FontFamily(Font(R.font.pretendard_bold)),
-                        fontSize = 32.sp,
-                        color = MoneyMateTheme.colors.black
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .width(50.dp)
+                            .height(50.dp)
+                            .clip(RoundedCornerShape(20.dp)),
+                        painter = painterResource(publisherData.image),
+                        contentDescription = "publisher logo"
                     )
-                )
+                    Spacer(modifier = Modifier.width(19.dp))
+                    Text(
+                        text = publisherData.publisherName,
+                        style = TextStyle(
+                            fontFamily = FontFamily(Font(R.font.pretendard_bold)),
+                            fontSize = 32.sp,
+                            color = MoneyMateTheme.colors.black
+                        )
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(14.dp))
                 Text(
                     text = publisherData.introduction,
