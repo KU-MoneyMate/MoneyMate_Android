@@ -2,11 +2,14 @@ package com.moneymate.moneymate.data.service
 
 import com.moneymate.moneymate.data.dto.auth.request.IdPhoneCheckRequest
 import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
+import com.moneymate.moneymate.data.dto.auth.request.LogoutRequest
 import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
+import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
 import com.moneymate.moneymate.data.dto.auth.response.IdPhoneCheckResponse
 import com.moneymate.moneymate.data.dto.auth.response.LoginResponse
 import com.moneymate.moneymate.data.dto.auth.response.PhoneVerificationCodeResponse
+import com.moneymate.moneymate.data.dto.auth.response.PhoneVerificationResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -32,20 +35,25 @@ interface AuthService {
     ): IdPhoneCheckResponse
 
     // 전화번호 인증 요청
-    @POST("user/verify/phone-number-request")
+    @POST("user/verify/sms-send")
     suspend fun requestPhoneVerification(
         @Body request: PhoneVerificationCodeRequest
     ): PhoneVerificationCodeResponse
 
-//    // 전화번호 인증
-//    @POST("user/verify/phone-number")
-//    suspend fun verifyPhoneNumber(
-//        @Body request: PhoneVerificationRequest
-//    ): PhoneVerificationResponse
+    // 전화번호 인증
+    @POST("user/verify/sms-request")
+    suspend fun verifyPhoneNumber(
+        @Body request: PhoneVerificationRequest
+    ): PhoneVerificationResponse
 
     // 로그인
     @POST("login")
     suspend fun login(
         @Body request: LoginRequest
     ): LoginResponse
+
+    @POST("logout")
+    suspend fun logout(
+        @Body request: LogoutRequest
+    )
 }
