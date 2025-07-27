@@ -139,4 +139,23 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    // sms 인증 검증
+    fun verifyPhoneNumber(
+        phoneNumber: String,
+        verificationCode: Int,
+        onVerificationSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            // phoneNumber에서 숫자만 추출
+            val cleanPhoneNumber = phoneNumber.replace("-", "")
+            authRepository.verifyPhoneNumber(cleanPhoneNumber, verificationCode)
+                .onSuccess { response ->
+                    Log.d("AuthViewModel", "SMS 인증 검증 성공: ${response.message}")
+                    onVerificationSuccess()
+                }.onFailure {
+                    Log.d("AuthViewModel", "SMS 인증 검증 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
 }

@@ -3,6 +3,7 @@ package com.moneymate.moneymate.data.repository
 import android.util.Log
 import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
 import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
+import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
 import com.moneymate.moneymate.data.dto.auth.response.CheckExistingIdResponse
 import com.moneymate.moneymate.data.service.AuthService
@@ -83,5 +84,21 @@ class AuthRepository(
         response
     }.onFailure {
         Log.d("AuthRepository", "인증번호 요청 실패: ${it.message}")
+    }
+
+    // 인증번호 검증
+    suspend fun verifyPhoneNumber(
+        phoneNumber: String,
+        verifyCode: Int
+    ) = runCatching {
+        val response = authService.verifyPhoneNumber(
+            PhoneVerificationRequest(
+                phoneNumber = phoneNumber,
+                verifyCode = verifyCode
+            )
+        )
+        response
+    }.onFailure {
+        Log.d("AuthRepository", "전화번호 인증 실패: ${it.message}")
     }
 }
