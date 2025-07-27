@@ -14,10 +14,14 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
-): ViewModel() {
+) : ViewModel() {
     // 회원가입 입력 정보들
     private val _signupUserId = MutableStateFlow("")
     val signupUserId: StateFlow<String> = _signupUserId.asStateFlow()
+
+    // ID 중복 확인 상태
+    private val _idCheckStatus = MutableStateFlow<String?>(null)
+    val idCheckStatus: StateFlow<String?> = _idCheckStatus.asStateFlow()
 
     private val _signupPassword = MutableStateFlow("")
     val signupPassword: StateFlow<String> = _signupPassword.asStateFlow()
@@ -96,5 +100,28 @@ class AuthViewModel @Inject constructor(
                 Log.d("AuthViewModel", "로그인 실패: ${it.message.toString()}")
             }
         }
+    }
+
+    // ID 중복 확인
+    fun checkUserId(
+        userId: String,
+    ) {
+        viewModelScope.launch {
+            authRepository.checkUserId(userId)
+                .onSuccess { response ->
+                    _idCheckStatus.value = response.status
+                    Log.d(
+                        "AuthViewModel",
+                        "Id 중복 확인 성공: ${response.status}"
+                    )
+                }.onFailure {
+                    _idCheckStatus.value = "ERROR"
+                    Log.d("AuthViewModel", "ID 중복 확인 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
+    fun clearIdCheckStatus() {
+        _idCheckStatus.value = null
     }
 }
