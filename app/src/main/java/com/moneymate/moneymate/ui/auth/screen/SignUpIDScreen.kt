@@ -2,9 +2,7 @@ package com.moneymate.moneymate.ui.auth.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -27,109 +25,147 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.moneymate.moneymate.ui.theme.defaultMoneyMateTypography
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun SignUpIDScreen(
     modifier: Modifier,
-    viewModel: AuthViewModel,
+    viewModel: AuthViewModel = hiltViewModel(),
     onNext: () -> Unit
 ) {
     var id by rememberSaveable { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val idCheckStatus by viewModel.idCheckStatus.collectAsStateWithLifecycle()
+    var buttonEnabled by rememberSaveable { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MoneyMateTheme.colors.white),
-        verticalArrangement = Arrangement.SpaceBetween
+    LaunchedEffect(idCheckStatus) {
+        when (idCheckStatus) {
+            "Conflict" -> {
+                snackbarHostState.showSnackbar("이미 존재하는 id입니다.")
+                viewModel.clearIdCheckStatus()
+                buttonEnabled = false
+            }
+            "OK" -> {
+                snackbarHostState.showSnackbar("사용 가능한 id입니다.")
+                viewModel.clearIdCheckStatus()
+                buttonEnabled = true
+            }
+            null -> { /* 초기 상태 - 아무 동작 하지 않음 */ }
+            else -> {
+                snackbarHostState.showSnackbar("다시 시도해주세요")
+                viewModel.clearIdCheckStatus()
+                buttonEnabled = false
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 30.dp)
+                .fillMaxSize()
+                .background(color = MoneyMateTheme.colors.white),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.height(75.dp))
-
-            Text(
-                text = "아이디를 입력해주세요",
-                color = MoneyMateTheme.colors.black,
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_bold))
-                )
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = "영문 8자 이상",
-                color = MoneyMateTheme.colors.neutral500,
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_regular))
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 30.dp)
             ) {
-                MoneyMateTextField(
-                    modifier = Modifier.size(250.dp, 48.dp),
-                    text = id,
-                    onValueChange = { id = it },
-                    placeholder = {
+                Spacer(modifier = Modifier.height(75.dp))
+
+                Text(
+                    text = "아이디를 입력해주세요",
+                    color = MoneyMateTheme.colors.black,
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_bold))
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "영문 8자 이상",
+                    color = MoneyMateTheme.colors.neutral500,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.pretendard_regular))
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    MoneyMateTextField(
+                        modifier = Modifier.size(250.dp, 50.dp),
+                        text = id,
+                        onValueChange = { id = it },
+                        placeholder = {
+                            Text(
+                                text = "아이디를 입력해주세요.",
+                                style = MoneyMateTheme.typography.body_01_M_14
+                            )
+                        }
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Button(
+                        onClick = {
+                            viewModel.checkUserId(userId = id)
+                        },
+                        contentPadding = PaddingValues( 10.dp, 0.dp),
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(200.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MoneyMateTheme.colors.deepBlue,
+                            contentColor = MoneyMateTheme.colors.white
+                        )
+                    ) {
                         Text(
-                            text = "아이디를 입력해주세요.",
-                            style = MoneyMateTheme.typography.body_01_M_14
+                            text = "중복확인",
+                            style = MoneyMateTheme.typography.body_02_SB_12,
+                            color = MoneyMateTheme.colors.white
                         )
                     }
-                )
-                Spacer(modifier = Modifier.size(10.dp))
-                Button(
-                    onClick = {
-                        // TODO
-                    },
-                    contentPadding = PaddingValues( 10.dp, 0.dp),
+                }
+            }
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                BottomFullWidthButton(
                     modifier = Modifier
-                        .height(48.dp)
-                        .width(200.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MoneyMateTheme.colors.deepBlue,
-                        contentColor = MoneyMateTheme.colors.white
-                    )
+                        .width(320.dp)
+                        .padding(bottom = 30.dp),
+                    text = "다음",
+                    enabled =  buttonEnabled,
+                    containerColor = if(buttonEnabled) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.neutral300,
+                    contentColor = if(buttonEnabled) Color.White else MoneyMateTheme.colors.neutral500,
                 ) {
-                    Text(
-                        text = "중복확인",
-                        style = MoneyMateTheme.typography.body_02_SB_12,
-                        color = MoneyMateTheme.colors.white
-                    )
+                    viewModel.saveSignupId(
+                        userId = id
+                    ){
+                        onNext()
+                    }
                 }
             }
         }
 
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(30.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            BottomFullWidthButton(
-                containerColor = MoneyMateTheme.colors.deepBlue,
-                contentColor = Color.White,
-                text = "다음",
-                modifier = Modifier
-                    .width(320.dp)
-                    .padding(bottom = 30.dp)
-            ) {
-                viewModel.saveSignupId(
-                    userId = id
-                ){
-                    onNext()
-                }
-            }
-        }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
+        )
     }
 }
 
