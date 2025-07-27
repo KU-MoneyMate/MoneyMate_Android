@@ -6,6 +6,7 @@ import com.moneymate.moneymate.data.dto.auth.request.LogoutRequest
 import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
 import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
+import com.moneymate.moneymate.data.dto.auth.response.CheckExistingIdResponse
 import com.moneymate.moneymate.data.dto.auth.response.IdPhoneCheckResponse
 import com.moneymate.moneymate.data.dto.auth.response.LoginResponse
 import com.moneymate.moneymate.data.dto.auth.response.PhoneVerificationCodeResponse
@@ -14,6 +15,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface AuthService {
     // 회원가입
@@ -23,10 +25,10 @@ interface AuthService {
     )
 
     // id 중복 확인
-    @GET("user/check-id/{id}")
+    @GET("user/check-id")
     suspend fun checkUserId(
-        @Path("id") userId: String
-    ) // TODO: Response 타입 정의 필요
+        @Query("userId") userId: String
+    ): CheckExistingIdResponse
 
     // id-전화번호 일치 검증
     @GET("user/check-id-ph")
@@ -52,6 +54,7 @@ interface AuthService {
         @Body request: LoginRequest
     ): LoginResponse
 
+    // 로그아웃
     @POST("logout")
     suspend fun logout(
         @Body request: LogoutRequest
