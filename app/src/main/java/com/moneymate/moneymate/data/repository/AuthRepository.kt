@@ -2,6 +2,7 @@ package com.moneymate.moneymate.data.repository
 
 import android.util.Log
 import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
+import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
 import com.moneymate.moneymate.data.dto.auth.response.CheckExistingIdResponse
 import com.moneymate.moneymate.data.service.AuthService
@@ -72,5 +73,15 @@ class AuthRepository(
     }.onFailure {
         Log.d("AuthRepository", "ID 중복 확인 네트워크 에러: ${it.message}")
         throw it
+    }
+
+    // 인증번호 요청
+    suspend fun requestPhoneVerification(phoneNumber: String) = runCatching {
+        val response = authService.requestPhoneVerification(
+            PhoneVerificationCodeRequest(phoneNumber)
+        )
+        response
+    }.onFailure {
+        Log.d("AuthRepository", "인증번호 요청 실패: ${it.message}")
     }
 }

@@ -124,6 +124,7 @@ fun SignUpPhoneScreen(
                     .padding(bottom = 30.dp)
             ) {
                 val formattedPhoneNumber = "${phone1}-${phone2}-${phone3}"
+                viewModel.requestPhoneVerification(formattedPhoneNumber)
                 viewModel.saveSignupPhone(formattedPhoneNumber) {
                     onNext()
                 }

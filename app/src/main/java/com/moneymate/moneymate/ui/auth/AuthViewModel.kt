@@ -65,6 +65,10 @@ class AuthViewModel @Inject constructor(
         onSaveSuccess()
     }
 
+    fun clearIdCheckStatus() {
+        _idCheckStatus.value = null
+    }
+
     // 회원가입
     fun registerUser(onSignupSuccess: () -> Unit) {
         viewModelScope.launch {
@@ -121,7 +125,18 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun clearIdCheckStatus() {
-        _idCheckStatus.value = null
+    // sms 인증 요청
+    fun requestPhoneVerification(
+        phoneNumber: String,
+    ) {
+        viewModelScope.launch {
+            authRepository.requestPhoneVerification(phoneNumber)
+                .onSuccess { response ->
+                    Log.d("AuthViewModel", "SMS 인증 요청 성공: ${response.message}")
+                }.onFailure {
+                    Log.d("AuthViewModel", "SMS 인증 요청 실패: ${it.message.toString()}")
+                }
+        }
     }
+
 }
