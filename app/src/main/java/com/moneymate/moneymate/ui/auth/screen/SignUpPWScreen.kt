@@ -38,6 +38,7 @@ import com.moneymate.moneymate.ui.common.BottomFullWidthButton
 import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.moneymate.moneymate.util.auth.isValidPassword
 import kotlinx.coroutines.launch
 
 @Composable
@@ -130,15 +131,19 @@ fun SignUpPWScreen(
                     containerColor = MoneyMateTheme.colors.deepBlue,
                     contentColor = MoneyMateTheme.colors.white,
                 ) {
-                    if (pw == confirmPw) {
+                    if (!pw.isValidPassword()) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("영문, 숫자를 포함하여 8자 이상 입력해주세요")
+                        }
+                    } else if (pw != confirmPw) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("비밀번호가 일치하지 않습니다")
+                        }
+                    } else {
                         viewModel.saveSignupPassword(
                             password = pw
                         ) {
                             onNext()
-                        }
-                    } else {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("비밀번호가 일치하지 않습니다")
                         }
                     }
                 }
@@ -149,7 +154,7 @@ fun SignUpPWScreen(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp)
+                .padding(start = 30.dp, end = 30.dp, bottom = 100.dp)
         )
     }
 }
