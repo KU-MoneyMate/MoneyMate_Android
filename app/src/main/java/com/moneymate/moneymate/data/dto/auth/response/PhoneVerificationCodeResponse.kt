@@ -12,50 +12,50 @@ data class PhoneVerificationCodeResponse(
 
 @Serializable
 data class VerificationData(
-    val kakaoOptions: String,
+    val kakaoOptions: String? = null,
     @SerialName("naverOptions")
-    val naverOptions: String,
+    val naverOptions: String? = null,
     @SerialName("rcsOptions")
-    val rcsOptions: String,
+    val rcsOptions: String? = null,
     @SerialName("type")
-    val type: String,
+    val type: String? = null,
     @SerialName("country")
-    val country: String,
+    val country: String? = null,
     @SerialName("subject")
-    val subject: String,
+    val subject: String? = null,
     @SerialName("imageId")
-    val imageId: String,
+    val imageId: String? = null,
     @SerialName("dateProcessed")
-    val dateProcessed: String,
+    val dateProcessed: String? = null,
     @SerialName("dateReported")
-    val dateReported: String,
+    val dateReported: String? = null,
     @SerialName("dateReceived")
-    val dateReceived: String,
+    val dateReceived: String? = null,
     @SerialName("statusCode")
-    val statusCode: String,
+    val statusCode: String? = null,
     @SerialName("replacement")
-    val replacement: String,
+    val replacement: String? = null,
     @SerialName("autoTypeDetect")
-    val autoTypeDetect: String,
+    val autoTypeDetect: String? = null,
     @SerialName("status")
-    val status: String,
+    val status: String? = null,
     @SerialName("messageId")
-    val messageId: String,
+    val messageId: String? = null,
     @SerialName("groupId")
-    val groupId: String,
+    val groupId: String? = null,
     @SerialName("accountId")
-    val accountId: String,
+    val accountId: String? = null,
     val text: String,
     @SerialName("dateCreated")
-    val dateCreated: String,
+    val dateCreated: String? = null,
     @SerialName("dateUpdated")
-    val dateUpdated: String,
+    val dateUpdated: String? = null,
     @SerialName("to")
-    val to: String, // 수신자
+    val to: String,
     @SerialName("from")
-    val from: String, // 발신자
+    val from: String,
     @SerialName("customFields")
-    val customFields: String,
+    val customFields: String? = null,
     @SerialName("replacements")
-    val replacements:String
+    val replacements: String? = null
 )
