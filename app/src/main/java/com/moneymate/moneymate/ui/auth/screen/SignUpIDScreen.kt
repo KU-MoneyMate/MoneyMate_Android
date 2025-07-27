@@ -27,10 +27,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.moneymate.moneymate.ui.theme.defaultMoneyMateTypography
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.moneymate.moneymate.util.auth.isValidId
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpIDScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
     onNext: () -> Unit
 ) {
@@ -38,30 +40,31 @@ fun SignUpIDScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val idCheckStatus by viewModel.idCheckStatus.collectAsStateWithLifecycle()
     var buttonEnabled by rememberSaveable { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(idCheckStatus) {
         when (idCheckStatus) {
             "Conflict" -> {
+                buttonEnabled = false
                 snackbarHostState.showSnackbar("이미 존재하는 id입니다.")
                 viewModel.clearIdCheckStatus()
-                buttonEnabled = false
             }
             "OK" -> {
+                buttonEnabled = true
                 snackbarHostState.showSnackbar("사용 가능한 id입니다.")
                 viewModel.clearIdCheckStatus()
-                buttonEnabled = true
             }
             null -> { /* 초기 상태 - 아무 동작 하지 않음 */ }
             else -> {
+                buttonEnabled = false
                 snackbarHostState.showSnackbar("다시 시도해주세요")
                 viewModel.clearIdCheckStatus()
-                buttonEnabled = false
             }
         }
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -116,7 +119,14 @@ fun SignUpIDScreen(
                     Spacer(modifier = Modifier.size(10.dp))
                     Button(
                         onClick = {
-                            viewModel.checkUserId(userId = id)
+                            if (id.isValidId()) {
+                                viewModel.checkUserId(userId = id)
+                            } else {
+                                buttonEnabled = false
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("유효한 id를 입력해주세요")
+                                }
+                            }
                         },
                         contentPadding = PaddingValues( 10.dp, 0.dp),
                         modifier = Modifier
@@ -164,7 +174,7 @@ fun SignUpIDScreen(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp)
+                .padding(start = 30.dp, end = 30.dp, bottom = 100.dp)
         )
     }
 }
