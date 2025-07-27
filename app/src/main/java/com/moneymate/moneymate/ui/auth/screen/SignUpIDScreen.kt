@@ -2,6 +2,8 @@ package com.moneymate.moneymate.ui.auth.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -11,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +24,9 @@ import com.moneymate.moneymate.ui.common.BottomFullWidthButton
 import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.moneymate.moneymate.ui.theme.defaultMoneyMateTypography
 
 @Composable
 fun SignUpIDScreen(
@@ -64,17 +70,44 @@ fun SignUpIDScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            MoneyMateTextField(
-                text = id,
-                onValueChange = { id = it },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = {
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MoneyMateTextField(
+                    modifier = Modifier.size(250.dp, 48.dp),
+                    text = id,
+                    onValueChange = { id = it },
+                    placeholder = {
+                        Text(
+                            text = "아이디를 입력해주세요.",
+                            style = MoneyMateTheme.typography.body_01_M_14
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                Button(
+                    onClick = {
+                        // TODO
+                    },
+                    contentPadding = PaddingValues( 10.dp, 0.dp),
+                    modifier = Modifier
+                        .height(48.dp)
+                        .width(200.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MoneyMateTheme.colors.deepBlue,
+                        contentColor = MoneyMateTheme.colors.white
+                    )
+                ) {
                     Text(
-                        text = "아이디를 입력해주세요.",
-                        style = MoneyMateTheme.typography.body_01_M_14
+                        text = "중복확인",
+                        style = MoneyMateTheme.typography.body_02_SB_12,
+                        color = MoneyMateTheme.colors.white
                     )
                 }
-            )
+            }
         }
 
         Column(
@@ -86,7 +119,9 @@ fun SignUpIDScreen(
                 containerColor = MoneyMateTheme.colors.deepBlue,
                 contentColor = Color.White,
                 text = "다음",
-                modifier = Modifier.width(320.dp).padding(bottom = 30.dp)
+                modifier = Modifier
+                    .width(320.dp)
+                    .padding(bottom = 30.dp)
             ) {
                 viewModel.saveSignupId(
                     userId = id
@@ -95,5 +130,17 @@ fun SignUpIDScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun SignupIdScreenPreview() {
+    val viewModel: AuthViewModel = viewModel()
+    SignUpIDScreen(
+        modifier = Modifier,
+        viewModel = viewModel,
+    ) {
+
     }
 }
