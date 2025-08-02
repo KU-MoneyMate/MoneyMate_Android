@@ -51,7 +51,7 @@ fun SignUpNameScreen(
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 30.dp)
+                .padding(horizontal = 20.dp)
         ) {
             Spacer(modifier = Modifier.height(75.dp))
 
@@ -111,8 +111,8 @@ fun SignUpNameScreen(
                 contentColor = Color.White,
                 text = "다음",
                 modifier = Modifier
-                    .width(320.dp)
-                    .padding(bottom = 30.dp)
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, bottom = 30.dp),
             ) {
                 val formattedBirth = "${birth.substring(0, 4)}-${birth.substring(4, 6)}-${birth.substring(6, 8)}"
                 viewModel.saveSignupName(name) {

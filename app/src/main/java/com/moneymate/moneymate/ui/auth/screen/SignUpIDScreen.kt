@@ -74,7 +74,7 @@ fun SignUpIDScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 30.dp)
+                    .padding(horizontal = 20.dp)
             ) {
                 Spacer(modifier = Modifier.height(75.dp))
 
@@ -154,8 +154,8 @@ fun SignUpIDScreen(
             ) {
                 BottomFullWidthButton(
                     modifier = Modifier
-                        .width(320.dp)
-                        .padding(bottom = 30.dp),
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, bottom = 30.dp),
                     text = "다음",
                     enabled =  buttonEnabled,
                     containerColor = if(buttonEnabled) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.neutral300,

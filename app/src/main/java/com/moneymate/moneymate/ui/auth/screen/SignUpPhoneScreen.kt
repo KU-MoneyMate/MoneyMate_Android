@@ -42,7 +42,7 @@ fun SignUpPhoneScreen(
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 30.dp)
+                .padding(horizontal = 20.dp)
         ) {
             Spacer(modifier = Modifier.height(75.dp))
 
@@ -120,8 +120,8 @@ fun SignUpPhoneScreen(
                 contentColor = Color.White,
                 text = "인증번호 전송",
                 modifier = Modifier
-                    .width(320.dp)
-                    .padding(bottom = 30.dp)
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, bottom = 30.dp),
             ) {
                 val formattedPhoneNumber = "${phone1}-${phone2}-${phone3}"
                 viewModel.requestPhoneVerification(formattedPhoneNumber)
