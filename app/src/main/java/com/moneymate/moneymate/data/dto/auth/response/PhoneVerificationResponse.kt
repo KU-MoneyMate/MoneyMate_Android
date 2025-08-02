@@ -22,6 +22,6 @@ data class VerificationResult(
     val verifyCode: Int,
     @SerialName("message")
     val message: String,
-    @SerialName("idVerifyCode")
+    @SerialName("userVerifyCode")
     val idVerifyCode: String,
 )

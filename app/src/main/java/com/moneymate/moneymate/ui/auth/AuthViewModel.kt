@@ -146,9 +146,7 @@ class AuthViewModel @Inject constructor(
         onVerificationSuccess: () -> Unit
     ) {
         viewModelScope.launch {
-            // phoneNumber에서 숫자만 추출
-            val cleanPhoneNumber = phoneNumber.replace("-", "")
-            authRepository.verifyPhoneNumber(cleanPhoneNumber, verificationCode)
+            authRepository.verifyPhoneNumber(phoneNumber, verificationCode)
                 .onSuccess { response ->
                     Log.d("AuthViewModel", "SMS 인증 검증 성공: ${response.message}")
                     onVerificationSuccess()
