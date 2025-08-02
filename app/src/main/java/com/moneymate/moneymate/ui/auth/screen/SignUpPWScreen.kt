@@ -154,7 +154,7 @@ fun SignUpPWScreen(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(start = 30.dp, end = 30.dp, bottom = 100.dp)
+                .padding(start = 20.dp, end = 20.dp, bottom = 100.dp)
         )
     }
 }
