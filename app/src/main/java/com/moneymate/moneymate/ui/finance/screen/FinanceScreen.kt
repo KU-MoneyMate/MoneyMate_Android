@@ -41,17 +41,17 @@ fun FinanceScreen(
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color(0xFFF5F5F5))
-            .padding(16.dp),
+            .padding(vertical = 20.dp, horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
             modifier = Modifier
-                .height(250.dp)
-                .width(360.dp),
+                .fillMaxWidth()
+                .height(250.dp),
             shape = RoundedCornerShape(20.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             colors = CardDefaults.cardColors(

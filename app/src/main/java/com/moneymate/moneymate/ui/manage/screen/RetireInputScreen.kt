@@ -3,6 +3,7 @@ package com.moneymate.moneymate.ui.manage.screen
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -103,11 +104,11 @@ fun RetireInputScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
             .background(MoneyMateTheme.colors.white)
-            .padding(horizontal = 16.dp, vertical = 20.dp)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -183,8 +184,7 @@ fun RetireInputScreen(
         BottomFullWidthButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-                .padding(start = 20.dp, end = 20.dp),
+                .align(Alignment.CenterHorizontally),
             containerColor = MoneyMateTheme.colors.deepBlue,
             contentColor = MoneyMateTheme.colors.white,
             text = "조회하기"
@@ -225,7 +225,7 @@ fun SectionTitle(title: String) {
             fontFamily = FontFamily(Font(R.font.pretendard_medium)),
             fontSize = 18.sp
         ),
-        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp, start = 21.dp)
+        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
     )
 }
 
@@ -242,7 +242,6 @@ fun OutlinedInputField(
         modifier = Modifier
             .padding(vertical = 4.dp)
             .fillMaxWidth()
-            .padding(start = 33.dp, end = 27.dp)
     ) {
         Text(
             text = label,
@@ -311,15 +310,15 @@ fun RowWithTwoInputs(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(vertical = 4.dp)
             .fillMaxWidth()
-            .padding(start = 33.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .weight(1f)
+//                .weight(1f)
         ){
             Text(
                 text = label1,
@@ -351,13 +350,10 @@ fun RowWithTwoInputs(
             )
         }
 
-
-        Spacer(modifier = Modifier.width(17.dp))
-
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .weight(1f)
+//                .weight(1f)
         ){
             Text(
                 text = label2,

@@ -54,14 +54,14 @@ fun LoginScreen(
     var password by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = MoneyMateTheme.colors.white),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column (
             modifier = Modifier
-                .padding(horizontal = 39.dp)
+                .padding(horizontal = 20.dp)
         ){
             Spacer(modifier = Modifier.height(75.dp))
             Text(
@@ -111,7 +111,9 @@ fun LoginScreen(
                 containerColor = MoneyMateTheme.colors.deepBlue,
                 contentColor = Color.White,
                 text = "로그인",
-                modifier = Modifier.width(320.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
             ) {
                 viewModel.login(
                     userId = id,
@@ -125,8 +127,8 @@ fun LoginScreen(
                 contentColor = MoneyMateTheme.colors.deepBlue,
                 text = "회원가입",
                 modifier = Modifier
-                    .width(320.dp)
-                    .padding(bottom = 30.dp)
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, bottom = 30.dp)
                     .border(
                         BorderStroke(1.2.dp, MoneyMateTheme.colors.deepBlue),
                         shape = RoundedCornerShape(8.dp)

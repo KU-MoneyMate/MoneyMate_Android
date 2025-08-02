@@ -41,7 +41,7 @@ fun SignUpVerificationScreen(
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 30.dp)
+                .padding(horizontal = 20.dp)
         ) {
             Spacer(modifier = Modifier.height(75.dp))
 
@@ -107,8 +107,8 @@ fun SignUpVerificationScreen(
                 contentColor = Color.White,
                 text = "회원가입 완료하기",
                 modifier = Modifier
-                    .width(320.dp)
-                    .padding(bottom = 30.dp)
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, bottom = 30.dp),
             ) {
                 viewModel.verifyPhoneNumber(
                     phoneNumber = viewModel.signupPhone.value,
