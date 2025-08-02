@@ -74,7 +74,7 @@ fun AddAssetScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 30.dp)
+                    .padding(horizontal = 20.dp)
                     .background(MoneyMateTheme.colors.white)
             ) {
                 Spacer(modifier = Modifier.size(12.dp))

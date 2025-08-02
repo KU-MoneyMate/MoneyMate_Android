@@ -104,7 +104,7 @@ fun TransactionHistoryScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 30.dp)
+                .padding(horizontal = 20.dp)
                 .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.size(15.dp))

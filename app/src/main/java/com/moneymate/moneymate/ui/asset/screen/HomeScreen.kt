@@ -49,7 +49,7 @@ fun HomeScreen(
 
     Column(modifier = modifier.fillMaxSize()
         .background(MoneyMateTheme.colors.backgroundWhite)
-        .padding(horizontal = 26.dp)
+        .padding(horizontal = 20.dp)
         .verticalScroll(scrollState)
     ) {
         Spacer(modifier = Modifier.size(40.dp))
