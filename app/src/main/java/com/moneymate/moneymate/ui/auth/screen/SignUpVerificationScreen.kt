@@ -1,8 +1,11 @@
 package com.moneymate.moneymate.ui.auth.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,17 +56,45 @@ fun SignUpVerificationScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            MoneyMateTextField(
-                text = verificationCode,
-                onValueChange = { verificationCode = it },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = {
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MoneyMateTextField(
+                    modifier = Modifier.size(250.dp, 50.dp),
+                    text = verificationCode,
+                    onValueChange = { verificationCode = it },
+                    placeholder = {
+                        Text(
+                            text = "아이디를 입력해주세요.",
+                            style = MoneyMateTheme.typography.body_01_M_14
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                Button(
+                    onClick = {
+                        viewModel.requestPhoneVerification(viewModel.signupPhone.value)
+                        Log.d("SignUpVerificationScreen", "인증번호 재전송 요청: ${viewModel.signupPhone.value}")
+                    },
+                    contentPadding = PaddingValues( 10.dp, 0.dp),
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(200.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MoneyMateTheme.colors.deepBlue,
+                        contentColor = MoneyMateTheme.colors.white
+                    )
+                ) {
                     Text(
-                        text = "인증번호",
-                        style = MoneyMateTheme.typography.body_01_M_14
+                        text = "재전송",
+                        style = MoneyMateTheme.typography.body_02_SB_12,
+                        color = MoneyMateTheme.colors.white
                     )
                 }
-            )
+            }
         }
 
         Column(
@@ -79,9 +110,15 @@ fun SignUpVerificationScreen(
                     .width(320.dp)
                     .padding(bottom = 30.dp)
             ) {
-                viewModel.registerUser {
-                    onComplete()
-                }
+                viewModel.verifyPhoneNumber(
+                    phoneNumber = viewModel.signupPhone.value,
+                    verificationCode = verificationCode.toInt(),
+                    onVerificationSuccess = {
+                        viewModel.registerUser {
+                            onComplete()
+                        }
+                    }
+                )
             }
         }
     }

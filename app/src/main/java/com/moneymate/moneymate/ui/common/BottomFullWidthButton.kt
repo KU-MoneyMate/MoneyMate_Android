@@ -24,6 +24,7 @@ fun BottomFullWidthButton(
     containerColor: Color,
     contentColor: Color,
     text: String,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Button(
@@ -35,8 +36,11 @@ fun BottomFullWidthButton(
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
-            contentColor = contentColor
+            contentColor = contentColor,
+            disabledContainerColor = containerColor,
+            disabledContentColor = contentColor
         ),
+        enabled = enabled
     ) {
         Text(
             text = text,
@@ -53,6 +57,13 @@ private fun BottomFullWidthButtonPreview() {
         BottomFullWidthButton(
             containerColor = MoneyMateTheme.colors.deepBlue,
             contentColor = MoneyMateTheme.colors.white,
+            text = "버튼"
+        ) {
+            //onClick 작성
+        }
+        BottomFullWidthButton(
+            containerColor = MoneyMateTheme.colors.neutral300,
+            contentColor = MoneyMateTheme.colors.neutral500,
             text = "버튼"
         ) {
             //onClick 작성

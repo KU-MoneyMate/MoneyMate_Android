@@ -14,10 +14,14 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository
-): ViewModel() {
+) : ViewModel() {
     // 회원가입 입력 정보들
     private val _signupUserId = MutableStateFlow("")
     val signupUserId: StateFlow<String> = _signupUserId.asStateFlow()
+
+    // ID 중복 확인 상태
+    private val _idCheckStatus = MutableStateFlow<String?>(null)
+    val idCheckStatus: StateFlow<String?> = _idCheckStatus.asStateFlow()
 
     private val _signupPassword = MutableStateFlow("")
     val signupPassword: StateFlow<String> = _signupPassword.asStateFlow()
@@ -61,6 +65,10 @@ class AuthViewModel @Inject constructor(
         onSaveSuccess()
     }
 
+    fun clearIdCheckStatus() {
+        _idCheckStatus.value = null
+    }
+
     // 회원가입
     fun registerUser(onSignupSuccess: () -> Unit) {
         viewModelScope.launch {
@@ -97,4 +105,55 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    // ID 중복 확인
+    fun checkUserId(
+        userId: String,
+    ) {
+        viewModelScope.launch {
+            authRepository.checkUserId(userId)
+                .onSuccess { response ->
+                    _idCheckStatus.value = response.status
+                    Log.d(
+                        "AuthViewModel",
+                        "Id 중복 확인 성공: ${response.status}"
+                    )
+                }.onFailure {
+                    _idCheckStatus.value = "ERROR"
+                    Log.d("AuthViewModel", "ID 중복 확인 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
+    // sms 인증 요청
+    fun requestPhoneVerification(
+        phoneNumber: String,
+    ) {
+        viewModelScope.launch {
+            authRepository.requestPhoneVerification(phoneNumber)
+                .onSuccess { response ->
+                    Log.d("AuthViewModel", "SMS 인증 요청 성공: ${response.message}")
+                }.onFailure {
+                    Log.d("AuthViewModel", "SMS 인증 요청 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
+    // sms 인증 검증
+    fun verifyPhoneNumber(
+        phoneNumber: String,
+        verificationCode: Int,
+        onVerificationSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            authRepository.verifyPhoneNumber(phoneNumber, verificationCode)
+                .onSuccess { response ->
+                    Log.d("AuthViewModel", "SMS 인증 검증 성공: ${response.message}")
+                    onVerificationSuccess()
+                }.onFailure {
+                    Log.d("AuthViewModel", "SMS 인증 검증 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
 }

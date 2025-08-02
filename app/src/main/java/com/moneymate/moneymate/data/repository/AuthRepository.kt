@@ -2,10 +2,14 @@ package com.moneymate.moneymate.data.repository
 
 import android.util.Log
 import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
+import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
+import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
+import com.moneymate.moneymate.data.dto.auth.response.CheckExistingIdResponse
 import com.moneymate.moneymate.data.service.AuthService
 import com.moneymate.moneymate.util.auth.TokenManager
 import kotlinx.coroutines.flow.first
+import retrofit2.HttpException
 
 class AuthRepository(
     private val authService: AuthService,
@@ -46,5 +50,55 @@ class AuthRepository(
         tokenManager.saveRefreshToken(response.data.refreshToken)
         Log.d("AuthRepository", "Access Token: ${tokenManager.getAccessToken().first()}")
         Log.d("AuthRepository", "Refresh Token: ${tokenManager.getRefreshToken().first()}")
+    }
+
+    // id 중복 확인
+    suspend fun checkUserId(userId: String) = runCatching {
+        try {
+            val response = authService.checkUserId(userId)
+            Log.d("AuthRepository", "ID 중복 확인 응답: ${response.status}, ${response.message}, ${response.data}")
+            response
+        } catch (e: HttpException) {
+            when (e.code()) {
+                409 -> {
+                    // 409 응답을 정상적으로 처리
+                    CheckExistingIdResponse(
+                        status = "Conflict",
+                        message = "이미 존재하는 ID 입니다",
+                        data = "[409] userId 중복"
+                    )
+                }
+                else -> throw e
+            }
+        }
+    }.onFailure {
+        Log.d("AuthRepository", "ID 중복 확인 네트워크 에러: ${it.message}")
+        throw it
+    }
+
+    // 인증번호 요청
+    suspend fun requestPhoneVerification(phoneNumber: String) = runCatching {
+        val response = authService.requestPhoneVerification(
+            PhoneVerificationCodeRequest(phoneNumber)
+        )
+        response
+    }.onFailure {
+        Log.d("AuthRepository", "인증번호 요청 실패: ${it.message}")
+    }
+
+    // 인증번호 검증
+    suspend fun verifyPhoneNumber(
+        phoneNumber: String,
+        verifyCode: Int
+    ) = runCatching {
+        val response = authService.verifyPhoneNumber(
+            PhoneVerificationRequest(
+                phoneNumber = phoneNumber,
+                verifyCode = verifyCode
+            )
+        )
+        response
+    }.onFailure {
+        Log.d("AuthRepository", "전화번호 인증 실패: ${it.message}")
     }
 }
