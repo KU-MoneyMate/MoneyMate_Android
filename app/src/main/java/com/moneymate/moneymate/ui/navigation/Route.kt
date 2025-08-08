@@ -27,6 +27,7 @@ sealed class Route(val route: String){
     object RetireGraph : Route(route = "retire_graph")
     object RetireInput : Route(route = "myPage/retireInput")
     object RetireResult : Route(route = "myPage/retireResult")
+    object SpendingStatistics : Route(route = "myPage/spendingStatistics")
 
     // 마이페이지
     object MyPage: Route(route = "myPage")

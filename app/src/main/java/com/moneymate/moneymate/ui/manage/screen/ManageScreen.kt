@@ -37,6 +37,7 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 fun ManageScreen(
     modifier: Modifier = Modifier,
     onRetireClick : () -> Unit,
+    onSpendingStatisticsClick : () -> Unit,
     viewModel: ManageViewModel = hiltViewModel()
 ) {
     Column(
@@ -50,5 +51,6 @@ fun ManageScreen(
         MoneyMateMenuButton("노후 설계 시뮬레이션", 67, onRetireClick)
         MoneyMateMenuButton("또래 자산 통계 조회하기", 67, onRetireClick) /*나중에 함수 바꾸기*/
         MoneyMateMenuButton("자산 변동 통계 조회하기", 67, onRetireClick)
+        MoneyMateMenuButton("소비 통계 조회하기", 67, onSpendingStatisticsClick)
     }
 }

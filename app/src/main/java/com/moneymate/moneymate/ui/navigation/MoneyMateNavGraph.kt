@@ -16,6 +16,7 @@ import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
+import com.moneymate.moneymate.ui.manage.screen.SpendingStatisticsScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
@@ -152,10 +153,25 @@ fun MoneyMateNavGraph(
                 modifier = modifier,
                 onRetireClick = {
                     navController.navigate(Route.RetireGraph.route)
+                },
+                onSpendingStatisticsClick = {
+                    navController.navigate(Route.SpendingStatistics.route)
                 }
             )
         }
         retireNavGraph(navController, modifier)
+        //소비통계 조회 화면
+        composable(
+            route = Route.SpendingStatistics.route
+        ) {
+            SpendingStatisticsScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+
+        }
 
         /* 마이페이지 */
         composable(route = Route.MyPage.route) {
