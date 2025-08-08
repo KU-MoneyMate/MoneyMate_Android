@@ -9,6 +9,7 @@ import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.HomeScreen
+import com.moneymate.moneymate.ui.asset.screen.StockHoldingScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
 import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
