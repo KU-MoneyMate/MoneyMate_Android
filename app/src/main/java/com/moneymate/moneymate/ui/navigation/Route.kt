@@ -14,6 +14,7 @@ sealed class Route(val route: String){
     object AddAccount: Route(route = "home/addAccount")
     object AddAsset: Route(route = "home/addAsset")
     object TransactionHistory: Route(route = "home/transactionHistory")
+    object StockHolding : Route(route = "home/stockHolding")
 
     // 금융 정보
     object Finance: Route(route = "finance")
@@ -26,6 +27,7 @@ sealed class Route(val route: String){
     object RetireGraph : Route(route = "retire_graph")
     object RetireInput : Route(route = "myPage/retireInput")
     object RetireResult : Route(route = "myPage/retireResult")
+    object SpendingStatistics : Route(route = "myPage/spendingStatistics")
 
     // 마이페이지
     object MyPage: Route(route = "myPage")

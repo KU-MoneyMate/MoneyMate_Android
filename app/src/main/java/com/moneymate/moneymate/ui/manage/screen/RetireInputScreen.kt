@@ -146,7 +146,7 @@ fun RetireInputScreen(
         Text(
             text = "노후 자금 설계 시뮬레이션입니다.\n아래 입력되어 있는 기본값들을 수정할 수 있습니다.",
             color = Color.Gray,
-            modifier = Modifier.padding(bottom = 24.dp, start = 21.dp),
+            modifier = Modifier.padding(bottom = 24.dp),
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_regular)),
                 fontSize = 16.sp

@@ -16,6 +16,9 @@ val Neutral500 = Color(0xFFA4A4A6)
 
 val DeepBlue = Color(0xFF0E0857)
 
+val stockRed = Color(0xFFFF0000)
+val stockBlue = Color(0xFF0022FF)
+
 @Immutable
 data class MoneyMateColors(
     val white: Color,
@@ -27,6 +30,8 @@ data class MoneyMateColors(
     val neutral300: Color,
     val neutral500: Color,
     val deepBlue: Color,
+    val stockRed : Color,
+    val stockBlue : Color,
 )
 
 val defaultMoneyMateColors = MoneyMateColors(
@@ -39,6 +44,8 @@ val defaultMoneyMateColors = MoneyMateColors(
     neutral300 = Neutral300,
     neutral500 = Neutral500,
     deepBlue = DeepBlue,
+    stockRed = stockRed,
+    stockBlue = stockBlue
 )
 
 val LocalMoneyMateColorsProvider = staticCompositionLocalOf { defaultMoneyMateColors }
