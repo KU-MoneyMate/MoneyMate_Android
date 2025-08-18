@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.data.dto.asset.response.AssetInfo
 import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
+import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.data.repository.AssetRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,9 @@ class AssetViewModel @Inject constructor(
     // 홈 화면에서 조회할 전체 자산 정보
     private val _totalAssets= MutableStateFlow<List<AssetInfo>>(emptyList())
     val totalAssets = _totalAssets.asStateFlow()
+    // 홈 화면에서 조회할 전체 주식 정보
+    private val _totalStocks = MutableStateFlow<List<StockInfo>>(emptyList())
+    val totalStocks = _totalStocks.asStateFlow()
     // 계좌 거래 내역 정보
     private val _transactionInfoHistory = MutableStateFlow<List<TransactionInfo>>(emptyList())
     val transactionHistory = _transactionInfoHistory.asStateFlow()
@@ -30,6 +34,7 @@ class AssetViewModel @Inject constructor(
     init {
         getTotalAccountList()
         getAssetList()
+//        getStockList()
     }
 
     // 전체 계좌 정보 조회
@@ -95,6 +100,19 @@ class AssetViewModel @Inject constructor(
             }.onFailure { response ->
                 response.message?.let { Log.d("AssetViewModel", it) }
             }
+        }
+    }
+
+    fun getStockList(){
+        viewModelScope.launch {
+            assetRepository.getStockList()
+                .onSuccess { response ->
+                    _totalStocks.value = response.data.asset
+                    Log.d("AssetViewModel", response.data.asset.toString())
+                }
+                .onFailure { response ->
+                    response.message?.let { Log.d("AssetViewModel", "주식 조회 실패") }
+                }
         }
     }
 }

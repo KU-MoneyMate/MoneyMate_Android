@@ -42,4 +42,7 @@ class AssetRepository(
             )
         )
     }
+
+    // 주식 조회
+    suspend fun getStockList() = runCatching { assetService.getStockList() }
 }
