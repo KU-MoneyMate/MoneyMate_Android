@@ -44,6 +44,9 @@ fun MoneyMateNavGraph(
                 onAddAssetClick = { assetType ->
                     navController.navigate("${Route.AddAsset.route}/$assetType")
                 },
+                onStockClick = {
+                    navController.navigate(Route.StockHolding.route)
+                },
                 onAccountItemClick = { accountInfo ->
                     val accountInfoJson = Json.encodeToString(accountInfo)
                     navController.navigate("${Route.TransactionHistory.route}/$accountInfoJson")
@@ -85,6 +88,14 @@ fun MoneyMateNavGraph(
             TransactionHistoryScreen(
                 modifier = modifier,
                 accountInfo = accountInfo,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(route = Route.StockHolding.route){
+            StockHoldingScreen(
+                modifier = modifier,
                 onNavigateBack = {
                     navController.navigateUp()
                 }

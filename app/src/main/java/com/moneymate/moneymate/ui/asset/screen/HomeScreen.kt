@@ -16,9 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
+import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.AccountContainer
 import com.moneymate.moneymate.ui.asset.component.AssetContainer
+import com.moneymate.moneymate.ui.asset.component.StockContainer
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
@@ -26,6 +28,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddAccountClick: (String) -> Unit,
     onAddAssetClick: (String) -> Unit,
+    onStockClick: () -> Unit,
     onAccountItemClick: (AccountInfo) -> Unit,
     viewModel: AssetViewModel = hiltViewModel()
 ) {
@@ -33,6 +36,8 @@ fun HomeScreen(
     // 전체 계좌
     val totalAccounts = viewModel.totalAccounts.collectAsStateWithLifecycle().value
     val totalAssets = viewModel.totalAssets.collectAsStateWithLifecycle().value
+    // 전체 주식
+    val totalStocks = viewModel.totalStocks.collectAsStateWithLifecycle().value
 
     LaunchedEffect(Unit) {
         viewModel.getAssetList()
@@ -89,22 +94,23 @@ fun HomeScreen(
             }
         )
         Spacer(modifier = Modifier.size(30.dp))
-        //부동산
-        AssetContainer(
-            name = "부동산",
-            assetList = realEstateList,
-            onAddClick = {
-                onAddAssetClick("부동산")
-            }
-        )
-        Spacer(modifier = Modifier.size(30.dp))
         // 투자
         AssetContainer(
             name = "투자 자산",
-            assetList = investmentList,
+            assetList = totalAssets,
             onAddClick = {
                 onAddAssetClick("투자 자산")
             }
+        )
+        Spacer(modifier = Modifier.size(30.dp))
+        // 주식
+        StockContainer(
+//            stockList = totalStocks,
+            stockList = listOf(
+                StockInfo("키움증권", "테슬라", "TSL", "2", "130000", "30"),
+                StockInfo("삼성증권", "애플", "AAPL", "5", "150000", "-20")
+            ),
+            onNavigateToStockDetail = onStockClick
         )
         Spacer(modifier = Modifier.size(30.dp))
     }
@@ -116,6 +122,7 @@ private fun HomeScreenPreview() {
     HomeScreen(
         onAddAccountClick = {},
         onAddAssetClick = {},
-        onAccountItemClick = {}
+        onAccountItemClick = {},
+        onStockClick = {}
     )
 }
