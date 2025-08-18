@@ -15,6 +15,7 @@ import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
+import com.moneymate.moneymate.ui.manage.screen.AssetStatisticsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
 import com.moneymate.moneymate.ui.manage.screen.SpendingStatisticsScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
@@ -165,6 +166,9 @@ fun MoneyMateNavGraph(
                 onRetireClick = {
                     navController.navigate(Route.RetireGraph.route)
                 },
+                onAssetStatisticsClick = {
+                    navController.navigate(Route.AssetStatistics.route)
+                },
                 onSpendingStatisticsClick = {
                     navController.navigate(Route.SpendingStatistics.route)
                 }
@@ -182,6 +186,15 @@ fun MoneyMateNavGraph(
                 }
             )
 
+        }
+        // 자산 변동 통계 조회 화면
+        composable(route = Route.AssetStatistics.route){
+            AssetStatisticsScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
         }
 
         /* 마이페이지 */
