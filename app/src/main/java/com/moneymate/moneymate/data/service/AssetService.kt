@@ -6,6 +6,7 @@ import com.moneymate.moneymate.data.dto.asset.response.AssetListResponse
 import com.moneymate.moneymate.data.dto.account.response.TransactionHistoryResponse
 import com.moneymate.moneymate.data.dto.asset.request.AssetRegisterRequest
 import com.moneymate.moneymate.data.dto.asset.response.AssetRegisterResponse
+import com.moneymate.moneymate.data.dto.asset.response.StockListResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -30,4 +31,8 @@ interface AssetService {
     suspend fun registerAsset(
         @Body request: AssetRegisterRequest
     ): AssetRegisterResponse
+
+    // 주식 조회
+    @GET("asset/stock")
+    suspend fun getStockList(): StockListResponse
 }

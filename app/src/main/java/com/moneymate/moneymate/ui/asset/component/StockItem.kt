@@ -12,19 +12,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import com.moneymate.moneymate.util.toDecimalFormat
 
 @Composable
-fun AssetItem(
+fun StockItem(
     modifier: Modifier = Modifier,
-    uId: Int,
-    name: String,
-    value: Long
+    stockName: String,
+    ticker: String,
+    stockValue: String,
+    profitRate: String
 ) {
     Box(
         modifier = modifier
@@ -45,29 +48,35 @@ fun AssetItem(
             Column(
                 modifier = Modifier,
             ) {
-                Text(text = name, style = MoneyMateTheme.typography.body_02_R_12)
+                Text(text = stockName+"(${ticker})", style = MoneyMateTheme.typography.body_02_R_12)
                 Text(
-                    text = value.toDecimalFormat()+"원",
+                    text = stockValue.toDouble().toLong().toDecimalFormat()+"원",
                     style = MoneyMateTheme.typography.head_02_B_20
                 )
             }
         }
+        Text(
+            modifier = Modifier
+                .align(Alignment.CenterEnd),
+            text = if(profitRate.startsWith("-")) "$profitRate%" else "+$profitRate%",
+            style = MoneyMateTheme.typography.body_03_M_20,
+            color = when {
+                profitRate.toDouble() == 0.0 -> MoneyMateTheme.colors.black
+                profitRate.startsWith("-") -> MoneyMateTheme.colors.stockBlue
+                else -> MoneyMateTheme.colors.stockRed
+            }
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun AssetItemPreview() {
-    Column {
-        AssetItem(
-            uId = 1,
-            name = "반포 자이",
-            value = 4250000000
-        )
-        AssetItem(
-            uId = 2,
-            name = "엔비디아",
-            value = 100000
-        )
-    }
+private fun StockItemPreview() {
+    StockItem(
+        modifier = Modifier,
+        stockName = "테슬라",
+        ticker = "TSLA",
+        stockValue = "1000000.0",
+        profitRate = "5.0"
+    )
 }
