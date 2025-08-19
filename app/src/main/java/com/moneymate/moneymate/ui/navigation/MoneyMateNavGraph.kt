@@ -43,7 +43,7 @@ fun MoneyMateNavGraph(
                     navController.navigate("${Route.AddAccount.route}/$accountType")
                 },
                 onAddAssetClick = { assetType ->
-                    navController.navigate("${Route.AddAsset.route}/$assetType")
+                    navController.navigate(Route.AddAsset.route)
                 },
                 onStockClick = {
                     navController.navigate(Route.StockHolding.route)
@@ -68,13 +68,9 @@ fun MoneyMateNavGraph(
             )
         }
         // 자산 추가 화면
-        composable(
-            route = "${Route.AddAsset.route}/{assetType}",
-        ) { backStackEntry ->
-            val assetType = backStackEntry.arguments?.getString("assetType") ?: ""
+        composable(route = Route.AddAsset.route,) {
             AddAssetScreen(
                 modifier = modifier,
-                assetType = assetType,
                 onNavigateBack = {
                     navController.navigateUp()
                 }

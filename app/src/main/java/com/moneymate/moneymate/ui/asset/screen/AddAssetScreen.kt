@@ -35,7 +35,6 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun AddAssetScreen(
     modifier: Modifier = Modifier,
-    assetType: String,
     onNavigateBack: () -> Unit,
     viewModel: AssetViewModel = hiltViewModel()
 ) {
@@ -62,7 +61,7 @@ fun AddAssetScreen(
                         )
                         Text(
                             modifier = Modifier.align(Alignment.Center),
-                            text = "$assetType 정보 등록",
+                            text = "투자 자산 정보 등록",
                             style = MoneyMateTheme.typography.head_02_B_20
                         )
                     }
@@ -79,7 +78,7 @@ fun AddAssetScreen(
             ) {
                 Spacer(modifier = Modifier.size(12.dp))
                 Text(
-                    text = "사용자가 보유한 $assetType 정보를 등록합니다.\n${assetType}의 가치와 이름을 입력해주세요.",
+                    text = "사용자가 보유한 투자 자산 정보를 등록합니다.\n투자 자산의 가치와 이름을 입력해주세요.",
                     style = MoneyMateTheme.typography.head_03_R_16
                 )
                 // 은행명
@@ -97,7 +96,7 @@ fun AddAssetScreen(
                     },
                     placeholder = {
                         Text(
-                            text = "등록할 ${assetType}의 이름을 입력해주세요.",
+                            text = "등록할 투자 자산의 이름을 입력해주세요.",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
                     }
@@ -117,7 +116,7 @@ fun AddAssetScreen(
                     },
                     placeholder = {
                         Text(
-                            text = "등록할 ${assetType}의 가치를 입력해주세요.",
+                            text = "등록할 투자 자산의 가치를 입력해주세요.",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
                     }
@@ -133,10 +132,8 @@ fun AddAssetScreen(
             contentColor = MoneyMateTheme.colors.white,
             text = "등록"
         ) {
-            val type = if(assetType == "부동산") "부동산" else "투자"
             viewModel.registerAsset(
                 name = assetName,
-                type = type,
                 price = assetValue.toLong()
             )
             onNavigateBack()
@@ -149,7 +146,6 @@ fun AddAssetScreen(
 private fun AddAssetScreenPreview() {
     AddAssetScreen(
         modifier = Modifier,
-        assetType = "부동산",
         onNavigateBack = {},
     )
 }
