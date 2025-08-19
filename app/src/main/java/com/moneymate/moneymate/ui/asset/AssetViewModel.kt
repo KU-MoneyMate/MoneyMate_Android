@@ -34,7 +34,7 @@ class AssetViewModel @Inject constructor(
     init {
         getTotalAccountList()
         getAssetList()
-//        getStockList()
+        getStockList()
     }
 
     // 전체 계좌 정보 조회
@@ -75,7 +75,7 @@ class AssetViewModel @Inject constructor(
             assetRepository.getAssetList()
                 .onSuccess { response ->
                     _totalAssets.value = response.data.asset
-                    Log.d("AssetViewModel", response.data.asset.toString())
+                    Log.d("AssetViewModel", "자산 조회 성공: ${response.data.asset}")
                 }
                 .onFailure { response ->
                     response.message?.let { Log.d("AssetViewModel", "자산 조회 실패") }
@@ -107,8 +107,8 @@ class AssetViewModel @Inject constructor(
         viewModelScope.launch {
             assetRepository.getStockList()
                 .onSuccess { response ->
-                    _totalStocks.value = response.data.asset
-                    Log.d("AssetViewModel", response.data.asset.toString())
+                    _totalStocks.value = response.data
+                    Log.d("AssetViewModel", response.data.toString())
                 }
                 .onFailure { response ->
                     response.message?.let { Log.d("AssetViewModel", "주식 조회 실패") }

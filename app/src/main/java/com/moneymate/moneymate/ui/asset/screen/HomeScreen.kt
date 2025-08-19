@@ -35,6 +35,7 @@ fun HomeScreen(
     val scrollState = rememberScrollState()
     // 전체 계좌
     val totalAccounts = viewModel.totalAccounts.collectAsStateWithLifecycle().value
+    // 전체 자산
     val totalAssets = viewModel.totalAssets.collectAsStateWithLifecycle().value
     // 전체 주식
     val totalStocks = viewModel.totalStocks.collectAsStateWithLifecycle().value
@@ -48,9 +49,6 @@ fun HomeScreen(
     val depositList = totalAccounts.filter { it.type == "입출금" }
     val savingsList = totalAccounts.filter { it.type == "예적금" }
     val securitiesList = totalAccounts.filter { it.type == "증권" }
-    // 자산별 리스트
-    val realEstateList = totalAssets.filter { it.type == "부동산" }
-    val investmentList = totalAssets.filter { it.type == "투자" }
 
     Column(modifier = modifier.fillMaxSize()
         .background(MoneyMateTheme.colors.backgroundWhite)
@@ -105,11 +103,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.size(30.dp))
         // 주식
         StockContainer(
-//            stockList = totalStocks,
-            stockList = listOf(
-                StockInfo("키움증권", "테슬라", "TSL", "2", "130000", "30"),
-                StockInfo("삼성증권", "애플", "AAPL", "5", "150000", "-20")
-            ),
+            stockList = totalStocks,
             onNavigateToStockDetail = onStockClick
         )
         Spacer(modifier = Modifier.size(30.dp))
