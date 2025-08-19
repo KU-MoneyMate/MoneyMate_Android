@@ -31,13 +31,11 @@ class AssetRepository(
     // 자산 등록
     suspend fun registerAsset(
         name: String,
-        type: String,
         price: Long
     ) = runCatching {
         assetService.registerAsset(
             AssetRegisterRequest(
                 name = name,
-                type = type,
                 price = price,
             )
         )
