@@ -25,8 +25,6 @@ data class AssetInfo(
     val uid: String,
     @SerialName("assetName")
     val name: String,
-    @SerialName("assetType")
-    val type: String,
     @SerialName("assetPrice")
     val price: Long
 )
