@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +32,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
@@ -37,6 +41,7 @@ import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.abs
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StockHoldingScreen(
     modifier: Modifier = Modifier,
@@ -44,76 +49,61 @@ fun StockHoldingScreen(
     onNavigateBack: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val stockList = viewModel.totalStocks.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
             .background(MoneyMateTheme.colors.white)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(bottom = 24.dp)
-                .fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_mypage_arrow),
-                    contentDescription = "뒤로가기",
-                    modifier = Modifier
-                        .rotate(180f)
-                        .clickable { onNavigateBack() }
-                )
-            }
-            Box(
-                modifier = Modifier.weight(2f),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "보유 주식 목록",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = TextStyle(
-                        fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
-                        fontSize = 20.sp
+        TopAppBar(
+            modifier = Modifier,
+            title = {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Icon(
+                        modifier = Modifier
+                            .clickable { onNavigateBack() },
+                        painter = painterResource(id = R.drawable.ic_back),
+                        contentDescription = "back icon"
                     )
-                )
-            }
-            Box(modifier = Modifier.weight(1f))
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "보유 주식 목록",
+                        style = MoneyMateTheme.typography.head_02_B_20
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MoneyMateTheme.colors.white
+            )
+        )
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 30.dp)
+                .verticalScroll(scrollState)
+        ) {
+            // accountName을 기준으로 stockList를 그룹화하여 각 증권사별로 StockCompanyContainer 생성
+            stockList.value
+                .groupBy { it.accountName }
+                .forEach { (accountName, stocks) ->
+                    StockCompanyContainer(
+                        accountName = accountName,
+                        stockList = stocks
+                    )
+                }
         }
-
-//        stockItemContainer("테슬라","TSL", "2", "130000",  "30")
-//        stockItemContainer("테슬라","TSL", "2", "70000",  "-30")
-
-        stockCompanyContainer(
-            accountName = "키움증권",
-            stockList = listOf(
-                StockInfo("키움증권","테슬라","TSL", "2", "130000",  "30"),
-                StockInfo("키움증권","테슬라","TSL", "2", "130000",  "30"),)
-        )
-        stockCompanyContainer(
-            accountName = "삼성증권",
-            stockList = listOf(
-                StockInfo("삼성증권","테슬라","TSL", "2", "70000",  "-30"),
-                StockInfo("삼성증권","테슬라","TSL", "2", "70000",  "-30"),)
-        )
-
     }
 }
 
 @Composable
-fun stockItemContainer(
+fun StockItemContainer(
     //image : Int,
-    stockName : String,
-    ticker : String,
-    quantity : String,
-    totalPrice : String,
-    profitRate : String,
-){
+    stockName: String,
+    ticker: String,
+    quantity: String,
+    totalPrice: String,
+    profitRate: String,
+) {
     val profitAmount = (totalPrice.toDouble() * (1 - 1 / (1 + profitRate.toDouble() / 100)))
     var priceColor = MoneyMateTheme.colors.black
     var profitSign = "."
@@ -126,14 +116,14 @@ fun stockItemContainer(
         profitSign = "-"
     }
 
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(81.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
-    ){
-        Row (
+    ) {
+        Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -144,13 +134,13 @@ fun stockItemContainer(
             )
             Spacer(modifier = Modifier.width(20.dp))
 
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Center
-            ){
+            ) {
                 Text(
-                    text = stockName+"("+ticker+")",
+                    text = "$stockName($ticker)",
                     color = MoneyMateTheme.colors.black,
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.pretendard_bold)),
@@ -159,7 +149,7 @@ fun stockItemContainer(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = quantity+"주",
+                    text = quantity + "주",
                     color = MoneyMateTheme.colors.black,
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
@@ -176,7 +166,8 @@ fun stockItemContainer(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = NumberFormat.getNumberInstance(Locale.US).format(totalPrice.toInt())+"원",
+                text = NumberFormat.getNumberInstance(Locale.US)
+                    .format(totalPrice.toDouble().toLong()) + "원",
                 color = MoneyMateTheme.colors.black,
                 style = TextStyle(
                     fontFamily = FontFamily(Font(R.font.pretendard_bold)),
@@ -187,15 +178,16 @@ fun stockItemContainer(
 
             Row {
                 Text(
-                    text = profitSign+" "+NumberFormat.getNumberInstance(Locale.US).format(abs(profitAmount))+"원 ",
+                    text = profitSign + " " + NumberFormat.getNumberInstance(Locale.US)
+                        .format(abs(profitAmount)) + "원 ",
                     color = priceColor,
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.pretendard_bold)),
                         fontSize = 12.sp
                     )
                 )
-                Text (
-                    text = "("+profitRate+" %)",
+                Text(
+                    text = "($profitRate %)",
                     color = priceColor,
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.pretendard_bold)),
@@ -211,17 +203,17 @@ fun stockItemContainer(
 }
 
 @Composable
-fun stockCompanyContainer(
+fun StockCompanyContainer(
     accountName: String,
     stockList: List<StockInfo>,
-){
+) {
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 30.dp)
     ) {
-        Text (
+        Text(
             text = accountName,
             color = MoneyMateTheme.colors.darkGray,
             style = TextStyle(
@@ -229,8 +221,8 @@ fun stockCompanyContainer(
                 fontSize = 18.sp
             )
         )
-        Spacer (modifier = Modifier.height(8.dp))
-        Spacer (
+        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(1.dp)
@@ -238,7 +230,7 @@ fun stockCompanyContainer(
         )
     }
     stockList.forEach { item ->
-        stockItemContainer(
+        StockItemContainer(
             stockName = item.stockName,
             ticker = item.ticker,
             quantity = item.quantity,
