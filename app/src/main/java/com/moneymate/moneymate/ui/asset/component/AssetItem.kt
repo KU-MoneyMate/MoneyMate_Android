@@ -23,7 +23,6 @@ import com.moneymate.moneymate.util.toDecimalFormat
 fun AssetItem(
     modifier: Modifier = Modifier,
     uId: Int,
-    type: String,
     name: String,
     value: Long
 ) {
@@ -48,7 +47,7 @@ fun AssetItem(
             ) {
                 Text(text = name, style = MoneyMateTheme.typography.body_02_R_12)
                 Text(
-                    text =if (type == "부동산")  (value/10000).toDecimalFormat() + "만원" else value.toDecimalFormat()+"원",
+                    text = value.toDecimalFormat()+"원",
                     style = MoneyMateTheme.typography.head_02_B_20
                 )
             }
@@ -62,13 +61,11 @@ private fun AssetItemPreview() {
     Column {
         AssetItem(
             uId = 1,
-            type = "부동산",
             name = "반포 자이",
             value = 4250000000
         )
         AssetItem(
             uId = 2,
-            type = "투자",
             name = "엔비디아",
             value = 100000
         )

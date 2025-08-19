@@ -86,7 +86,6 @@ fun AssetContainer(
             for(asset in assetList) {
                 AssetItem(
                     uId = 1,
-                    type = asset.type,
                     name = asset.name,
                     value = asset.price
                 )
@@ -113,8 +112,7 @@ private fun AssetContainerPreview() {
                 AssetInfo(
                     uid = "1",
                     name = "반포자이",
-                    type = "부동산",
-                    price = 40000000
+                    price = 4000000000
                 )
             ),
             onAddClick = {}
