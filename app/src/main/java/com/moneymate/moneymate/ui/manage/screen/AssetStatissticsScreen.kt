@@ -24,9 +24,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,14 +37,21 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.manage.ManageViewModel
+import com.moneymate.moneymate.ui.manage.component.AssetStatisticsGraph
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AssetStatisticsScreen(
     modifier: Modifier = Modifier,
+    viewModel: ManageViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
 ) {
     var currentMonth by rememberSaveable { mutableStateOf(LocalDate.now()) }
@@ -50,8 +59,25 @@ fun AssetStatisticsScreen(
     var selectedAssetType by rememberSaveable { mutableStateOf("전체") }
     val scrollState = rememberScrollState()
 
+    // 자산 변동 데이터
+    val assetStatHistory = viewModel.assetStatHistory.collectAsStateWithLifecycle()
+
+    val modelProducer = remember { CartesianChartModelProducer() }
+    LaunchedEffect(Unit) {
+        modelProducer.runTransaction {
+            lineSeries {
+                series(
+                    x = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+                    y = listOf(13, 8, 7, 12, 0, 1, 15, 14, 0, 11, 6, 12, 0, 11, 12, 11)
+                )
+            }
+        }
+    }
+
     Column(
         modifier = modifier
+            .fillMaxSize()
+            .background(MoneyMateTheme.colors.white)
     ) {
         TopAppBar(
             modifier = Modifier,
@@ -263,7 +289,14 @@ fun AssetStatisticsScreen(
                     painter = painterResource(R.drawable.ic_back),
                     contentDescription = "previous month",
                     modifier = Modifier.clickable {
-                        currentMonth = currentMonth.minusMonths(1)
+                        // 데이터의 첫 번째 날짜보다 이전으로는 이동하지 않도록 제한
+                        val firstDate = assetStatHistory.value.firstOrNull()?.let { data ->
+                            val (year, month) = data.date.split("-").map { it.toInt() }
+                            LocalDate.of(year, month, 1)
+                        }
+                        if (firstDate == null || currentMonth.minusMonths(1).isAfter(firstDate.minusDays(1))) {
+                            currentMonth = currentMonth.minusMonths(1)
+                        }
                     }
                 )
                 Text(
@@ -289,12 +322,19 @@ fun AssetStatisticsScreen(
                     modifier = Modifier
                         .rotate(180f)
                         .clickable {
-                            currentMonth = currentMonth.plusMonths(1)
+                            // 현재 날짜 이후로는 이동하지 않도록 제한
+                            if (currentMonth.isBefore(LocalDate.now().withDayOfMonth(1))) {
+                                currentMonth = currentMonth.plusMonths(1)
+                            }
                         }
                 )
             }
             Spacer(modifier = Modifier.size(20.dp))
-            // TODO: 변동 그래프
+            AssetStatisticsGraph(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                modelProducer = modelProducer
+            )
         }
     }
 }
