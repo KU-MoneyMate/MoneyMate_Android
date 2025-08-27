@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.manage.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -63,13 +64,21 @@ fun AssetStatisticsScreen(
     val assetStatHistory = viewModel.assetStatHistory.collectAsStateWithLifecycle()
 
     val modelProducer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(Unit) {
+    LaunchedEffect(assetStatHistory.value) {
         modelProducer.runTransaction {
-            lineSeries {
-                series(
-                    x = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
-                    y = listOf(13, 8, 7, 12, 0, 1, 15, 14, 0, 11, 6, 12, 0, 11, 12, 11)
-                )
+            val data = assetStatHistory.value
+            val x = data.indices.map { it.toDouble() }
+            val y = data.map { item ->
+                item.totalPrice.toDouble()
+            }
+            Log.d("AssetStatisticsScreen", "x: $x")
+            if (data.isNotEmpty()) {
+                lineSeries {
+                    series(
+                        x = x,
+                        y = y
+                    )
+                }
             }
         }
     }
@@ -333,7 +342,8 @@ fun AssetStatisticsScreen(
             AssetStatisticsGraph(
                 modifier = Modifier
                     .fillMaxWidth(),
-                modelProducer = modelProducer
+                modelProducer = modelProducer,
+                dates = assetStatHistory.value.map { it.date }
             )
         }
     }
