@@ -20,11 +20,15 @@ import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
+import com.patrykandpatrick.vico.core.common.data.ExtraStore
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
+import kotlin.math.ceil
+import kotlin.math.floor
 import kotlinx.coroutines.runBlocking
 import java.text.DecimalFormat
 
@@ -50,6 +54,20 @@ class DateAxisValueFormatter(private val dates: List<String>) : CartesianValueFo
 
 private val MarkerValueFormatter = DefaultCartesianMarker.ValueFormatter.default(DecimalFormat("#,###원"))
 
+private const val Y_STEP = 10000.0 // 1만원 단위로 스텝 설정
+
+private val RangeProvider = object : CartesianLayerRangeProvider {
+    override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore): Double {
+        // 최소값을 Y_STEP의 배수로 내리고, 추가로 Y_STEP만큼 더 내림
+        return Y_STEP * (floor(minY / Y_STEP) - 1)
+    }
+
+    override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore): Double {
+        // 최대값을 Y_STEP의 배수로 올림하고, 여유 공간을 더 확보
+        return Y_STEP * (ceil(maxY / Y_STEP) + 1)
+    }
+}
+
 @Composable
 fun AssetStatisticsGraph(
     modifier: Modifier = Modifier,
@@ -65,21 +83,14 @@ fun AssetStatisticsGraph(
                     lineProvider = LineCartesianLayer.LineProvider.series(
                         LineCartesianLayer.rememberLine(
                             fill = LineCartesianLayer.LineFill.single(fill(lineColor)),
-//                            areaFill =
-//                                LineCartesianLayer.AreaFill.single(
-//                                    fill(
-//                                        ShaderProvider.verticalGradient(
-//                                            arrayOf(lineColor.copy(alpha = 0.4f), Color.Transparent)
-//                                        )
-//                                    )
-//                                ),
                             pointProvider =
                                 LineCartesianLayer.PointProvider.single(
                                     LineCartesianLayer.point(rememberShapeComponent(fill(
                                         MoneyMateTheme.colors.deepBlue), CorneredShape.Pill))
                                 ),
                         ),
-                    )
+                    ),
+                    rangeProvider = RangeProvider
                 ),
                 startAxis = VerticalAxis.rememberStart(
                     guideline = null,

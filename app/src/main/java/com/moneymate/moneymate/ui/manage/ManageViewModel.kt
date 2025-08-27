@@ -23,11 +23,11 @@ class ManageViewModel @Inject constructor(
     private val _totalAsset = mutableStateOf<Long?>(null)
     val totalAsset: State<Long?> = _totalAsset
     // 시뮬레이션 결과 전체 응답을 담는 상태
-    val _retireResult = MutableStateFlow<List<Asset>>(emptyList())
+    private val _retireResult = MutableStateFlow<List<Asset>>(emptyList())
     val retireResult = _retireResult.asStateFlow()
 
     // 자산 변동 조회 결과
-    val _assetStatHistory = MutableStateFlow<List<AssetStatHistoryData>>(emptyList())
+    private val _assetStatHistory = MutableStateFlow<List<AssetStatHistoryData>>(emptyList())
     val assetStatHistory = _assetStatHistory.asStateFlow()
 
     init {
