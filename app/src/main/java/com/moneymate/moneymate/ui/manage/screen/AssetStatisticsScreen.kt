@@ -152,7 +152,10 @@ fun AssetStatisticsScreen(
                             containerColor = if (selectedDuration == 1) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
                             contentColor = if (selectedDuration == 1) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
                         ),
-                        onClick = { selectedDuration = 1 },
+                        onClick = { 
+                            selectedDuration = 1
+                            currentMonth = LocalDate.now()
+                        },
                     ) {
                         Text(text = "1년")
                     }
@@ -170,7 +173,10 @@ fun AssetStatisticsScreen(
                             containerColor = if (selectedDuration == 5) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
                             contentColor = if (selectedDuration == 5) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
                         ),
-                        onClick = { selectedDuration = 5 },
+                        onClick = { 
+                            selectedDuration = 5
+                            currentMonth = LocalDate.now()
+                        },
                     ) {
                         Text(text = "5년")
                     }
@@ -188,7 +194,10 @@ fun AssetStatisticsScreen(
                             containerColor = if (selectedDuration == 10) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
                             contentColor = if (selectedDuration == 10) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
                         ),
-                        onClick = { selectedDuration = 10 },
+                        onClick = { 
+                            selectedDuration = 10
+                            currentMonth = LocalDate.now()
+                        },
                     ) {
                         Text(text = "10년")
                     }
@@ -303,25 +312,54 @@ fun AssetStatisticsScreen(
                             val (year, month) = data.date.split("-").map { it.toInt() }
                             LocalDate.of(year, month, 1)
                         }
-                        if (firstDate == null || currentMonth.minusMonths(1).isAfter(firstDate.minusDays(1))) {
-                            currentMonth = currentMonth.minusMonths(1)
+                        
+                        when (selectedDuration) {
+                            1 -> {
+                                // 1년 선택 시 연 단위로 이동하되 첫 날짜 이전으로는 이동 불가
+                                if (firstDate == null || currentMonth.minusYears(1).isAfter(firstDate) || currentMonth.minusYears(1).isEqual(firstDate)) {
+                                    currentMonth = currentMonth.minusYears(1)
+                                }
+                            }
+                            else -> {
+                                // 5년, 10년 선택 시 월 단위로 이동하되 표시 범위의 시작일이 첫 날짜 이전으로는 이동 불가
+                                val monthsToSubtract = if (selectedDuration == 5) 60 else 120
+                                if (firstDate == null || currentMonth.minusMonths(1).minusMonths((monthsToSubtract - 1).toLong()).isAfter(firstDate) || currentMonth.minusMonths(1).minusMonths((monthsToSubtract - 1).toLong()).isEqual(firstDate)) {
+                                    currentMonth = currentMonth.minusMonths(1)
+                                }
+                            }
                         }
                     }
                 )
                 Text(
-                    text = when (selectedDuration) {
-                        1 -> "${currentMonth.year}년"
-                        5 -> "${currentMonth.minusMonths(60).year}년 ${
-                            currentMonth.minusMonths(
-                                60
-                            ).monthValue
-                        }월 ~ ${currentMonth.year}년 ${currentMonth.monthValue}월"
-                        10 -> "${currentMonth.minusMonths(120).year}년 ${
-                            currentMonth.minusMonths(
-                                120
-                            ).monthValue
-                        }월 ~ ${currentMonth.year}년 ${currentMonth.monthValue}월"
-                        else -> "${currentMonth.year}년"
+                    text = run {
+                        val startDate = assetStatHistory.value.firstOrNull()?.let { data ->
+                            val (year, month) = data.date.split("-").map { it.toInt() }
+                            LocalDate.of(year, month, 1)
+                        }
+
+                        when (selectedDuration) {
+                            1 -> {
+                                // 1년 선택 시 - 데이터의 첫 날짜가 현재 표시 연도보다 이후라면 첫 날짜의 연도를 표시
+                                if (startDate != null && startDate.year > currentMonth.year) {
+                                    "${startDate.year}년"
+                                } else {
+                                    "${currentMonth.year}년"
+                                }
+                            }
+                            else -> {
+                                val monthsToSubtract = if (selectedDuration == 5) 60 else 120
+                                
+                                // 시작 날짜 계산 - 데이터의 첫 날짜와 현재 날짜에서 monthsToSubtract를 뺀 날짜 중 더 최근 날짜 선택
+                                val displayStartDate = if (startDate != null) {
+                                    val calculatedStart = currentMonth.minusMonths(monthsToSubtract.toLong())
+                                    if (calculatedStart.isBefore(startDate)) startDate else calculatedStart
+                                } else {
+                                    currentMonth.minusMonths(monthsToSubtract.toLong())
+                                }
+                                
+                                "${displayStartDate.year}년 ${displayStartDate.monthValue}월 ~ ${currentMonth.year}년 ${currentMonth.monthValue}월"
+                            }
+                        }
                     },
                     style = MoneyMateTheme.typography.head_03_SB_16
                 )
@@ -332,8 +370,19 @@ fun AssetStatisticsScreen(
                         .rotate(180f)
                         .clickable {
                             // 현재 날짜 이후로는 이동하지 않도록 제한
-                            if (currentMonth.isBefore(LocalDate.now().withDayOfMonth(1))) {
-                                currentMonth = currentMonth.plusMonths(1)
+                            when (selectedDuration) {
+                                1 -> {
+                                    // 1년 선택 시 연 단위로 이동
+                                    if (currentMonth.plusYears(1).year <= LocalDate.now().year) {
+                                        currentMonth = currentMonth.plusYears(1)
+                                    }
+                                }
+                                else -> {
+                                    // 5년, 10년 선택 시 월 단위로 이동
+                                    if (currentMonth.isBefore(LocalDate.now().withDayOfMonth(1))) {
+                                        currentMonth = currentMonth.plusMonths(1)
+                                    }
+                                }
                             }
                         }
                 )
