@@ -17,4 +17,8 @@ class ManageRepository(
         return manageService.getTotalAssetPrice().data
     }
 
+    // 자산 변동 조회
+    suspend fun getAssetStatsHistory(category: String) = runCatching { 
+        manageService.getAssetStatsHistory(category)
+    }
 }

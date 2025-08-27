@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.manage.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,9 +25,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,14 +38,21 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.manage.ManageViewModel
+import com.moneymate.moneymate.ui.manage.component.AssetStatisticsGraph
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AssetStatisticsScreen(
     modifier: Modifier = Modifier,
+    viewModel: ManageViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
 ) {
     var currentMonth by rememberSaveable { mutableStateOf(LocalDate.now()) }
@@ -50,8 +60,62 @@ fun AssetStatisticsScreen(
     var selectedAssetType by rememberSaveable { mutableStateOf("전체") }
     val scrollState = rememberScrollState()
 
+    // 자산 변동 데이터
+    val assetStatHistory = viewModel.assetStatHistory.collectAsStateWithLifecycle()
+    
+    // 필터링된 데이터를 저장할 상태
+    var filteredData by remember(assetStatHistory.value, selectedDuration, currentMonth) {
+        mutableStateOf(
+            assetStatHistory.value.filter { item ->
+                val itemDate = item.date.split("-").map { it.toInt() }.let { (year, month) ->
+                    LocalDate.of(year, month, 1)
+                }
+                
+                when (selectedDuration) {
+                    1 -> {
+                        // 1년 선택 시: 선택된 연도의 데이터만 표시
+                        itemDate.year == currentMonth.year
+                    }
+                    5, 10 -> {
+                        // 5년, 10년 선택 시: 표시 범위에 해당하는 데이터만 표시
+                        val monthsToSubtract = if (selectedDuration == 5) 60 else 120
+                        val startDate = currentMonth.minusMonths(monthsToSubtract.toLong())
+                        
+                        // startDate부터 currentMonth까지의 데이터만 포함
+                        !itemDate.isBefore(startDate) && !itemDate.isAfter(currentMonth)
+                    }
+                    else -> true
+                }
+            }
+        )
+    }
+
+    val modelProducer = remember { CartesianChartModelProducer() }
+    LaunchedEffect(filteredData) {
+        modelProducer.runTransaction {
+            if (filteredData.isNotEmpty()) {
+                val x = filteredData.indices.map { it.toDouble() }
+                val y = filteredData.map { item ->
+                    item.totalPrice.toDouble()
+                }
+                Log.d("AssetStatisticsScreen", "x: $x")
+                lineSeries {
+                    series(
+                        x = x,
+                        y = y
+                    )
+                }
+            } else {
+                // Clear the chart when there's no data
+                Log.d("AssetStatisticsScreen", "filterData Empty")
+            }
+        }
+    }
+
     Column(
         modifier = modifier
+            .fillMaxSize()
+            .background(MoneyMateTheme.colors.white)
     ) {
         TopAppBar(
             modifier = Modifier,
@@ -117,7 +181,11 @@ fun AssetStatisticsScreen(
                             containerColor = if (selectedDuration == 1) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
                             contentColor = if (selectedDuration == 1) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
                         ),
-                        onClick = { selectedDuration = 1 },
+                        onClick = { 
+                            selectedDuration = 1
+                            currentMonth = LocalDate.now()
+                            Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
+                        },
                     ) {
                         Text(text = "1년")
                     }
@@ -135,7 +203,11 @@ fun AssetStatisticsScreen(
                             containerColor = if (selectedDuration == 5) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
                             contentColor = if (selectedDuration == 5) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
                         ),
-                        onClick = { selectedDuration = 5 },
+                        onClick = { 
+                            selectedDuration = 5
+                            currentMonth = LocalDate.now()
+                            Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
+                        },
                     ) {
                         Text(text = "5년")
                     }
@@ -153,7 +225,11 @@ fun AssetStatisticsScreen(
                             containerColor = if (selectedDuration == 10) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
                             contentColor = if (selectedDuration == 10) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
                         ),
-                        onClick = { selectedDuration = 10 },
+                        onClick = { 
+                            selectedDuration = 10
+                            currentMonth = LocalDate.now()
+                            Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
+                        },
                     ) {
                         Text(text = "10년")
                     }
@@ -263,23 +339,60 @@ fun AssetStatisticsScreen(
                     painter = painterResource(R.drawable.ic_back),
                     contentDescription = "previous month",
                     modifier = Modifier.clickable {
-                        currentMonth = currentMonth.minusMonths(1)
+                        // 데이터의 첫 번째 날짜보다 이전으로는 이동하지 않도록 제한
+                        val firstDate = assetStatHistory.value.firstOrNull()?.let { data ->
+                            val (year, month) = data.date.split("-").map { it.toInt() }
+                            LocalDate.of(year, month, 1)
+                        }
+                        
+                        when (selectedDuration) {
+                            1 -> {
+                                // 1년 선택 시 연 단위로 이동하되 첫 날짜의 연도까지만 이동 가능
+                                if (firstDate == null || currentMonth.minusYears(1).year >= firstDate.year) {
+                                    currentMonth = currentMonth.minusYears(1)
+                                }
+                            }
+                            else -> {
+                                // 5년, 10년 선택 시 월 단위로 이동하되 표시 범위의 시작일이 첫 날짜 이전으로는 이동 불가
+                                val monthsToSubtract = if (selectedDuration == 5) 60 else 120
+                                if (firstDate == null || currentMonth.minusMonths(1).minusMonths((monthsToSubtract - 1).toLong()).isAfter(firstDate) || currentMonth.minusMonths(1).minusMonths((monthsToSubtract - 1).toLong()).isEqual(firstDate)) {
+                                    currentMonth = currentMonth.minusMonths(1)
+                                }
+                            }
+                        }
+                        Log.d("AssetStatisticsScreen", "currentMonth: $currentMonth")
                     }
                 )
                 Text(
-                    text = when (selectedDuration) {
-                        1 -> "${currentMonth.year}년"
-                        5 -> "${currentMonth.minusMonths(60).year}년 ${
-                            currentMonth.minusMonths(
-                                60
-                            ).monthValue
-                        }월 ~ ${currentMonth.year}년 ${currentMonth.monthValue}월"
-                        10 -> "${currentMonth.minusMonths(120).year}년 ${
-                            currentMonth.minusMonths(
-                                120
-                            ).monthValue
-                        }월 ~ ${currentMonth.year}년 ${currentMonth.monthValue}월"
-                        else -> "${currentMonth.year}년"
+                    text = run {
+                        val startDate = assetStatHistory.value.firstOrNull()?.let { data ->
+                            val (year, month) = data.date.split("-").map { it.toInt() }
+                            LocalDate.of(year, month, 1)
+                        }
+
+                        when (selectedDuration) {
+                            1 -> {
+                                // 1년 선택 시 - 데이터의 첫 날짜가 현재 표시 연도보다 이후라면 첫 날짜의 연도를 표시
+                                if (startDate != null && startDate.year > currentMonth.year) {
+                                    "${startDate.year}년"
+                                } else {
+                                    "${currentMonth.year}년"
+                                }
+                            }
+                            else -> {
+                                val monthsToSubtract = if (selectedDuration == 5) 60 else 120
+                                
+                                // 시작 날짜 계산 - 데이터의 첫 날짜와 현재 날짜에서 monthsToSubtract를 뺀 날짜 중 더 최근 날짜 선택
+                                val displayStartDate = if (startDate != null) {
+                                    val calculatedStart = currentMonth.minusMonths(monthsToSubtract.toLong())
+                                    if (calculatedStart.isBefore(startDate)) startDate else calculatedStart
+                                } else {
+                                    currentMonth.minusMonths(monthsToSubtract.toLong())
+                                }
+                                
+                                "${displayStartDate.year}년 ${displayStartDate.monthValue}월 ~ ${currentMonth.year}년 ${currentMonth.monthValue}월"
+                            }
+                        }
                     },
                     style = MoneyMateTheme.typography.head_03_SB_16
                 )
@@ -289,12 +402,32 @@ fun AssetStatisticsScreen(
                     modifier = Modifier
                         .rotate(180f)
                         .clickable {
-                            currentMonth = currentMonth.plusMonths(1)
+                            // 현재 날짜 이후로는 이동하지 않도록 제한
+                            when (selectedDuration) {
+                                1 -> {
+                                    // 1년 선택 시 연 단위로 이동
+                                    if (currentMonth.plusYears(1).year <= LocalDate.now().year) {
+                                        currentMonth = currentMonth.plusYears(1)
+                                    }
+                                }
+                                else -> {
+                                    // 5년, 10년 선택 시 월 단위로 이동
+                                    if (currentMonth.isBefore(LocalDate.now().withDayOfMonth(1))) {
+                                        currentMonth = currentMonth.plusMonths(1)
+                                    }
+                                }
+                            }
+                            Log.d("AssetStatisticsScreen", "currentMonth: $currentMonth")
                         }
                 )
             }
             Spacer(modifier = Modifier.size(20.dp))
-            // TODO: 변동 그래프
+            AssetStatisticsGraph(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                modelProducer = modelProducer,
+                dates = filteredData.map { it.date }
+            )
         }
     }
 }
