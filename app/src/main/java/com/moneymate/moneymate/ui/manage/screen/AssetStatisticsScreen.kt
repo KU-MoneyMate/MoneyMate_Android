@@ -347,8 +347,8 @@ fun AssetStatisticsScreen(
                         
                         when (selectedDuration) {
                             1 -> {
-                                // 1년 선택 시 연 단위로 이동하되 첫 날짜 이전으로는 이동 불가
-                                if (firstDate == null || currentMonth.minusYears(1).isAfter(firstDate) || currentMonth.minusYears(1).isEqual(firstDate)) {
+                                // 1년 선택 시 연 단위로 이동하되 첫 날짜의 연도까지만 이동 가능
+                                if (firstDate == null || currentMonth.minusYears(1).year >= firstDate.year) {
                                     currentMonth = currentMonth.minusYears(1)
                                 }
                             }
