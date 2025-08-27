@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.manage.component
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,11 +35,16 @@ class DateAxisValueFormatter(private val dates: List<String>) : CartesianValueFo
         verticalAxisPosition: Axis.Position.Vertical?,
     ): String {
         val index = value.toInt()
-        if (index < 0 || index >= dates.size) return ""
-        
-        val date = dates[index]
-        val (year, month) = date.split("-").map { it.toInt() }
-        return "${year}/${month.toString().padStart(2, '0')}"
+        return try {
+            if (index < 0 || index >= dates.size) return " "  // Return a space instead of empty string
+            
+            val date = dates[index]
+            val (year, month) = date.split("-").map { it.toInt() }
+            "${year}/${month.toString().padStart(2, '0')}"
+        } catch (e: Exception) {
+            Log.e("DateAxisValueFormatter", "Error formatting date for value: $value", e)
+            ""
+        }
     }
 }
 

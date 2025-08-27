@@ -62,23 +62,52 @@ fun AssetStatisticsScreen(
 
     // 자산 변동 데이터
     val assetStatHistory = viewModel.assetStatHistory.collectAsStateWithLifecycle()
+    
+    // 필터링된 데이터를 저장할 상태
+    var filteredData by remember(assetStatHistory.value, selectedDuration, currentMonth) {
+        mutableStateOf(
+            assetStatHistory.value.filter { item ->
+                val itemDate = item.date.split("-").map { it.toInt() }.let { (year, month) ->
+                    LocalDate.of(year, month, 1)
+                }
+                
+                when (selectedDuration) {
+                    1 -> {
+                        // 1년 선택 시: 선택된 연도의 데이터만 표시
+                        itemDate.year == currentMonth.year
+                    }
+                    5, 10 -> {
+                        // 5년, 10년 선택 시: 표시 범위에 해당하는 데이터만 표시
+                        val monthsToSubtract = if (selectedDuration == 5) 60 else 120
+                        val startDate = currentMonth.minusMonths(monthsToSubtract.toLong())
+                        
+                        // startDate부터 currentMonth까지의 데이터만 포함
+                        !itemDate.isBefore(startDate) && !itemDate.isAfter(currentMonth)
+                    }
+                    else -> true
+                }
+            }
+        )
+    }
 
     val modelProducer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(assetStatHistory.value) {
+    LaunchedEffect(filteredData) {
         modelProducer.runTransaction {
-            val data = assetStatHistory.value
-            val x = data.indices.map { it.toDouble() }
-            val y = data.map { item ->
-                item.totalPrice.toDouble()
-            }
-            Log.d("AssetStatisticsScreen", "x: $x")
-            if (data.isNotEmpty()) {
+            if (filteredData.isNotEmpty()) {
+                val x = filteredData.indices.map { it.toDouble() }
+                val y = filteredData.map { item ->
+                    item.totalPrice.toDouble()
+                }
+                Log.d("AssetStatisticsScreen", "x: $x")
                 lineSeries {
                     series(
                         x = x,
                         y = y
                     )
                 }
+            } else {
+                // Clear the chart when there's no data
+                Log.d("AssetStatisticsScreen", "filterData Empty")
             }
         }
     }
@@ -155,6 +184,7 @@ fun AssetStatisticsScreen(
                         onClick = { 
                             selectedDuration = 1
                             currentMonth = LocalDate.now()
+                            Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
                         },
                     ) {
                         Text(text = "1년")
@@ -176,6 +206,7 @@ fun AssetStatisticsScreen(
                         onClick = { 
                             selectedDuration = 5
                             currentMonth = LocalDate.now()
+                            Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
                         },
                     ) {
                         Text(text = "5년")
@@ -197,6 +228,7 @@ fun AssetStatisticsScreen(
                         onClick = { 
                             selectedDuration = 10
                             currentMonth = LocalDate.now()
+                            Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
                         },
                     ) {
                         Text(text = "10년")
@@ -328,6 +360,7 @@ fun AssetStatisticsScreen(
                                 }
                             }
                         }
+                        Log.d("AssetStatisticsScreen", "currentMonth: $currentMonth")
                     }
                 )
                 Text(
@@ -384,6 +417,7 @@ fun AssetStatisticsScreen(
                                     }
                                 }
                             }
+                            Log.d("AssetStatisticsScreen", "currentMonth: $currentMonth")
                         }
                 )
             }
@@ -392,7 +426,7 @@ fun AssetStatisticsScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 modelProducer = modelProducer,
-                dates = assetStatHistory.value.map { it.date }
+                dates = filteredData.map { it.date }
             )
         }
     }
