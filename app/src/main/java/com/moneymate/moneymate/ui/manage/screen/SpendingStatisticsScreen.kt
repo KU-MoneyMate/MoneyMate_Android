@@ -1,7 +1,6 @@
-package com.moneymate.moneymate.ui.manage.screen
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +12,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -26,7 +29,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.manage.ManageViewModel
+import com.moneymate.moneymate.ui.manage.component.SpendingStatisticsItem
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import java.time.LocalDate
 
 @Composable
 fun SpendingStatisticsScreen(
@@ -36,6 +41,8 @@ fun SpendingStatisticsScreen(
 ){
 
     val scrollState = rememberScrollState()
+
+    var currentMonth by remember { mutableStateOf(LocalDate.now()) }
 
     Column(
         modifier = modifier
@@ -88,5 +95,67 @@ fun SpendingStatisticsScreen(
             )
         )
 
+        //월 선택
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = "previous month",
+                modifier = Modifier.clickable {
+                    currentMonth = currentMonth.minusMonths(1)
+                }
+            )
+            Text(
+                text = "${currentMonth.year}년 ${currentMonth.monthValue}월",
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+                    fontSize = 20.sp
+                )
+            )
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = "next month",
+                modifier = Modifier
+                    .rotate(180f)
+                    .clickable {
+                        currentMonth = currentMonth.plusMonths(1)
+                    }
+            )
+        }
+
+        //도넛차트
+        SpendingStatisticChart(
+            totalAmount = 1234567f, // TODO: API total 바인딩
+            categories = listOf(    // TODO: API 카테고리 바인딩
+                CategoryAmount("식비", 350000f),
+                CategoryAmount("교통", 120000f),
+                CategoryAmount("문화", 90000f),
+                CategoryAmount("쇼핑", 210000f),
+                CategoryAmount("기타", 50000f),
+                CategoryAmount("기타", 50000f),
+                CategoryAmount("기타", 50000f),
+                CategoryAmount("기타", 50000f),
+                CategoryAmount("기타", 50000f),
+            )
+        )
+
+        //카테고리별 소비 금액
+        SpendingStatisticsItem(0, "식비", 29.8, 123456)
+        SpendingStatisticsItem(1, "교통", 21.2, 1234)
+        SpendingStatisticsItem(2, "교통", 21.2, 1234)
+        SpendingStatisticsItem(3, "교통", 21.2, 1234)
+        SpendingStatisticsItem(4, "교통", 21.2, 1234)
+        SpendingStatisticsItem(5, "교통", 21.2, 1234)
+        SpendingStatisticsItem(6, "교통", 21.2, 1234)
+        SpendingStatisticsItem(7, "교통", 21.2, 1234)
+        SpendingStatisticsItem(8, "교통", 21.2, 1234)
+        SpendingStatisticsItem(9, "교통", 21.2, 1234)
+
+
+
     }
 }
+

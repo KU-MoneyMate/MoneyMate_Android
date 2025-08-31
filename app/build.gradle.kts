@@ -83,4 +83,6 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     ksp(libs.hilt.compiler)
     ksp(libs.hilt.manager)
+    //DonutChart
+    implementation("com.github.fracassi-marco:JetChart:1.4.3")
 }

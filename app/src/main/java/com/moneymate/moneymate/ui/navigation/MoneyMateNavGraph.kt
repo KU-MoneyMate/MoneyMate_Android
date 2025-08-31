@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.navigation
 
+import SpendingStatisticsScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -16,7 +17,6 @@ import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
-import com.moneymate.moneymate.ui.manage.screen.SpendingStatisticsScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
