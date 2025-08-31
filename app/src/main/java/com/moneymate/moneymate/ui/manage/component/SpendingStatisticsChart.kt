@@ -41,13 +41,12 @@ fun SpendingStatisticChart(
         modifier = modifier
             .fillMaxWidth()
             .height(300.dp)
-            .padding(top = 33.dp)
+            .padding(top = 33.dp, bottom = 33.dp)
             .rotate(-90f),
         sliceDrawer = FilledSliceDrawer(thickness = 45f)
     )
 }
 
-// 팔레트(필요시 교체해서 사용)
 private val donutColors = listOf(
     Color(0xFF0E0857),
     Color(0xFF1C1970),

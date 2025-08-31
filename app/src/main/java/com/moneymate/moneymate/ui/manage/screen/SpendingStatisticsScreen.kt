@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,8 +44,6 @@ fun SpendingStatisticsScreen(
     onNavigateBack: () -> Unit,
 ){
 
-    val scrollState = rememberScrollState()
-
     var currentMonth by remember { mutableStateOf(LocalDate.now()) }
     LaunchedEffect(currentMonth) {
         viewModel.getSpendingStatistics(currentMonth)
@@ -56,7 +55,6 @@ fun SpendingStatisticsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
             .background(MoneyMateTheme.colors.white)
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
@@ -166,9 +164,14 @@ fun SpendingStatisticsScreen(
             ?: emptyList()
 
         //카테고리별 소비 금액 표시
-        itemList.forEach { (index, name, pair) ->
-            val (percent, amount) = pair
-            SpendingStatisticsItem(index, name, percent, amount)
+        LazyColumn(
+            state = rememberLazyListState(),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(itemList) { (index, name, pair) ->
+                val (percent, amount) = pair
+                SpendingStatisticsItem(index, name, percent, amount)
+            }
         }
     }
 }
