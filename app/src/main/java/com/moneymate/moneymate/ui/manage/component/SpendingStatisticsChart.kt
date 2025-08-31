@@ -17,13 +17,22 @@ fun SpendingStatisticChart(
     categories: List<CategoryAmount>,
     modifier: Modifier = Modifier
 ) {
-    val slices = categories.mapIndexed { i, c ->
+    var slices = categories.mapIndexed { i, c ->
         val color =
             if (i < donutColors.size - 1) donutColors[i]
             else donutColors.last()
         Slice(
             value = c.amount.coerceAtLeast(0f),
             color = color
+        )
+    }
+
+    if (totalAmount.toInt() == 0) {
+        slices = listOf(
+            Slice(
+                value = 1f,
+                color = donutColors.last()
+            )
         )
     }
 

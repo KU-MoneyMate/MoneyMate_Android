@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import java.util.Locale
 
 @Composable
 fun SpendingStatisticsItem(
@@ -32,6 +33,7 @@ fun SpendingStatisticsItem(
     expense : Int
 ){
     var rankIndex = categoryRank
+    val expenseText = String.format(Locale.KOREA, "%,d원", expense)
 
     if (categoryRank > 7) { rankIndex = 7 }
     Row (
@@ -72,7 +74,7 @@ fun SpendingStatisticsItem(
             horizontalAlignment = Alignment.End
         ){
             Text(
-                text = expense.toString()+"원",
+                text = expenseText,
                 style = MoneyMateTheme.typography.head_02_B_20
             )
         }

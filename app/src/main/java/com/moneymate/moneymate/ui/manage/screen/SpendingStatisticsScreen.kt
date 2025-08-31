@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import com.moneymate.moneymate.ui.manage.ManageViewModel
 import com.moneymate.moneymate.ui.manage.component.SpendingStatisticsItem
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import java.time.LocalDate
+import kotlin.math.round
 
 @Composable
 fun SpendingStatisticsScreen(
@@ -44,10 +46,12 @@ fun SpendingStatisticsScreen(
     val scrollState = rememberScrollState()
 
     var currentMonth by remember { mutableStateOf(LocalDate.now()) }
-
     LaunchedEffect(currentMonth) {
         viewModel.getSpendingStatistics(currentMonth)
     }
+
+    val spendingData = viewModel.spendingStat.collectAsState().value
+    val totalAmount = spendingData?.categoryTotals?.values?.sum() ?: 0L
 
     Column(
         modifier = modifier
@@ -131,36 +135,41 @@ fun SpendingStatisticsScreen(
             )
         }
 
+        //그래프에 들어갈 데이터 내림차순 정렬
+        val chartCategories = spendingData
+            ?.categoryTotals
+            ?.filter { it.value > 0 } // 0원 항목 제외
+            ?.entries
+            ?.sortedByDescending { it.value }
+            ?.map { CategoryAmount(it.key, it.value.toFloat()) }
+            ?: emptyList()
+
         //도넛차트
         SpendingStatisticChart(
-            totalAmount = 1234567f, // TODO: API total 바인딩
-            categories = listOf(    // TODO: API 카테고리 바인딩
-                CategoryAmount("식비", 350000f),
-                CategoryAmount("교통", 120000f),
-                CategoryAmount("문화", 90000f),
-                CategoryAmount("쇼핑", 210000f),
-                CategoryAmount("기타", 50000f),
-                CategoryAmount("기타", 50000f),
-                CategoryAmount("기타", 50000f),
-                CategoryAmount("기타", 50000f),
-                CategoryAmount("기타", 50000f),
-            )
+            totalAmount = totalAmount.toFloat(),
+            categories = chartCategories
         )
 
-        //카테고리별 소비 금액
-        SpendingStatisticsItem(0, "식비", 29.8, 123456)
-        SpendingStatisticsItem(1, "교통", 21.2, 1234)
-        SpendingStatisticsItem(2, "교통", 21.2, 1234)
-        SpendingStatisticsItem(3, "교통", 21.2, 1234)
-        SpendingStatisticsItem(4, "교통", 21.2, 1234)
-        SpendingStatisticsItem(5, "교통", 21.2, 1234)
-        SpendingStatisticsItem(6, "교통", 21.2, 1234)
-        SpendingStatisticsItem(7, "교통", 21.2, 1234)
-        SpendingStatisticsItem(8, "교통", 21.2, 1234)
-        SpendingStatisticsItem(9, "교통", 21.2, 1234)
+        //퍼센테이지 계산 (둘째자리에서 반올림)
+        val itemList = spendingData
+            ?.categoryTotals
+            ?.filter { it.value > 0 }
+            ?.entries
+            ?.sortedByDescending { it.value }
+            ?.mapIndexed { index, entry ->
+                val raw = if (totalAmount > 0) {
+                    entry.value.toDouble() * 100.0 / totalAmount.toDouble()
+                } else 0.0
+                val percent = round(raw * 10) / 10.0
+                Triple(index, entry.key, Pair(percent, entry.value.toInt()))
+            }
+            ?: emptyList()
 
-
-
+        //카테고리별 소비 금액 표시
+        itemList.forEach { (index, name, pair) ->
+            val (percent, amount) = pair
+            SpendingStatisticsItem(index, name, percent, amount)
+        }
     }
 }
 
