@@ -31,15 +31,16 @@ class AssetRepository(
     // 자산 등록
     suspend fun registerAsset(
         name: String,
-        type: String,
         price: Long
     ) = runCatching {
         assetService.registerAsset(
             AssetRegisterRequest(
                 name = name,
-                type = type,
                 price = price,
             )
         )
     }
+
+    // 주식 조회
+    suspend fun getStockList() = runCatching { assetService.getStockList() }
 }

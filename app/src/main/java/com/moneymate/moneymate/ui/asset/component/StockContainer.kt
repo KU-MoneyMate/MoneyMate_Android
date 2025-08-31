@@ -21,17 +21,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.moneymate.moneymate.data.dto.asset.response.AssetInfo
+import com.moneymate.moneymate.R
+import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun AssetContainer(
+fun StockContainer(
     modifier: Modifier = Modifier,
-    name: String,
-    assetList: List<AssetInfo>,
-    onAddClick: () -> Unit,
+    stockList : List<StockInfo>,
+    onNavigateToStockDetail : () -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -52,26 +54,22 @@ fun AssetContainer(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = name,
+                    text = "주식",
                     style = MoneyMateTheme.typography.head_02_B_20
                 )
                 Box(
                     modifier = Modifier
                         .size(30.dp)
-                        .border(
-                            width = 1.dp,
-                            color = MoneyMateTheme.colors.deepBlue,
-                            shape = RoundedCornerShape(8.dp)
-                        )
                         .clickable {
-                            onAddClick()
+                            onNavigateToStockDetail()
                         }
                 ) {
                     Icon(
-                        modifier = Modifier.align(Alignment.Center),
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "add",
-                        tint = MoneyMateTheme.colors.deepBlue
+                        modifier = Modifier
+                            .rotate(180f)
+                            .align(Alignment.Center),
+                        painter = painterResource(R.drawable.ic_back),
+                        contentDescription = "arrow",
                     )
                 }
             }
@@ -82,12 +80,13 @@ fun AssetContainer(
                 color = MoneyMateTheme.colors.deepBlue
             )
         }
-        if (assetList.isNotEmpty()){
-            for(asset in assetList) {
-                AssetItem(
-                    uId = 1,
-                    name = asset.name,
-                    value = asset.price
+        if (stockList.isNotEmpty()){
+            for(stock in stockList) {
+                StockItem(
+                    stockName = stock.stockName,
+                    ticker = stock.ticker,
+                    stockValue = stock.totalPrice,
+                    profitRate = stock.profit
                 )
             }
         } else {
@@ -104,18 +103,13 @@ fun AssetContainer(
 
 @Preview(showBackground = true)
 @Composable
-private fun AssetContainerPreview() {
-    Column {
-        AssetContainer(
-            name = "부동산",
-            assetList = listOf(
-                AssetInfo(
-                    uid = "1",
-                    name = "반포자이",
-                    price = 4000000000
-                )
-            ),
-            onAddClick = {}
-        )
-    }
+private fun StockContainerPreview() {
+    val stockList = listOf(
+        StockInfo("키움증권", "테슬라", "TSL", "2", "130000", "30"),
+        StockInfo("삼성증권", "애플", "AAPL", "5", "150000", "-20")
+    )
+    StockContainer(
+        stockList = stockList,
+        onNavigateToStockDetail = {}
+    )
 }

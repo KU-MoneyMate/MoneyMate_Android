@@ -1,0 +1,126 @@
+package com.moneymate.moneymate.ui.manage.component
+
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.layer.point
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
+import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
+import com.patrykandpatrick.vico.core.cartesian.axis.Axis
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
+import com.patrykandpatrick.vico.core.common.data.ExtraStore
+import com.patrykandpatrick.vico.core.common.shape.CorneredShape
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlinx.coroutines.runBlocking
+import java.text.DecimalFormat
+
+class DateAxisValueFormatter(private val dates: List<String>) : CartesianValueFormatter {
+    override fun format(
+        context: CartesianMeasuringContext,
+        value: Double,
+        verticalAxisPosition: Axis.Position.Vertical?,
+    ): String {
+        val index = value.toInt()
+        return try {
+            if (index < 0 || index >= dates.size) return " "  // Return a space instead of empty string
+            
+            val date = dates[index]
+            val (year, month) = date.split("-").map { it.toInt() }
+            "${year}/${month.toString().padStart(2, '0')}"
+        } catch (e: Exception) {
+            Log.e("DateAxisValueFormatter", "Error formatting date for value: $value", e)
+            ""
+        }
+    }
+}
+
+private val MarkerValueFormatter = DefaultCartesianMarker.ValueFormatter.default(DecimalFormat("#,###원"))
+
+private const val Y_STEP = 10000.0 // 1만원 단위로 스텝 설정
+
+private val RangeProvider = object : CartesianLayerRangeProvider {
+    override fun getMinY(minY: Double, maxY: Double, extraStore: ExtraStore): Double {
+        // 최소값을 Y_STEP의 배수로 내리고, 추가로 Y_STEP만큼 더 내림
+        return Y_STEP * (floor(minY / Y_STEP) - 1)
+    }
+
+    override fun getMaxY(minY: Double, maxY: Double, extraStore: ExtraStore): Double {
+        // 최대값을 Y_STEP의 배수로 올림하고, 여유 공간을 더 확보
+        return Y_STEP * (ceil(maxY / Y_STEP) + 1)
+    }
+}
+
+@Composable
+fun AssetStatisticsGraph(
+    modifier: Modifier = Modifier,
+    modelProducer: CartesianChartModelProducer,
+    dates: List<String> = emptyList()  // 날짜 정보를 파라미터로 받음
+) {
+    val lineColor = MoneyMateTheme.colors.deepBlue
+
+    CartesianChartHost(
+        chart =
+            rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    lineProvider = LineCartesianLayer.LineProvider.series(
+                        LineCartesianLayer.rememberLine(
+                            fill = LineCartesianLayer.LineFill.single(fill(lineColor)),
+                            pointProvider =
+                                LineCartesianLayer.PointProvider.single(
+                                    LineCartesianLayer.point(rememberShapeComponent(fill(
+                                        MoneyMateTheme.colors.deepBlue), CorneredShape.Pill))
+                                ),
+                        ),
+                    ),
+                    rangeProvider = RangeProvider
+                ),
+                startAxis = VerticalAxis.rememberStart(
+                    guideline = null,
+                    tick = null,
+                    label = null
+                ),
+                bottomAxis = HorizontalAxis.rememberBottom(
+                    valueFormatter = remember(dates) { DateAxisValueFormatter(dates) },
+                    guideline = null,
+                    labelRotationDegrees = 65f  // 레이블이 겹치지 않도록 45도 회전
+                ),
+                marker = rememberMarker(MarkerValueFormatter)
+            ),
+        modelProducer = modelProducer,
+        modifier = modifier,
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AssetStatisticsGraphPreview() {
+    val modelProducer = remember { CartesianChartModelProducer() }
+    // Use `runBlocking` only for previews, which don’t support asynchronous execution.
+    runBlocking {
+        modelProducer.runTransaction {
+            lineSeries { series(13, 8, 7, 12, 0, 1, 15, 14, 0, 11, 6, 12, 0, 11, 12, 11) }
+        }
+    }
+    AssetStatisticsGraph(
+        modifier = Modifier,
+        modelProducer = modelProducer,
+    )
+}

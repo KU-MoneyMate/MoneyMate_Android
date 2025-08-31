@@ -16,9 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
+import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
 import com.moneymate.moneymate.ui.asset.component.AccountContainer
 import com.moneymate.moneymate.ui.asset.component.AssetContainer
+import com.moneymate.moneymate.ui.asset.component.StockContainer
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
@@ -26,13 +28,17 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddAccountClick: (String) -> Unit,
     onAddAssetClick: (String) -> Unit,
+    onStockClick: () -> Unit,
     onAccountItemClick: (AccountInfo) -> Unit,
     viewModel: AssetViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     // 전체 계좌
     val totalAccounts = viewModel.totalAccounts.collectAsStateWithLifecycle().value
+    // 전체 자산
     val totalAssets = viewModel.totalAssets.collectAsStateWithLifecycle().value
+    // 전체 주식
+    val totalStocks = viewModel.totalStocks.collectAsStateWithLifecycle().value
 
     LaunchedEffect(Unit) {
         viewModel.getAssetList()
@@ -43,9 +49,6 @@ fun HomeScreen(
     val depositList = totalAccounts.filter { it.type == "입출금" }
     val savingsList = totalAccounts.filter { it.type == "예적금" }
     val securitiesList = totalAccounts.filter { it.type == "증권" }
-    // 자산별 리스트
-    val realEstateList = totalAssets.filter { it.type == "부동산" }
-    val investmentList = totalAssets.filter { it.type == "투자" }
 
     Column(modifier = modifier.fillMaxSize()
         .background(MoneyMateTheme.colors.backgroundWhite)
@@ -89,22 +92,19 @@ fun HomeScreen(
             }
         )
         Spacer(modifier = Modifier.size(30.dp))
-        //부동산
-        AssetContainer(
-            name = "부동산",
-            assetList = realEstateList,
-            onAddClick = {
-                onAddAssetClick("부동산")
-            }
-        )
-        Spacer(modifier = Modifier.size(30.dp))
         // 투자
         AssetContainer(
             name = "투자 자산",
-            assetList = investmentList,
+            assetList = totalAssets,
             onAddClick = {
                 onAddAssetClick("투자 자산")
             }
+        )
+        Spacer(modifier = Modifier.size(30.dp))
+        // 주식
+        StockContainer(
+            stockList = totalStocks,
+            onNavigateToStockDetail = onStockClick
         )
         Spacer(modifier = Modifier.size(30.dp))
     }
@@ -116,6 +116,7 @@ private fun HomeScreenPreview() {
     HomeScreen(
         onAddAccountClick = {},
         onAddAssetClick = {},
-        onAccountItemClick = {}
+        onAccountItemClick = {},
+        onStockClick = {}
     )
 }

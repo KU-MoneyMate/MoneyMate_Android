@@ -10,13 +10,7 @@ data class StockListResponse(
     @SerialName("message")
     val message: String,
     @SerialName("data")
-    val data: StockList
-)
-
-@Serializable
-data class StockList(
-    @SerialName("stockList")
-    val asset: List<StockInfo>
+    val data: List<StockInfo>
 )
 
 @Serializable
