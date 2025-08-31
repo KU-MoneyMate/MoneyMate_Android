@@ -2,6 +2,7 @@ package com.moneymate.moneymate.data.repository
 
 import com.moneymate.moneymate.data.dto.manage.request.RetireInputRequest
 import com.moneymate.moneymate.data.dto.manage.response.Asset
+import com.moneymate.moneymate.data.dto.manage.response.SpendingStatsResponse
 import com.moneymate.moneymate.data.service.ManageService
 
 class ManageRepository(
@@ -20,5 +21,10 @@ class ManageRepository(
     // 자산 변동 조회
     suspend fun getAssetStatsHistory(category: String) = runCatching { 
         manageService.getAssetStatsHistory(category)
+    }
+
+    // 소비 통계 조회
+    suspend fun getSpendingStatistics(startDay: String, endDay: String) = runCatching {
+        manageService.getSpendingStatistics(startDay, endDay)
     }
 }

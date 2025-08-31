@@ -8,11 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.manage.request.RetireInputRequest
 import com.moneymate.moneymate.data.dto.manage.response.Asset
 import com.moneymate.moneymate.data.dto.manage.response.AssetStatHistoryData
+import com.moneymate.moneymate.data.dto.manage.response.SpendingStatsData
 import com.moneymate.moneymate.data.repository.ManageRepository
+import com.moneymate.moneymate.util.API_DATE_FMT
+import com.moneymate.moneymate.util.endOfMonth
+import com.moneymate.moneymate.util.startOfMonth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +34,10 @@ class ManageViewModel @Inject constructor(
     // 자산 변동 조회 결과
     private val _assetStatHistory = MutableStateFlow<List<AssetStatHistoryData>>(emptyList())
     val assetStatHistory = _assetStatHistory.asStateFlow()
+
+    // 소비 통계 조회 결과 (raw data 보관)
+    private val _spendingStat = MutableStateFlow<SpendingStatsData?>(null)
+    val spendingStat = _spendingStat.asStateFlow()
 
     init {
         getTotalAsset()
@@ -77,6 +86,23 @@ class ManageViewModel @Inject constructor(
                 }
                 .onFailure { response ->
                     Log.d("ManageViewModel", "자산 변동 조회 실패: ${response.message}")
+                }
+        }
+    }
+
+    // 소비 통계 조회
+    fun getSpendingStatistics(month: LocalDate) {
+        val startDate = month.startOfMonth().format(API_DATE_FMT)
+        val endDate   = month.endOfMonth().format(API_DATE_FMT)
+
+        viewModelScope.launch {
+            manageRepository.getSpendingStatistics(startDate, endDate)
+                .onSuccess { response ->
+                    Log.d("ManageViewModel", "소비 통계 조회 성공: ${response.data.startDate} ~ ${response.data.endDate}")
+                    _spendingStat.value = response.data
+                }
+                .onFailure { t ->
+                    Log.d("ManageViewModel", "소비 통계 조회 실패: ${t.message}")
                 }
         }
     }

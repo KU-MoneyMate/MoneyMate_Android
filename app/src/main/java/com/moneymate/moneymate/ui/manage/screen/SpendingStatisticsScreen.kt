@@ -1,18 +1,24 @@
-package com.moneymate.moneymate.ui.manage.screen
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -26,7 +32,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.manage.ManageViewModel
+import com.moneymate.moneymate.ui.manage.component.SpendingStatisticsItem
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import java.time.LocalDate
+import kotlin.math.round
 
 @Composable
 fun SpendingStatisticsScreen(
@@ -35,12 +44,17 @@ fun SpendingStatisticsScreen(
     onNavigateBack: () -> Unit,
 ){
 
-    val scrollState = rememberScrollState()
+    var currentMonth by remember { mutableStateOf(LocalDate.now()) }
+    LaunchedEffect(currentMonth) {
+        viewModel.getSpendingStatistics(currentMonth)
+    }
+
+    val spendingData = viewModel.spendingStat.collectAsState().value
+    val totalAmount = spendingData?.categoryTotals?.values?.sum() ?: 0L
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
             .background(MoneyMateTheme.colors.white)
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
@@ -88,5 +102,77 @@ fun SpendingStatisticsScreen(
             )
         )
 
+        //월 선택
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = "previous month",
+                modifier = Modifier.clickable {
+                    currentMonth = currentMonth.minusMonths(1)
+                }
+            )
+            Text(
+                text = "${currentMonth.year}년 ${currentMonth.monthValue}월",
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+                    fontSize = 20.sp
+                )
+            )
+            Icon(
+                painter = painterResource(R.drawable.ic_back),
+                contentDescription = "next month",
+                modifier = Modifier
+                    .rotate(180f)
+                    .clickable {
+                        currentMonth = currentMonth.plusMonths(1)
+                    }
+            )
+        }
+
+        //그래프에 들어갈 데이터 내림차순 정렬
+        val chartCategories = spendingData
+            ?.categoryTotals
+            ?.filter { it.value > 0 } // 0원 항목 제외
+            ?.entries
+            ?.sortedByDescending { it.value }
+            ?.map { CategoryAmount(it.key, it.value.toFloat()) }
+            ?: emptyList()
+
+        //도넛차트
+        SpendingStatisticChart(
+            totalAmount = totalAmount.toFloat(),
+            categories = chartCategories
+        )
+
+        //퍼센테이지 계산 (둘째자리에서 반올림)
+        val itemList = spendingData
+            ?.categoryTotals
+            ?.filter { it.value > 0 }
+            ?.entries
+            ?.sortedByDescending { it.value }
+            ?.mapIndexed { index, entry ->
+                val raw = if (totalAmount > 0) {
+                    entry.value.toDouble() * 100.0 / totalAmount.toDouble()
+                } else 0.0
+                val percent = round(raw * 10) / 10.0
+                Triple(index, entry.key, Pair(percent, entry.value.toInt()))
+            }
+            ?: emptyList()
+
+        //카테고리별 소비 금액 표시
+        LazyColumn(
+            state = rememberLazyListState(),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(itemList) { (index, name, pair) ->
+                val (percent, amount) = pair
+                SpendingStatisticsItem(index, name, percent, amount)
+            }
+        }
     }
 }
+

@@ -3,6 +3,7 @@ package com.moneymate.moneymate.data.service
 import com.moneymate.moneymate.data.dto.manage.response.AssetStatHistoryResponse
 import com.moneymate.moneymate.data.dto.manage.request.RetireInputRequest
 import com.moneymate.moneymate.data.dto.manage.response.Asset
+import com.moneymate.moneymate.data.dto.manage.response.SpendingStatsResponse
 import com.moneymate.moneymate.data.dto.manage.response.TotalAssetResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,4 +26,11 @@ interface ManageService {
     suspend fun getAssetStatsHistory(
         @Query("category") category: String
     ): AssetStatHistoryResponse
+
+    // 소비 통계 조회
+    @GET("asset/stats/consumption")
+    suspend fun getSpendingStatistics(
+        @Query("startDay") startDay : String,
+        @Query("endDay") endDay : String
+    ) : SpendingStatsResponse
 }
