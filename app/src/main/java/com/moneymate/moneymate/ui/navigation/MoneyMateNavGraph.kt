@@ -31,7 +31,7 @@ fun MoneyMateNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "authGraph"
+        startDestination = Route.AuthGraph.route
     ) {
         /* 인증/인가 */
         authNavGraph(navController, modifier)
