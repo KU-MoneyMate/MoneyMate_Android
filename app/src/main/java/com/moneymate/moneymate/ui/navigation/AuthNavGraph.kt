@@ -21,7 +21,7 @@ fun NavGraphBuilder.authNavGraph(
 ) {
     navigation(
         startDestination = Route.Login.route,
-        route = "authGraph"
+        route = Route.AuthGraph.route
     ) {
         composable(route = Route.Login.route) {
             LoginScreen(
@@ -37,7 +37,7 @@ fun NavGraphBuilder.authNavGraph(
 
         composable(route = Route.SignUpID.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry("authGraph")
+                navController.getBackStackEntry(Route.AuthGraph.route)
             }
             val authViewModel = hiltViewModel<AuthViewModel>(parentEntry)
             
@@ -52,7 +52,7 @@ fun NavGraphBuilder.authNavGraph(
 
         composable(route = Route.SignUpPW.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry("authGraph")
+                navController.getBackStackEntry(Route.AuthGraph.route)
             }
             val authViewModel = hiltViewModel<AuthViewModel>(parentEntry)
             
@@ -67,7 +67,7 @@ fun NavGraphBuilder.authNavGraph(
 
         composable(route = Route.SignUpName.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry("authGraph")
+                navController.getBackStackEntry(Route.AuthGraph.route)
             }
             val authViewModel = hiltViewModel<AuthViewModel>(parentEntry)
             
@@ -82,7 +82,7 @@ fun NavGraphBuilder.authNavGraph(
 
         composable(route = Route.SignUpPhone.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry("authGraph")
+                navController.getBackStackEntry(Route.AuthGraph.route)
             }
             val authViewModel = hiltViewModel<AuthViewModel>(parentEntry)
             
@@ -97,7 +97,7 @@ fun NavGraphBuilder.authNavGraph(
 
         composable(route = Route.SignUpVerification.route) { backStackEntry ->
             val parentEntry = remember(backStackEntry) {
-                navController.getBackStackEntry("authGraph")
+                navController.getBackStackEntry(Route.AuthGraph.route)
             }
             val authViewModel = hiltViewModel<AuthViewModel>(parentEntry)
             

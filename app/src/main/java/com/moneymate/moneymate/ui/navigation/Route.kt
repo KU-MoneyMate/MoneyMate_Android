@@ -2,6 +2,7 @@ package com.moneymate.moneymate.ui.navigation
 
 sealed class Route(val route: String){
     //로그인, 회원가입
+    object AuthGraph: Route(route = "authGraph")
     object Login : Route(route = "login")
     object SignUpID : Route(route = "signUpID")
     object SignUpPW : Route(route = "signUpPW")
@@ -24,9 +25,9 @@ sealed class Route(val route: String){
 
     // 자산 관리
     object Manage: Route(route = "manage")
-    object RetireGraph : Route(route = "retire_graph")
-    object RetireInput : Route(route = "myPage/retireInput")
-    object RetireResult : Route(route = "myPage/retireResult")
+    object RetireGraph : Route(route = "retireGraph")
+    object RetireInput : Route(route = "retireGraph/input")
+    object RetireResult : Route(route = "retireGraph/result")
     object PeerAssetStatistics: Route(route = "myPage/peerAssetStatistics")
     object AssetStatistics : Route(route = "myPage/assetStatistics")
     object SpendingStatistics : Route(route = "myPage/spendingStatistics")
