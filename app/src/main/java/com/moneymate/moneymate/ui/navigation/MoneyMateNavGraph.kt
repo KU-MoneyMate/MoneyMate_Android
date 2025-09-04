@@ -18,6 +18,7 @@ import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
 import com.moneymate.moneymate.ui.manage.screen.AssetStatisticsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
+import com.moneymate.moneymate.ui.manage.screen.PeerAssetStatisticsScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
@@ -162,6 +163,9 @@ fun MoneyMateNavGraph(
                 onRetireClick = {
                     navController.navigate(Route.RetireGraph.route)
                 },
+                onPeerAssetStatisticsClick = {
+                    navController.navigate(Route.PeerAssetStatistics.route)
+                },
                 onAssetStatisticsClick = {
                     navController.navigate(Route.AssetStatistics.route)
                 },
@@ -171,7 +175,7 @@ fun MoneyMateNavGraph(
             )
         }
         retireNavGraph(navController, modifier)
-        //소비통계 조회 화면
+        // 소비통계 조회 화면
         composable(
             route = Route.SpendingStatistics.route
         ) {
@@ -182,6 +186,15 @@ fun MoneyMateNavGraph(
                 }
             )
 
+        }
+        // 또래 자산 통계 조회 화면
+        composable(route = Route.PeerAssetStatistics.route){
+            PeerAssetStatisticsScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
         }
         // 자산 변동 통계 조회 화면
         composable(route = Route.AssetStatistics.route){
