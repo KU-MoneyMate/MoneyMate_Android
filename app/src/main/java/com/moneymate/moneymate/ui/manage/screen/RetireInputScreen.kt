@@ -1,6 +1,7 @@
 package com.moneymate.moneymate.ui.manage.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,29 +50,21 @@ import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import com.moneymate.moneymate.util.toDecimalFormat
 
-@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun RetireInputScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     viewModel: ManageViewModel = hiltViewModel(),
     onNavigateBack: () -> Boolean,
     onNavigateToRetireResult: () -> Unit
 ){
-    val parentEntry = remember { navController.getBackStackEntry(Route.RetireGraph.route) }
-    val viewModel: ManageViewModel = hiltViewModel(parentEntry)
 
     val scrollState = rememberScrollState()
 
     val totalAsset by viewModel.totalAsset
     val retireResult by viewModel.retireResult.collectAsState()
 
-
-    // 은퇴시뮬레이션 결과 수신시 화면전환
-    LaunchedEffect(retireResult) {
-        if (retireResult.isNotEmpty()) {
-            onNavigateToRetireResult()
-        }
+    BackHandler {
+        onNavigateBack()
     }
 
     val age = remember { mutableStateOf("40") }
@@ -211,6 +204,7 @@ fun RetireInputScreen(
             )
 
             viewModel.postRetirementSimulation(request)
+            onNavigateToRetireResult()
 
         }
         Spacer(modifier=Modifier.height(28.dp))
