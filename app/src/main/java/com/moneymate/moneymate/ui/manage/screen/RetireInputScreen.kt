@@ -22,7 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,41 +60,36 @@ fun RetireInputScreen(
 
     val scrollState = rememberScrollState()
 
-    val totalAsset by viewModel.totalAsset
-    val retireResult by viewModel.retireResult.collectAsState()
+    val totalAsset = viewModel.totalAsset.collectAsStateWithLifecycle()
+    val retireResult by viewModel.retireResult.collectAsStateWithLifecycle()
 
     BackHandler {
         onNavigateBack()
     }
 
-    val age = remember { mutableStateOf("40") }
-    val retireAge = remember { mutableStateOf("55") }
-    val endAge = remember { mutableStateOf("90") }
-    val currentAssets = remember { mutableStateOf("100000000") }
-    val annualIncome = remember { mutableStateOf("50000000") }
-    val annualExpense = remember { mutableStateOf("30000000") }
-    val pensionPerYear = remember { mutableStateOf("24000000") }
-    val accounts = remember { mutableStateOf("20000000") }
-    val realEstate = remember { mutableStateOf("50000000") }
-    val stocks = remember { mutableStateOf("30000000") }
-    val assetReturnRate = remember { mutableStateOf("5") }
-    val incomeGrowthRate = remember { mutableStateOf("3") }
-    val inflationRate = remember { mutableStateOf("2") }
-    val pensionStartAge = remember { mutableStateOf("65") }
-    val consumptionDropAge = remember { mutableStateOf("65") }
-    val consumptionDropRate = remember { mutableStateOf("20") }
-    val crashCycle = remember { mutableStateOf("10") }
-    val crashImpactRate = remember { mutableStateOf("15") }
+    val age = viewModel.age.collectAsStateWithLifecycle().value
+    val retireAge = viewModel.retireAge.collectAsStateWithLifecycle().value
+    val endAge = viewModel.endAge.collectAsStateWithLifecycle().value
+    val annualIncome = viewModel.annualIncome.collectAsStateWithLifecycle().value
+    val annualExpense = viewModel.annualExpense.collectAsStateWithLifecycle().value
+    val pensionPerYear = viewModel.pensionPerYear.collectAsStateWithLifecycle().value
+    val accounts = viewModel.accounts.collectAsStateWithLifecycle().value
+    val realEstate = viewModel.realEstate.collectAsStateWithLifecycle().value
+    val stocks = viewModel.stocks.collectAsStateWithLifecycle().value
+    val assetReturnRate = viewModel.assetReturnRate.collectAsStateWithLifecycle().value
+    val incomeGrowthRate = viewModel.incomeGrowthRate.collectAsStateWithLifecycle().value
+    val inflationRate = viewModel.inflationRate.collectAsStateWithLifecycle().value
+    val pensionStartAge = viewModel.pensionStartAge.collectAsStateWithLifecycle().value
+    val consumptionDropAge = viewModel.consumptionDropAge.collectAsStateWithLifecycle().value
+    val consumptionDropRate = viewModel.consumptionDropRate.collectAsStateWithLifecycle().value
+    val crashCycle = viewModel.crashCycle.collectAsStateWithLifecycle().value
+    val crashImpactRate = viewModel.crashImpactRate.collectAsStateWithLifecycle().value
 
     //총자산조회 결과 조회, 반영
     LaunchedEffect(Unit){
         viewModel.getTotalAsset()
     }
-    LaunchedEffect(totalAsset) {
-        totalAsset?.let {
-            currentAssets.value = it.toString()
-        }
-    }
+    
 
     Column(
         modifier = modifier
@@ -146,30 +141,30 @@ fun RetireInputScreen(
             )
         )
         SectionTitle("나이")
-        RowWithTwoInputs("시작 나이", age.value, {age.value = it},"종료 나이", endAge.value, {endAge.value = it})
+        RowWithTwoInputs("시작 나이", age, { viewModel.updateAge(it) },"종료 나이", endAge, { viewModel.updateEndAge(it) })
 
         SectionTitle("자산")
-        OutlinedInputField("현재 순자산", currentAssets.value, { currentAssets.value = it }, "원", 2)
-        OutlinedInputField("연간 자산 수익률", assetReturnRate.value, { assetReturnRate.value = it }, "%", 1)
+        OutlinedInputField("현재 순자산", totalAsset.value?.toString() ?: "0", { viewModel.updateTotalAsset(it) }, "원", 2)
+        OutlinedInputField("연간 자산 수익률", assetReturnRate, { viewModel.updateAssetReturnRate(it) }, "%", 1)
 
         SectionTitle("소득")
-        OutlinedInputField("현재 연간 총수입", annualIncome.value, { annualIncome.value = it }, "원", 2)
-        OutlinedInputField("연 소득 증가율", incomeGrowthRate.value, { incomeGrowthRate.value = it }, "%", 1)
+        OutlinedInputField("현재 연간 총수입", annualIncome, { viewModel.updateAnnualIncome(it) }, "원", 2)
+        OutlinedInputField("연 소득 증가율", incomeGrowthRate, { viewModel.updateIncomeGrowthRate(it) }, "%", 1)
 
         SectionTitle("소비")
-        OutlinedInputField("현재 연 소비 금액", annualExpense.value, { annualExpense.value = it }, "원", 2)
+        OutlinedInputField("현재 연 소비 금액", annualExpense, { viewModel.updateAnnualExpense(it) }, "원", 2)
 
         SectionTitle("은퇴")
-        OutlinedInputField("은퇴 예상 나이", retireAge.value, { retireAge.value = it }, "세", 1)
-        OutlinedInputField("예상 연금 수령 시작 나이", pensionStartAge.value, { pensionStartAge.value = it }, "세", 1)
-        OutlinedInputField("예상 연금 수령액", pensionPerYear.value, { pensionPerYear.value = it }, "원", 2)
-        OutlinedInputField("소비 감소 시작 나이", consumptionDropAge.value, { consumptionDropAge.value = it }, "세", 1)
-        OutlinedInputField("소비 감소율", consumptionDropRate.value, { consumptionDropRate.value = it }, "%", 3)
+        OutlinedInputField("은퇴 예상 나이", retireAge, { viewModel.updateRetireAge(it) }, "세", 1)
+        OutlinedInputField("예상 연금 수령 시작 나이", pensionStartAge, { viewModel.updatePensionStartAge(it) }, "세", 1)
+        OutlinedInputField("예상 연금 수령액", pensionPerYear, { viewModel.updatePensionPerYear(it) }, "원", 2)
+        OutlinedInputField("소비 감소 시작 나이", consumptionDropAge, { viewModel.updateConsumptionDropAge(it) }, "세", 1)
+        OutlinedInputField("소비 감소율", consumptionDropRate, { viewModel.updateConsumptionDropRate(it) }, "%", 3)
 
         SectionTitle("기타")
-        OutlinedInputField("연간 인플레이션", inflationRate.value, { inflationRate.value = it }, "%", 1)
-        OutlinedInputField("경기침체 주기", crashCycle.value, { crashCycle.value = it }, "년", 1)
-        OutlinedInputField("침체시 자산 손실률", crashImpactRate.value, { crashImpactRate.value = it }, "%", 3)
+        OutlinedInputField("연간 인플레이션", inflationRate, { viewModel.updateInflationRate(it) }, "%", 1)
+        OutlinedInputField("경기침체 주기", crashCycle, { viewModel.updateCrashCycle(it) }, "년", 1)
+        OutlinedInputField("침체시 자산 손실률", crashImpactRate, { viewModel.updateCrashImpactRate(it) }, "%", 3)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -183,24 +178,24 @@ fun RetireInputScreen(
             text = "조회하기"
         ) {
             val request = RetireInputRequest(
-                age = age.value.toIntOrNull() ?: 0,
-                retireAge = retireAge.value.toIntOrNull() ?: 0,
-                currentAssets = currentAssets.value.replace(",", "").toLongOrNull() ?: 0L,
-                annualIncome = annualIncome.value.replace(",", "").toLongOrNull() ?: 0L,
-                annualExpense = annualExpense.value.replace(",", "").toLongOrNull() ?: 0L,
-                pensionPerYear = pensionPerYear.value.replace(",", "").toLongOrNull() ?: 0L,
-                accounts = accounts.value.replace(",", "").toLongOrNull() ?: 0L,
-                realEstate = realEstate.value.replace(",", "").toLongOrNull() ?: 0L,
-                stocks = stocks.value.replace(",", "").toLongOrNull() ?: 0L,
-                endAge = endAge.value.toIntOrNull() ?: 0,
-                assetReturnRate = assetReturnRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
-                incomeGrowthRate = incomeGrowthRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
-                inflationRate = inflationRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
-                pensionStartAge = pensionStartAge.value.toIntOrNull() ?: 0,
-                consumptionDropAge = consumptionDropAge.value.toIntOrNull() ?: 0,
-                consumptionDropRate = consumptionDropRate.value.toDoubleOrNull()?.div(100) ?: 0.0,
-                crashCycle = crashCycle.value.toIntOrNull() ?: 0,
-                crashImpactRate = crashImpactRate.value.toDoubleOrNull()?.div(100) ?: 0.0
+                age = age.toIntOrNull() ?: 0,
+                retireAge = retireAge.toIntOrNull() ?: 0,
+                currentAssets = totalAsset.value ?: 0L,
+                annualIncome = annualIncome.replace(",", "").toLongOrNull() ?: 0L,
+                annualExpense = annualExpense.replace(",", "").toLongOrNull() ?: 0L,
+                pensionPerYear = pensionPerYear.replace(",", "").toLongOrNull() ?: 0L,
+                accounts = accounts.replace(",", "").toLongOrNull() ?: 0L,
+                realEstate = realEstate.replace(",", "").toLongOrNull() ?: 0L,
+                stocks = stocks.replace(",", "").toLongOrNull() ?: 0L,
+                endAge = endAge.toIntOrNull() ?: 0,
+                assetReturnRate = assetReturnRate.toDoubleOrNull()?.div(100) ?: 0.0,
+                incomeGrowthRate = incomeGrowthRate.toDoubleOrNull()?.div(100) ?: 0.0,
+                inflationRate = inflationRate.toDoubleOrNull()?.div(100) ?: 0.0,
+                pensionStartAge = pensionStartAge.toIntOrNull() ?: 0,
+                consumptionDropAge = consumptionDropAge.toIntOrNull() ?: 0,
+                consumptionDropRate = consumptionDropRate.toDoubleOrNull()?.div(100) ?: 0.0,
+                crashCycle = crashCycle.toIntOrNull() ?: 0,
+                crashImpactRate = crashImpactRate.toDoubleOrNull()?.div(100) ?: 0.0
             )
 
             viewModel.postRetirementSimulation(request)
