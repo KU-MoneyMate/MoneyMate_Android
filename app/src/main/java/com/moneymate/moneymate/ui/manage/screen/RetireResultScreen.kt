@@ -1,6 +1,7 @@
 package com.moneymate.moneymate.ui.manage.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,18 +36,17 @@ import com.moneymate.moneymate.ui.manage.ManageViewModel
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
-@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun RetireResultScreen(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
     viewModel: ManageViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
-    val parentEntry = remember { navController.getBackStackEntry(Route.RetireGraph.route) }
-    val viewModel: ManageViewModel = hiltViewModel(parentEntry)
-
     val result = viewModel.retireResult.collectAsState().value
+
+    BackHandler {
+        onNavigateBack()
+    }
 
     LazyColumn(
         modifier = Modifier
