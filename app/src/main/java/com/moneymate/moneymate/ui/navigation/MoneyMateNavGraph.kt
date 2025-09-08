@@ -16,6 +16,7 @@ import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
+import com.moneymate.moneymate.ui.finance.screen.MarketInfoScreen
 import com.moneymate.moneymate.ui.manage.screen.AssetStatisticsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
 import com.moneymate.moneymate.ui.manage.screen.PeerAssetStatisticsScreen
@@ -104,7 +105,8 @@ fun MoneyMateNavGraph(
         composable(route = Route.Finance.route) {
             FinanceScreen(
                 modifier = modifier,
-                onNewsClick = { navController.navigate(Route.News.route) }
+                onNewsClick = { navController.navigate(Route.News.route) },
+                onMarketInfoClick = { navController.navigate(Route.MarketInfo.route) }
             )
         }
         //경제뉴스 조회 화면
@@ -150,6 +152,15 @@ fun MoneyMateNavGraph(
             NewsArticleScreen (
                 modifier = modifier,
                 url = url,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 증시 정보 화면
+        composable(route = Route.MarketInfo.route){
+            MarketInfoScreen(
+                modifier = modifier,
                 onNavigateBack = {
                     navController.navigateUp()
                 }
