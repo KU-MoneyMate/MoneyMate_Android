@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.component.MarketIndexComponent
 import com.moneymate.moneymate.ui.finance.component.MarketIndexData
+import com.moneymate.moneymate.ui.finance.component.MarketStockData
+import com.moneymate.moneymate.ui.finance.component.StockMarketComponent
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import java.time.LocalDate
 import kotlin.collections.listOf
@@ -72,6 +74,21 @@ fun StockMarketScreen(
     var selectedMarket by rememberSaveable { mutableStateOf("KOSPI") }
     val scrollState = rememberScrollState()
 
+    val marketTop20List = listOf(
+        MarketStockData("삼성전자", "65,000", "+1.25%"),
+        MarketStockData("SK하이닉스", "120,000", "+0.75%"),
+        MarketStockData("LG화학", "850,000", "-0.50%"),
+    )
+    val increasingTop20List = listOf(
+        MarketStockData("삼성전자", "65,000", "+1.25%"),
+        MarketStockData("SK하이닉스", "120,000", "+0.75%"),
+        MarketStockData("LG화학", "850,000", "-0.50%"),
+    )
+    val decreasingTop20List = listOf(
+        MarketStockData("삼성전자", "65,000", "+1.25%"),
+        MarketStockData("SK하이닉스", "120,000", "+0.75%"),
+        MarketStockData("LG화학", "850,000", "-0.50%"),
+    )
 
     Column(
         modifier = modifier
@@ -190,60 +207,86 @@ fun StockMarketScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        Button(
-                            modifier = Modifier
-                                .border(
-                                    width = 2.dp,
-                                    color = MoneyMateTheme.colors.deepBlue,
-                                    shape = RoundedCornerShape(25.dp)
-                                )
-                                .size(width = 72.dp, height = 42.dp),
-                            shape = RoundedCornerShape(25.dp),
-                            contentPadding = PaddingValues(0.dp),
-                            colors = ButtonDefaults.buttonColors(
-//                    containerColor = if (selectedMarket == koreanMarkets[0]) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
-//                    contentColor = if (selectedMarket == koreanMarkets[0]) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
-                            ),
-                            onClick = {
-//                    selectedDuration = 1
-//                    currentMonth = LocalDate.now()
-//                    Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
-                                // TODO: 로직 구현
-                            },
-                        ) {
-                            Text(text = "KOSPI")
-                        }
-                        Spacer(modifier = Modifier.size(4.dp))
-                        Button(
-                            modifier = Modifier
-                                .border(
-                                    width = 2.dp,
-                                    color = MoneyMateTheme.colors.deepBlue,
-                                    shape = RoundedCornerShape(25.dp)
-                                )
-                                .size(width = 72.dp, height = 42.dp),
-                            shape = RoundedCornerShape(25.dp),
-                            contentPadding = PaddingValues(0.dp),
-                            colors = ButtonDefaults.buttonColors(
-//                    containerColor = if (selectedMarket == koreanMarkets[1]) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
-//                    contentColor = if (selectedMarket == koreanMarkets[1]) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
-                            ),
-                            onClick = {
-//                    selectedDuration = 1
-//                    currentMonth = LocalDate.now()
-//                    Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
-                                // TODO: 로직 구현
-                            },
-                        ) {
-                            Text(text = "KOSDAQ")
+                        koreanMarkets.forEach { market ->
+                            Button(
+                                modifier = Modifier
+                                    .border(
+                                        width = 2.dp,
+                                        color = MoneyMateTheme.colors.deepBlue,
+                                        shape = RoundedCornerShape(25.dp)
+                                    )
+                                    .size(width = 72.dp, height = 42.dp),
+                                shape = RoundedCornerShape(25.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (selectedMarket == market) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
+                                    contentColor = if (selectedMarket == market) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
+                                ),
+                                onClick = {
+                                    selectedMarket = market
+                                    Log.d("StockMarketScreen", "selectedMarket: $selectedMarket")
+                                },
+                            ) {
+                                Text(text = market)
+                            }
+                            if (market != koreanMarkets.last()) {
+                                Spacer(modifier = Modifier.size(4.dp))
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.size(20.dp))
                     // 카테고리별 Top 20 항목들
+                    StockMarketComponent(
+                        modifier = Modifier.fillMaxWidth(),
+                        marketName = selectedMarket,
+                        marketTop20List = marketTop20List,
+                        increasingTop20List = increasingTop20List,
+                        decreasingTop20List = decreasingTop20List
+                    )
                 }
 
                 "해외 주식" -> {
-
+                    // 시장 선택 버튼
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        foreignMarkets.forEach { market ->
+                            Button(
+                                modifier = Modifier
+                                    .border(
+                                        width = 2.dp,
+                                        color = MoneyMateTheme.colors.deepBlue,
+                                        shape = RoundedCornerShape(25.dp)
+                                    )
+                                    .size(width = 90.dp, height = 42.dp),
+                                shape = RoundedCornerShape(25.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (selectedMarket == market) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
+                                    contentColor = if (selectedMarket == market) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
+                                ),
+                                onClick = {
+                                    selectedMarket = market
+                                    Log.d("StockMarketScreen", "selectedMarket: $selectedMarket")
+                                },
+                            ) {
+                                Text(text = market)
+                            }
+                            if (market != foreignMarkets.last()) {
+                                Spacer(modifier = Modifier.size(4.dp))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.size(20.dp))
+                    // 카테고리별 Top 20 항목들
+                    StockMarketComponent(
+                        modifier = Modifier.fillMaxWidth(),
+                        marketName = selectedMarket,
+                        marketTop20List = marketTop20List,
+                        increasingTop20List = increasingTop20List,
+                        decreasingTop20List = decreasingTop20List
+                    )
                 }
             }
         }
