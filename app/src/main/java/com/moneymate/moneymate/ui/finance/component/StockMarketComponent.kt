@@ -108,21 +108,13 @@ fun StockMarketItem(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 10.dp)
+            .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier.size(45.dp),
-                painter = painterResource(R.drawable.img_dummy_asset),
-                contentDescription = "asset icon",
-                tint = MoneyMateTheme.colors.lightGray
-            )
-            Spacer(modifier = Modifier.size(17.dp))
-            Text(text = stockName, style = MoneyMateTheme.typography.head_04_SB_14)
-        }
+        Text(
+            modifier = Modifier.align(Alignment.CenterStart),
+            text = stockName,
+            style = MoneyMateTheme.typography.head_04_SB_14
+        )
         Column(
             modifier = Modifier
                 .align(Alignment.CenterEnd),
