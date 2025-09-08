@@ -139,89 +139,113 @@ fun StockMarketScreen(
                         onClick = {
                             selectedDropdownMenu = dropdownList[index]
                             dropdownExpanded = false
+                            when(selectedDropdownMenu){
+                                dropdownList[0] -> Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu")
+                                dropdownList[1] -> {
+                                    selectedMarket = koreanMarkets[0]
+                                    Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu, selectedMarket: $selectedMarket")
+                                }
+                                dropdownList[2] -> {
+                                    selectedMarket = foreignMarkets[0]
+                                    Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu, selectedMarket: $selectedMarket")
+                                }
+                            }
                         },
                     )
                 }
             }
         }
         Spacer(modifier = Modifier.size(10.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            Button(
-                modifier = Modifier
-                    .border(
-                        width = 2.dp,
-                        color = MoneyMateTheme.colors.deepBlue,
-                        shape = RoundedCornerShape(25.dp)
-                    )
-                    .size(width = 72.dp, height = 42.dp),
-                shape = RoundedCornerShape(25.dp),
-                contentPadding = PaddingValues(0.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedMarket == koreanMarkets[0]) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
-                    contentColor = if (selectedMarket == koreanMarkets[0]) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
-                ),
-                onClick = {
-//                    selectedDuration = 1
-//                    currentMonth = LocalDate.now()
-//                    Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
-                    // TODO: 로직 구현
-                },
-            ) {
-                Text(text = "KOSPI")
-            }
-            Spacer(modifier = Modifier.size(4.dp))
-            Button(
-                modifier = Modifier
-                    .border(
-                        width = 2.dp,
-                        color = MoneyMateTheme.colors.deepBlue,
-                        shape = RoundedCornerShape(25.dp)
-                    )
-                    .size(width = 72.dp, height = 42.dp),
-                shape = RoundedCornerShape(25.dp),
-                contentPadding = PaddingValues(0.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedMarket == koreanMarkets[1]) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
-                    contentColor = if (selectedMarket == koreanMarkets[1]) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
-                ),
-                onClick = {
-//                    selectedDuration = 1
-//                    currentMonth = LocalDate.now()
-//                    Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
-                    // TODO: 로직 구현
-                },
-            ) {
-                Text(text = "KOSDAQ")
-            }
-        }
-        Spacer(modifier = Modifier.size(20.dp))
+        // 시장 선택을 위한 버튼 컴포넌트
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)
                 .verticalScroll(scrollState)
         ) {
-            // 정보 조회 컴포넌트
-            MarketIndexComponent(
-                modifier = Modifier.fillMaxWidth(),
-                indexList = listOf(
-                    MarketIndexData("코스피", "2,450.25", "+1.25%"),
-                    MarketIndexData("코스닥", "800.50", "-0.75%"),
-                    MarketIndexData("S&P 500", "4,500.75", "+0.50%"),
-                    MarketIndexData("나스닥", "13,200.30", "+2.10%"),
-                    MarketIndexData("다우존스", "34,000.10", "-0.30%")
-                ),
-                currencyList = listOf(
-                    MarketIndexData("USD/KRW", "1,200.50", "+0.10%"),
-                    MarketIndexData("EUR/KRW", "1,350.75", "-0.20%"),
-                    MarketIndexData("JPY/KRW", "1,100.30", "+0.05%"),
-                    MarketIndexData("CNY/KRW", "180.25", "-0.15%")
-                )
-            )
+            when (selectedDropdownMenu) {
+                "경제 지표" -> {
+                    // 지수 정보 조회 컴포넌트
+                    MarketIndexComponent(
+                        modifier = Modifier.fillMaxWidth(),
+                        indexList = listOf(
+                            MarketIndexData("코스피", "2,450.25", "+1.25%"),
+                            MarketIndexData("코스닥", "800.50", "-0.75%"),
+                            MarketIndexData("S&P 500", "4,500.75", "+0.50%"),
+                            MarketIndexData("나스닥", "13,200.30", "+2.10%"),
+                            MarketIndexData("다우존스", "34,000.10", "-0.30%")
+                        ),
+                        currencyList = listOf(
+                            MarketIndexData("USD/KRW", "1,200.50", "+0.10%"),
+                            MarketIndexData("EUR/KRW", "1,350.75", "-0.20%"),
+                            MarketIndexData("JPY/KRW", "1,100.30", "+0.05%"),
+                            MarketIndexData("CNY/KRW", "180.25", "-0.15%")
+                        )
+                    )
+                }
+
+                "국내 주식" -> {
+                    // 시장 선택 버튼
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Button(
+                            modifier = Modifier
+                                .border(
+                                    width = 2.dp,
+                                    color = MoneyMateTheme.colors.deepBlue,
+                                    shape = RoundedCornerShape(25.dp)
+                                )
+                                .size(width = 72.dp, height = 42.dp),
+                            shape = RoundedCornerShape(25.dp),
+                            contentPadding = PaddingValues(0.dp),
+                            colors = ButtonDefaults.buttonColors(
+//                    containerColor = if (selectedMarket == koreanMarkets[0]) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
+//                    contentColor = if (selectedMarket == koreanMarkets[0]) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
+                            ),
+                            onClick = {
+//                    selectedDuration = 1
+//                    currentMonth = LocalDate.now()
+//                    Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
+                                // TODO: 로직 구현
+                            },
+                        ) {
+                            Text(text = "KOSPI")
+                        }
+                        Spacer(modifier = Modifier.size(4.dp))
+                        Button(
+                            modifier = Modifier
+                                .border(
+                                    width = 2.dp,
+                                    color = MoneyMateTheme.colors.deepBlue,
+                                    shape = RoundedCornerShape(25.dp)
+                                )
+                                .size(width = 72.dp, height = 42.dp),
+                            shape = RoundedCornerShape(25.dp),
+                            contentPadding = PaddingValues(0.dp),
+                            colors = ButtonDefaults.buttonColors(
+//                    containerColor = if (selectedMarket == koreanMarkets[1]) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
+//                    contentColor = if (selectedMarket == koreanMarkets[1]) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
+                            ),
+                            onClick = {
+//                    selectedDuration = 1
+//                    currentMonth = LocalDate.now()
+//                    Log.d("AssetStatisticsScreen", "selectedDuration: $selectedDuration")
+                                // TODO: 로직 구현
+                            },
+                        ) {
+                            Text(text = "KOSDAQ")
+                        }
+                    }
+                    Spacer(modifier = Modifier.size(20.dp))
+                    // 카테고리별 Top 20 항목들
+                }
+
+                "해외 주식" -> {
+
+                }
+            }
         }
     }
 }
