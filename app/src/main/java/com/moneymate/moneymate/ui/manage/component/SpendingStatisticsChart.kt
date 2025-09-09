@@ -49,11 +49,10 @@ fun SpendingStatisticChart(
 
 private val donutColors = listOf(
     Color(0xFF0E0857),
-    Color(0xFF1C1970),
-    Color(0xFF2A2D89),
-    Color(0xFF3B44A2),
-    Color(0xFF5561BB),
-    Color(0xFF7582D4),
-    Color(0xFF9DA9ED),
+    Color(0xFF003885),
+    Color(0xFF0062A4),
+    Color(0xFF008BB5),
+    Color(0xFF00B3BC),
+    Color(0xFF61DAC1),
     Color(0xFFF5F5F5),
 )
