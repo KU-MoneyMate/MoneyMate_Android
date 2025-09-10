@@ -1,4 +1,4 @@
-package com.moneymate.moneymate.data.dto.finance.response.naver
+package com.moneymate.moneymate.data.dto.finance.response.market
 
 import kotlinx.serialization.Serializable
 
