@@ -12,7 +12,7 @@ data class ExchangeRateResponse(
 
 @Serializable
 data class ExchangeRateItem(
-    val name: String,
+    val name: String, // 통화명 ex: "미국 USD"
     val closePrice: String, // 종가
     val fluctuations: String, // 전일대비 차이 (음수면 - 로 시작) ex: "-0.08"
     val fluctuationsType: FluctuationsType,

@@ -7,14 +7,14 @@ data class ForeignStockResponse(
     val page: Int,
     val pageSize: Int,
     val totalCount: Int,
-    val stocks: List<StockDto>,
+    val stocks: List<ForeignStockDto>,
     val marketStatus: String,
     val localOpenTimeDesc: String? = null,
     val localOpenTime: String? = null
 )
 
 @Serializable
-data class StockDto(
+data class ForeignStockDto(
     val stockType: String,
     val stockEndType: String,
     val compareToPreviousPrice: CompareToPreviousPriceDto,
