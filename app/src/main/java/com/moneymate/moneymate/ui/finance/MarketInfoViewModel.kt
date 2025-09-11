@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.finance
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.finance.response.market.DomesticStockResponse
@@ -35,7 +36,7 @@ class MarketInfoViewModel @Inject constructor(
     private val foreignStockRepository: ForeignStockRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(MarketInfoUiState())
-    val uiState: StateFlow<MarketInfoUiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     init {
         loadMarketIndexes()
@@ -59,12 +60,14 @@ class MarketInfoViewModel @Inject constructor(
                         marketIndexes = indexes,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "지수 조회 성공")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(
                         error = e.message,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "지수 조회 실패 : ${e.message}")
                 }
         }
     }
@@ -78,12 +81,14 @@ class MarketInfoViewModel @Inject constructor(
                         exchangeRates = rates,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "환율 조회 성공")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(
                         error = e.message,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "환율 조회 실패 : ${e.message}")
                 }
         }
     }
@@ -96,18 +101,22 @@ class MarketInfoViewModel @Inject constructor(
             domesticStockRepository.getDomesticMarketCap(1, 20)
                 .onSuccess { response ->
                     _uiState.update { it.copy(domesticMarketCap = response) }
+                    Log.d("MarketInfoViewModel", "국내 주식 시가총액 : $response")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(error = e.message) }
+                    Log.d("MarketInfoViewModel", "국내 주식 시가총액 로드 실패 : ${e.message}")
                 }
 
             // Load rising stocks
             domesticStockRepository.getDomesticMarketRising(1, 20)
                 .onSuccess { response ->
                     _uiState.update { it.copy(domesticMarketRising = response) }
+                    Log.d("MarketInfoViewModel", "국내 주식 상승 : $response")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(error = e.message) }
+                    Log.d("MarketInfoViewModel", "국내 주식 상승 로드 실패 : ${e.message}")
                 }
 
             // Load falling stocks
@@ -117,12 +126,14 @@ class MarketInfoViewModel @Inject constructor(
                         domesticMarketFalling = response,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "국내 주식 하락 : $response")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(
                         error = e.message,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "국내 주식 하락 로드 실패 : ${e.message}")
                 }
         }
     }
@@ -135,18 +146,22 @@ class MarketInfoViewModel @Inject constructor(
             foreignStockRepository.getForeignMarketCap(market, 1, 20)
                 .onSuccess { response ->
                     _uiState.update { it.copy(foreignMarketCap = response) }
+                    Log.d("MarketInfoViewModel", "$market 시가총액 : $response")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(error = e.message) }
+                    Log.d("MarketInfoViewModel", "$market 시가총액 로드 실패 : ${e.message}")
                 }
 
             // Load rising stocks
             foreignStockRepository.getForeignMarketRising(market, 1, 20)
                 .onSuccess { response ->
                     _uiState.update { it.copy(foreignMarketRising = response) }
+                    Log.d("MarketInfoViewModel", "$market 상승 : $response")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(error = e.message) }
+                    Log.d("MarketInfoViewModel", "$market 상승 로드 실패 : ${e.message}")
                 }
 
             // Load falling stocks
@@ -156,12 +171,14 @@ class MarketInfoViewModel @Inject constructor(
                         foreignMarketFalling = response,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "$market 하락 : $response")
                 }
                 .onFailure { e ->
                     _uiState.update { it.copy(
                         error = e.message,
                         isLoading = false
                     ) }
+                    Log.d("MarketInfoViewModel", "$market 하락 로드 실패 : ${e.message}")
                 }
         }
     }

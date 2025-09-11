@@ -27,13 +27,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -41,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.MarketInfoViewModel
@@ -49,7 +48,6 @@ import com.moneymate.moneymate.ui.finance.component.MarketIndexData
 import com.moneymate.moneymate.ui.finance.component.MarketStockData
 import com.moneymate.moneymate.ui.finance.component.StockMarketComponent
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
-import kotlin.collections.listOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -149,6 +147,7 @@ fun MarketInfoScreen(
                 modifier = Modifier.align(Alignment.Center),
                 color = MoneyMateTheme.colors.deepBlue
             )
+            Log.d("MarketInfoScreen", "Loading...")
         }
 
         Column(
@@ -276,6 +275,7 @@ fun MarketInfoScreen(
                                 )
                             } ?: emptyList()
                         )
+                        Log.d("MarketInfoScreen", "selectedDropdownMenu: $selectedDropdownMenu")
                     }
 
                     "국내 주식" -> {
