@@ -47,7 +47,9 @@ fun MarketIndexComponent(
                     modifier = Modifier,
                     indexName = it.indexName,
                     indexValue = it.indexValue,
-                    profitRate = it.profitRate
+                    profitRate = it.profitRate,
+                    fluctuation = it.fluctuation,
+                    status = it.status
                 )
             }
         }
@@ -68,7 +70,9 @@ fun MarketIndexComponent(
                     modifier = Modifier,
                     indexName = it.indexName,
                     indexValue = it.indexValue,
-                    profitRate = it.profitRate
+                    profitRate = it.profitRate,
+                    fluctuation = it.fluctuation,
+                    status = it.status
                 )
             }
         }
@@ -81,7 +85,9 @@ fun MarketIndexItem(
     modifier: Modifier = Modifier,
     indexName: String,
     indexValue: String,
-    profitRate: String
+    profitRate: String,
+    fluctuation: String,
+    status: String
 ) {
     Box(
         modifier = modifier
@@ -105,9 +111,13 @@ fun MarketIndexItem(
             )
             Text(
                 modifier = Modifier,
-                text = profitRate,
+                text = "${fluctuation}(${profitRate})",
                 style = MoneyMateTheme.typography.head_04_SB_14,
-                color = MoneyMateTheme.colors.stockRed
+                color = when (status) {
+                    "RISING" -> MoneyMateTheme.colors.stockRed
+                    "FALLING" -> MoneyMateTheme.colors.stockBlue
+                    else -> MoneyMateTheme.colors.darkGray
+                }
             )
         }
     }
@@ -116,7 +126,9 @@ fun MarketIndexItem(
 data class MarketIndexData(
     val indexName: String,
     val indexValue: String,
-    val profitRate: String
+    val profitRate: String, // 등락율
+    val fluctuation: String, // 전일과의 차이
+    val status: String // 상승, 하락, 보합 (RISING, FALLING, UNCHANGED)
 )
 
 @Preview(showBackground = true)
@@ -124,17 +136,18 @@ data class MarketIndexData(
 private fun MarketIndexComponentPreview() {
     Column(modifier = Modifier.fillMaxSize()) {
         val indexList = listOf(
-            MarketIndexData("코스피", "2,450.25", "+1.25%"),
-            MarketIndexData("코스닥", "800.50", "-0.75%"),
-            MarketIndexData("S&P 500", "4,500.75", "+0.50%"),
-            MarketIndexData("나스닥", "13,200.30", "+2.10%"),
-            MarketIndexData("다우존스", "34,000.10", "-0.30%")
+            MarketIndexData("코스피", "2,450.25", "+1.25%", "+30.50", "RISING"),
+            MarketIndexData("코스닥", "800.50", "-0.75%", "-6.00", "FALLING"),
+            MarketIndexData("S&P 500", "4,500.75", "+0.50%", "+22.50", "RISING"),
+            MarketIndexData("나스닥", "13,200.30", "+2.10%", "+270.00", "RISING"),
+            MarketIndexData("다우존스", "34,000.10", "-0.30%", "-102.00", "FALLING")
         )
         val currencyList = listOf(
-            MarketIndexData("USD/KRW", "1,200.50", "+0.10%"),
-            MarketIndexData("EUR/KRW", "1,350.75", "-0.20%"),
-            MarketIndexData("JPY/KRW", "1,100.30", "+0.05%"),
-            MarketIndexData("CNY/KRW", "180.25", "-0.15%")
+            MarketIndexData("USD/KRW", "1,200.50", "+0.10%", "+1.20", "RISING"),
+            MarketIndexData("EUR/KRW", "1,350.75", "-0.20%", "-2.70", "FALLING"),
+            MarketIndexData("JPY/KRW", "1,100.30", "+0.05%", "+0.55", "RISING"),
+            MarketIndexData("CNY/KRW", "180.25", "-0.15%", "-0.27", "FALLING"),
+            MarketIndexData("GBP/KRW", "180.25", "-0.15%", "-0.27", "FALLING")
         )
          MarketIndexComponent(
              modifier = Modifier

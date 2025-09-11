@@ -47,7 +47,9 @@ fun StockMarketComponent(
                     modifier = Modifier,
                     stockName = it.stockName,
                     stockValue = it.stockValue,
-                    profitRate = it.profitRate
+                    profitRate = it.profitRate,
+                    fluctuation = it.fluctuation,
+                    status = it.status
                 )
             }
         }
@@ -68,7 +70,9 @@ fun StockMarketComponent(
                     modifier = Modifier,
                     stockName = it.stockName,
                     stockValue = it.stockValue,
-                    profitRate = it.profitRate
+                    profitRate = it.profitRate,
+                    fluctuation = it.fluctuation,
+                    status = it.status
                 )
             }
         }
@@ -89,7 +93,9 @@ fun StockMarketComponent(
                     modifier = Modifier,
                     stockName = it.stockName,
                     stockValue = it.stockValue,
-                    profitRate = it.profitRate
+                    profitRate = it.profitRate,
+                    fluctuation = it.fluctuation,
+                    status = it.status
                 )
             }
         }
@@ -103,7 +109,9 @@ fun StockMarketItem(
     modifier: Modifier = Modifier,
     stockName: String,
     stockValue: String,
-    profitRate: String
+    profitRate: String,
+    fluctuation: String,
+    status: String
 ) {
     Box(
         modifier = modifier
@@ -127,9 +135,13 @@ fun StockMarketItem(
             )
             Text(
                 modifier = Modifier,
-                text = profitRate,
+                text = "${fluctuation}(${profitRate})",
                 style = MoneyMateTheme.typography.head_04_SB_14,
-                color = MoneyMateTheme.colors.stockRed
+                color = when (status) {
+                    "RISING" -> MoneyMateTheme.colors.stockRed
+                    "FALLING" -> MoneyMateTheme.colors.stockBlue
+                    else -> MoneyMateTheme.colors.darkGray
+                }
             )
         }
     }
@@ -138,7 +150,9 @@ fun StockMarketItem(
 data class MarketStockData(
     val stockName: String,
     val stockValue: String,
-    val profitRate: String
+    val profitRate: String, // 등락율
+    val fluctuation: String, // 전일과의 차이
+    val status: String // 상승, 하락, 보합 (RISING, FALLING, UNCHANGED)
 )
 
 @Preview(showBackground = true)
@@ -153,19 +167,19 @@ private fun StockMarketComponentPreview() {
                 .padding(horizontal = 20.dp),
             marketName = "KOSPI",
             marketTop20List = listOf(
-                MarketStockData("삼성전자", "65,000", "+1.25%"),
-                MarketStockData("SK하이닉스", "120,000", "+0.75%"),
-                MarketStockData("LG화학", "850,000", "-0.50%"),
+                MarketStockData("삼성전자", "65,000", "+1.25%", "+800", "RISING"),
+                MarketStockData("SK하이닉스", "120,000", "+0.75%", "+900", "RISING"),
+                MarketStockData("LG화학", "850,000", "-0.50%", "-4,000", "FALLING")
             ),
             increasingTop20List = listOf(
-                MarketStockData("삼성전자", "65,000", "+1.25%"),
-                MarketStockData("SK하이닉스", "120,000", "+0.75%"),
-                MarketStockData("LG화학", "850,000", "-0.50%"),
+                MarketStockData("삼성전자", "65,000", "+1.25%", "+800", "RISING"),
+                MarketStockData("SK하이닉스", "120,000", "+0.75%", "+900", "RISING"),
+                MarketStockData("LG화학", "850,000", "-0.50%", "-4,000", "FALLING")
             ),
             decreasingTop20List = listOf(
-                MarketStockData("삼성전자", "65,000", "+1.25%"),
-                MarketStockData("SK하이닉스", "120,000", "+0.75%"),
-                MarketStockData("LG화학", "850,000", "-0.50%"),
+                MarketStockData("삼성전자", "65,000", "+1.25%", "+800", "RISING"),
+                MarketStockData("SK하이닉스", "120,000", "+0.75%", "+900", "RISING"),
+                MarketStockData("LG화학", "850,000", "-0.50%", "-4,000", "FALLING")
             ),
         )
     }
