@@ -39,7 +39,7 @@ fun StockMarketComponent(
             color = MoneyMateTheme.colors.deepBlue
         )
         if (marketTop20List.isNotEmpty()) {
-            marketTop20List.forEach { it ->
+            marketTop20List.forEachIndexed { index, it ->
                 StockMarketItem(
                     modifier = Modifier,
                     stockName = it.stockName,
@@ -48,6 +48,14 @@ fun StockMarketComponent(
                     fluctuation = it.fluctuation,
                     status = it.status
                 )
+                if (index < marketTop20List.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        thickness = 0.5.dp,
+                        color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.size(30.dp))
@@ -62,7 +70,7 @@ fun StockMarketComponent(
             color = MoneyMateTheme.colors.deepBlue
         )
         if (increasingTop20List.isNotEmpty()) {
-            increasingTop20List.forEach { it ->
+            increasingTop20List.forEachIndexed { index, it ->
                 StockMarketItem(
                     modifier = Modifier,
                     stockName = it.stockName,
@@ -71,6 +79,14 @@ fun StockMarketComponent(
                     fluctuation = it.fluctuation,
                     status = it.status
                 )
+                if (index < increasingTop20List.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        thickness = 0.5.dp,
+                        color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.size(30.dp))
@@ -85,7 +101,7 @@ fun StockMarketComponent(
             color = MoneyMateTheme.colors.deepBlue
         )
         if (decreasingTop20List.isNotEmpty()) {
-            decreasingTop20List.forEach { it ->
+            decreasingTop20List.forEachIndexed { index, it ->
                 StockMarketItem(
                     modifier = Modifier,
                     stockName = it.stockName,
@@ -94,6 +110,15 @@ fun StockMarketComponent(
                     fluctuation = it.fluctuation,
                     status = it.status
                 )
+                if (index < decreasingTop20List.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp),
+                        thickness = 0.5.dp,
+                        color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.size(30.dp))
@@ -135,7 +160,7 @@ fun StockMarketItem(
             )
             Text(
                 modifier = Modifier,
-                text = "${fluctuation}(${profitRate})",
+                text = "${fluctuation}(${profitRate}%)",
                 style = MoneyMateTheme.typography.head_04_SB_14,
                 color = when (status) {
                     "RISING" -> MoneyMateTheme.colors.stockRed

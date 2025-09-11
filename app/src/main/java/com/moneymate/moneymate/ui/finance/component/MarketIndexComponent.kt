@@ -37,7 +37,7 @@ fun MarketIndexComponent(
             color = MoneyMateTheme.colors.deepBlue
         )
         if (indexList.isNotEmpty()) {
-            indexList.forEach { it ->
+            indexList.forEachIndexed { index, it ->
                 MarketIndexItem(
                     modifier = Modifier,
                     indexName = it.indexName,
@@ -46,6 +46,14 @@ fun MarketIndexComponent(
                     fluctuation = it.fluctuation,
                     status = it.status
                 )
+                if (index < indexList.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        thickness = 0.5.dp,
+                        color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.size(30.dp))
@@ -60,7 +68,7 @@ fun MarketIndexComponent(
             color = MoneyMateTheme.colors.deepBlue
         )
         if (currencyList.isNotEmpty()) {
-            currencyList.forEach { it ->
+            currencyList.forEachIndexed { index, it ->
                 MarketIndexItem(
                     modifier = Modifier,
                     indexName = it.indexName,
@@ -69,6 +77,14 @@ fun MarketIndexComponent(
                     fluctuation = it.fluctuation,
                     status = it.status
                 )
+                if (index < currencyList.lastIndex) {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        thickness = 0.5.dp,
+                        color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+                    )
+                }
             }
         }
     }
@@ -109,7 +125,7 @@ fun MarketIndexItem(
             )
             Text(
                 modifier = Modifier,
-                text = "${fluctuation}(${profitRate})",
+                text = "${fluctuation}(${profitRate}%)",
                 style = MoneyMateTheme.typography.head_04_SB_14,
                 color = when (status) {
                     "RISING" -> MoneyMateTheme.colors.stockRed
