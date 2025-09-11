@@ -38,7 +38,8 @@ data class DomesticStock(
     val tradeStopType: TradeStopType,
     val stockExchangeType: StockExchangeType,
     val endUrl: String,
-    val overMarketPriceInfo: OverMarketPriceInfo? = null
+    val overMarketPriceInfo: OverMarketPriceInfo? = null,
+    val stockMiniImageChart: String
 )
 
 @Serializable

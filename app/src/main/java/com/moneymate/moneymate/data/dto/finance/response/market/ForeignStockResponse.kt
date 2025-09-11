@@ -30,7 +30,7 @@ data class ForeignStockDto(
     val closePrice: String? = null, // 종가
     val compareToPreviousClosePrice: String? = null, // 전일대비 차이 (음수면 - 로 시작)
     val fluctuationsRatio: String? = null, // 등락률 (음수면 - 로 시작)
-    val executedVolume: String? = null,
+    val executedVolume: Int? = null,
     val accumulatedTradingVolume: String? = null, // 누적 거래량
     val accumulatedTradingValue: String? = null, // 누적 거래대금
     val accumulatedTradingValueKrwHangeul: String? = null, // 누적 거래대금(원)
