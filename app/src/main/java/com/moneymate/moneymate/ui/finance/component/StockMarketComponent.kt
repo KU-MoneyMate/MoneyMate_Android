@@ -163,7 +163,7 @@ fun StockMarketItem(
                 text = "${fluctuation}(${profitRate}%)",
                 style = MoneyMateTheme.typography.head_04_SB_14,
                 color = when (status) {
-                    "RISING" -> MoneyMateTheme.colors.stockRed
+                    "RISING", "UPPER_LIMIT" -> MoneyMateTheme.colors.stockRed
                     "FALLING" -> MoneyMateTheme.colors.stockBlue
                     else -> MoneyMateTheme.colors.darkGray
                 }
