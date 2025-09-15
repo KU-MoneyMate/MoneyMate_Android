@@ -38,6 +38,8 @@ class MarketInfoViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MarketInfoUiState())
     val uiState = _uiState.asStateFlow()
 
+    val exchangeRatesList = listOf("USD", "JPY", "EUR", "GBP", "CNY", "HKD", "CHF", "CAD", "AUD", "TWD")
+
     init {
         loadMarketIndexes()
         loadExchangeRates()
@@ -77,8 +79,13 @@ class MarketInfoViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
             domesticStockRepository.getExchangeRate()
                 .onSuccess { rates ->
+                    val filteredRates = rates.copy(
+                        result = rates.result
+                            .filter { rate -> exchangeRatesList.any { code -> rate.name.contains(code) } }
+                            .sortedBy { rate -> exchangeRatesList.indexOfFirst { code -> rate.name.contains(code) } }
+                    )
                     _uiState.update { it.copy(
-                        exchangeRates = rates,
+                        exchangeRates = filteredRates,
                         isLoading = false
                     ) }
                     Log.d("MarketInfoViewModel", "환율 조회 성공")
