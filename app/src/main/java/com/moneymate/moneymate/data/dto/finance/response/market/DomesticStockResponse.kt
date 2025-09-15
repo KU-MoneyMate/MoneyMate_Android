@@ -45,8 +45,8 @@ data class DomesticStock(
 @Serializable
 data class CompareToPreviousPrice(
     val code: String,
-    val text: String, // 상승, 하락, 보합
-    val name: String // RISING, FALLING, UNCHANGED
+    val text: String, // 상승, 하락, 보합, 상한
+    val name: String // RISING, FALLING, UNCHANGED, UPPER_LIMIT
 )
 
 @Serializable
