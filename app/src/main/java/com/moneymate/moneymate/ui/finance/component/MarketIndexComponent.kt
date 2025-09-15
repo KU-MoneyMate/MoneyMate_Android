@@ -58,7 +58,7 @@ fun MarketIndexComponent(
         }
         Spacer(modifier = Modifier.size(30.dp))
         Text(
-            text = "환율",
+            text = "환율(원)",
             style = MoneyMateTheme.typography.head_03_B_16
         )
         Spacer(modifier = Modifier.size(8.dp))

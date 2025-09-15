@@ -25,11 +25,16 @@ fun StockMarketComponent(
     increasingTop20List: List<MarketStockData> = emptyList(),
     decreasingTop20List: List<MarketStockData> = emptyList()
 ) {
+    val currency = when (marketName) {
+        "KOSPI", "KOSDAQ" -> "원"
+        "NYSE", "NASDAQ", "AMEX" -> "달러"
+        else -> ""
+    }
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
         Text(
-            text = "$marketName Top 20",
+            text = if(marketName == "KOSPI"|| marketName == "KOSDAQ") "국내 Top 20($currency)" else "$marketName Top 20($currency)",
             style = MoneyMateTheme.typography.head_03_B_16
         )
         Spacer(modifier = Modifier.size(8.dp))
@@ -60,7 +65,7 @@ fun StockMarketComponent(
         }
         Spacer(modifier = Modifier.size(30.dp))
         Text(
-            text = "상승 Top 20",
+            text = if(marketName == "KOSPI"|| marketName == "KOSDAQ") "국내 상승 Top 20($currency)" else "$marketName 상승 Top 20($currency)",
             style = MoneyMateTheme.typography.head_03_B_16
         )
         Spacer(modifier = Modifier.size(8.dp))
@@ -91,7 +96,7 @@ fun StockMarketComponent(
         }
         Spacer(modifier = Modifier.size(30.dp))
         Text(
-            text = "하락 Top 20",
+            text = if(marketName == "KOSPI"|| marketName == "KOSDAQ") "국내 하락 Top 20($currency)" else "$marketName 하락 Top 20($currency)",
             style = MoneyMateTheme.typography.head_03_B_16
         )
         Spacer(modifier = Modifier.size(8.dp))
