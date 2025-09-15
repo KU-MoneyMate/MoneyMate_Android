@@ -63,10 +63,6 @@ fun MarketInfoScreen(
     val koreanMarkets = listOf("KOSPI", "KOSDAQ")
     // 해외 시장 목록
     val foreignMarkets = listOf("NASDAQ", "NYSE", "AMEX")
-//    // 보여줄 인덱스 목록 (응답의 indexName에 해당)
-//    val indexInfoList = listOf("코스피", "코스닥", "S&P500", "다우존스", "나스닥 종합", "니케이 225", "상해종합", "항셍")
-//    // 보여줄 환율 목록 (응답의 name에 해당)
-//    val exchangeRateList = listOf("미국 USD", "유럽 EUR", "일본 JPY", "중국 CNY", "영국 GBP", "홍콩 HKD")
     var selectedDropdownMenu by rememberSaveable { mutableStateOf(dropdownList[0]) }
     var selectedMarket by rememberSaveable { mutableStateOf("KOSPI") }
     val scrollState = rememberScrollState()
@@ -277,45 +273,7 @@ fun MarketInfoScreen(
                         )
                         Log.d("MarketInfoScreen", "selectedDropdownMenu: $selectedDropdownMenu")
                     }
-
                     "국내 주식" -> {
-                        // 시장 선택 버튼
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            koreanMarkets.forEach { market ->
-                                Button(
-                                    modifier = Modifier
-                                        .border(
-                                            width = 2.dp,
-                                            color = MoneyMateTheme.colors.deepBlue,
-                                            shape = RoundedCornerShape(25.dp)
-                                        )
-                                        .size(width = 72.dp, height = 42.dp),
-                                    shape = RoundedCornerShape(25.dp),
-                                    contentPadding = PaddingValues(0.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = if (selectedMarket == market) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
-                                        contentColor = if (selectedMarket == market) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
-                                    ),
-                                    onClick = {
-                                        selectedMarket = market
-                                        viewModel.loadMarketData(selectedMarket, true)
-                                        Log.d(
-                                            "StockMarketScreen",
-                                            "selectedMarket: $selectedMarket"
-                                        )
-                                    },
-                                ) {
-                                    Text(text = market)
-                                }
-                                if (market != koreanMarkets.last()) {
-                                    Spacer(modifier = Modifier.size(4.dp))
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.size(20.dp))
                         // 카테고리별 Top 20 항목들
                         StockMarketComponent(
                             modifier = Modifier.fillMaxWidth(),
@@ -325,7 +283,6 @@ fun MarketInfoScreen(
                             decreasingTop20List = decreasingTop20List
                         )
                     }
-
                     "해외 주식" -> {
                         // 시장 선택 버튼
                         Row(
