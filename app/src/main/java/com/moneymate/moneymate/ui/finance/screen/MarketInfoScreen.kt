@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,241 +39,297 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.finance.MarketInfoViewModel
 import com.moneymate.moneymate.ui.finance.component.MarketIndexComponent
 import com.moneymate.moneymate.ui.finance.component.MarketIndexData
 import com.moneymate.moneymate.ui.finance.component.MarketStockData
 import com.moneymate.moneymate.ui.finance.component.StockMarketComponent
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
-import kotlin.collections.listOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketInfoScreen(
     modifier: Modifier = Modifier,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    viewModel: MarketInfoViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var dropdownExpanded by remember { mutableStateOf(false) }
     val dropdownList = listOf("경제 지표", "국내 주식", "해외 주식")
-    var selectedDropdownMenu by rememberSaveable { mutableStateOf(dropdownList[0]) }
+    // 국내 시장 목록
     val koreanMarkets = listOf("KOSPI", "KOSDAQ")
+    // 해외 시장 목록
     val foreignMarkets = listOf("NASDAQ", "NYSE", "AMEX")
+    var selectedDropdownMenu by rememberSaveable { mutableStateOf(dropdownList[0]) }
     var selectedMarket by rememberSaveable { mutableStateOf("KOSPI") }
     val scrollState = rememberScrollState()
 
-    val marketTop20List = listOf(
-        MarketStockData("삼성전자", "65,000", "+1.25%"),
-        MarketStockData("SK하이닉스", "120,000", "+0.75%"),
-        MarketStockData("LG화학", "850,000", "-0.50%"),
-    )
-    val increasingTop20List = listOf(
-        MarketStockData("삼성전자", "65,000", "+1.25%"),
-        MarketStockData("SK하이닉스", "120,000", "+0.75%"),
-        MarketStockData("LG화학", "850,000", "-0.50%"),
-    )
-    val decreasingTop20List = listOf(
-        MarketStockData("삼성전자", "65,000", "+1.25%"),
-        MarketStockData("SK하이닉스", "120,000", "+0.75%"),
-        MarketStockData("LG화학", "850,000", "-0.50%"),
-    )
+    val marketTop20List = if (selectedDropdownMenu == "국내 주식") {
+        uiState.domesticMarketCap?.stocks?.map { stock ->
+            MarketStockData(
+                stockName = stock.stockName,
+                stockValue = stock.closePrice,
+                profitRate = stock.fluctuationsRatio,
+                fluctuation = stock.compareToPreviousClosePrice,
+                status = stock.compareToPreviousPrice.name
+            )
+        } ?: emptyList()
+    } else {
+        uiState.foreignMarketCap?.stocks?.map { stock ->
+            MarketStockData(
+                stockName = stock.stockName,
+                stockValue = stock.closePrice ?: "error",
+                profitRate = stock.fluctuationsRatio ?: "error",
+                fluctuation = stock.compareToPreviousClosePrice ?: "error",
+                status = stock.compareToPreviousPrice.name
+            )
+        } ?: emptyList()
+    }
 
-    Column(
+    val increasingTop20List = if (selectedDropdownMenu == "국내 주식") {
+        uiState.domesticMarketRising?.stocks?.map { stock ->
+            MarketStockData(
+                stockName = stock.stockName,
+                stockValue = stock.closePrice,
+                profitRate = stock.fluctuationsRatio,
+                fluctuation = stock.compareToPreviousClosePrice,
+                status = stock.compareToPreviousPrice.name
+            )
+        } ?: emptyList()
+    } else {
+        uiState.foreignMarketRising?.stocks?.map { stock ->
+            MarketStockData(
+                stockName = stock.stockName,
+                stockValue = stock.closePrice ?: "error",
+                profitRate = stock.fluctuationsRatio ?: "error",
+                fluctuation = stock.compareToPreviousClosePrice ?: "error",
+                status = stock.compareToPreviousPrice.name
+            )
+        } ?: emptyList()
+    }
+
+    val decreasingTop20List = if (selectedDropdownMenu == "국내 주식") {
+        uiState.domesticMarketFalling?.stocks?.map { stock ->
+            MarketStockData(
+                stockName = stock.stockName,
+                stockValue = stock.closePrice,
+                profitRate = stock.fluctuationsRatio,
+                fluctuation = stock.compareToPreviousClosePrice,
+                status = stock.compareToPreviousPrice.name
+            )
+        } ?: emptyList()
+    } else {
+        uiState.foreignMarketFalling?.stocks?.map { stock ->
+            MarketStockData(
+                stockName = stock.stockName,
+                stockValue = stock.closePrice ?: "error",
+                profitRate = stock.fluctuationsRatio ?: "error",
+                fluctuation = stock.compareToPreviousClosePrice ?: "error",
+                status = stock.compareToPreviousPrice.name
+            )
+        } ?: emptyList()
+    }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(MoneyMateTheme.colors.white)
     ) {
-        TopAppBar(
-            modifier = Modifier,
-            title = {
-                Box(modifier = Modifier.fillMaxWidth()) {
+        if (uiState.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MoneyMateTheme.colors.deepBlue
+            )
+            Log.d("MarketInfoScreen", "Loading...")
+        }
+
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            TopAppBar(
+                modifier = Modifier,
+                title = {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Icon(
+                            modifier = Modifier
+                                .clickable {
+                                    onNavigateBack()
+                                },
+                            painter = painterResource(id = R.drawable.ic_back),
+                            contentDescription = "back icon"
+                        )
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "증시 정보",
+                            style = MoneyMateTheme.typography.head_02_B_20
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MoneyMateTheme.colors.white
+                )
+            )
+            Spacer(modifier = Modifier.size(20.dp))
+            // 드롭다운 메뉴
+            Box(
+                modifier = Modifier
+                    .padding(start = 20.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .clickable { dropdownExpanded = !dropdownExpanded },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = selectedDropdownMenu,
+                        style = MoneyMateTheme.typography.head_03_B_16
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
                     Icon(
                         modifier = Modifier
-                            .clickable {
-                                onNavigateBack()
-                            },
+                            .rotate(270f),
                         painter = painterResource(id = R.drawable.ic_back),
-                        contentDescription = "back icon"
-                    )
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = "증시 정보",
-                        style = MoneyMateTheme.typography.head_02_B_20
+                        contentDescription = "dropdown icon"
                     )
                 }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MoneyMateTheme.colors.white
-            )
-        )
-        Spacer(modifier = Modifier.size(20.dp))
-        // 드롭다운 메뉴
-        Box(
-            modifier = Modifier
-                .padding(start = 20.dp)
-        ) {
-            Row(
-                modifier = Modifier
-                    .clickable { dropdownExpanded = !dropdownExpanded },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = selectedDropdownMenu,
-                    style = MoneyMateTheme.typography.head_03_B_16
-                )
-                Spacer(modifier = Modifier.size(4.dp))
-                Icon(
+                DropdownMenu(
                     modifier = Modifier
-                        .rotate(270f),
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "dropdown icon"
-                )
-            }
-            DropdownMenu(
-                modifier = Modifier
-                    .background(color = MoneyMateTheme.colors.backgroundWhite),
-                expanded = dropdownExpanded,
-                offset = DpOffset(0.dp, 0.dp),
-                onDismissRequest = { dropdownExpanded = false }
-            ) {
-                dropdownList.forEachIndexed { index, selectionOption ->
-                    DropdownMenuItem(
-                        modifier = Modifier
-                            .background(color = MoneyMateTheme.colors.backgroundWhite),
-                        text = { Text(text = selectionOption) },
-                        onClick = {
-                            selectedDropdownMenu = dropdownList[index]
-                            dropdownExpanded = false
-                            when(selectedDropdownMenu){
-                                dropdownList[0] -> Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu")
-                                dropdownList[1] -> {
-                                    selectedMarket = koreanMarkets[0]
-                                    Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu, selectedMarket: $selectedMarket")
+                        .background(color = MoneyMateTheme.colors.backgroundWhite),
+                    expanded = dropdownExpanded,
+                    offset = DpOffset(0.dp, 0.dp),
+                    onDismissRequest = { dropdownExpanded = false }
+                ) {
+                    dropdownList.forEachIndexed { index, selectionOption ->
+                        DropdownMenuItem(
+                            modifier = Modifier
+                                .background(color = MoneyMateTheme.colors.backgroundWhite),
+                            text = { Text(text = selectionOption) },
+                            onClick = {
+                                selectedDropdownMenu = dropdownList[index]
+                                dropdownExpanded = false
+                                when (selectedDropdownMenu) {
+                                    dropdownList[0] -> Log.d(
+                                        "StockMarketScreen",
+                                        "selectedDropdownMenu: $selectedDropdownMenu"
+                                    )
+
+                                    dropdownList[1] -> {
+                                        selectedMarket = koreanMarkets[0]
+                                        viewModel.loadMarketData(selectedMarket, true)
+                                        Log.d(
+                                            "StockMarketScreen",
+                                            "selectedDropdownMenu: $selectedDropdownMenu, selectedMarket: $selectedMarket"
+                                        )
+                                    }
+
+                                    dropdownList[2] -> {
+                                        selectedMarket = foreignMarkets[0]
+                                        viewModel.loadMarketData(selectedMarket, false)
+                                        Log.d(
+                                            "StockMarketScreen",
+                                            "selectedDropdownMenu: $selectedDropdownMenu, selectedMarket: $selectedMarket"
+                                        )
+                                    }
                                 }
-                                dropdownList[2] -> {
-                                    selectedMarket = foreignMarkets[0]
-                                    Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu, selectedMarket: $selectedMarket")
-                                }
-                            }
-                        },
-                    )
-                }
-            }
-        }
-        Spacer(modifier = Modifier.size(10.dp))
-        // 시장 선택을 위한 버튼 컴포넌트
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp)
-                .verticalScroll(scrollState)
-        ) {
-            when (selectedDropdownMenu) {
-                "경제 지표" -> {
-                    // 지수 정보 조회 컴포넌트
-                    MarketIndexComponent(
-                        modifier = Modifier.fillMaxWidth(),
-                        indexList = listOf(
-                            MarketIndexData("코스피", "2,450.25", "+1.25%"),
-                            MarketIndexData("코스닥", "800.50", "-0.75%"),
-                            MarketIndexData("S&P 500", "4,500.75", "+0.50%"),
-                            MarketIndexData("나스닥", "13,200.30", "+2.10%"),
-                            MarketIndexData("다우존스", "34,000.10", "-0.30%")
-                        ),
-                        currencyList = listOf(
-                            MarketIndexData("USD/KRW", "1,200.50", "+0.10%"),
-                            MarketIndexData("EUR/KRW", "1,350.75", "-0.20%"),
-                            MarketIndexData("JPY/KRW", "1,100.30", "+0.05%"),
-                            MarketIndexData("CNY/KRW", "180.25", "-0.15%")
+                            },
                         )
-                    )
+                    }
                 }
-
-                "국내 주식" -> {
-                    // 시장 선택 버튼
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        koreanMarkets.forEach { market ->
-                            Button(
-                                modifier = Modifier
-                                    .border(
-                                        width = 2.dp,
-                                        color = MoneyMateTheme.colors.deepBlue,
-                                        shape = RoundedCornerShape(25.dp)
-                                    )
-                                    .size(width = 72.dp, height = 42.dp),
-                                shape = RoundedCornerShape(25.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (selectedMarket == market) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
-                                    contentColor = if (selectedMarket == market) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
-                                ),
-                                onClick = {
-                                    selectedMarket = market
-                                    Log.d("StockMarketScreen", "selectedMarket: $selectedMarket")
-                                },
-                            ) {
-                                Text(text = market)
-                            }
-                            if (market != koreanMarkets.last()) {
-                                Spacer(modifier = Modifier.size(4.dp))
+            }
+            Spacer(modifier = Modifier.size(10.dp))
+            // 시장 선택을 위한 버튼 컴포넌트
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(scrollState)
+            ) {
+                when (selectedDropdownMenu) {
+                    "경제 지표" -> {
+                        // 지수 정보 조회 컴포넌트
+                        MarketIndexComponent(
+                            modifier = Modifier.fillMaxWidth(),
+                            indexList = uiState.marketIndexes.map { it ->
+                                MarketIndexData(
+                                    indexName = it.indexName,
+                                    indexValue = it.closePrice,
+                                    profitRate = it.fluctuationsRatio,
+                                    fluctuation = it.compareToPreviousClosePrice,
+                                    status = it.compareToPreviousPrice.name
+                                )
+                            },
+                            currencyList = uiState.exchangeRates?.result?.map { it ->
+                                MarketIndexData(
+                                    indexName = it.name,
+                                    indexValue = it.closePrice,
+                                    profitRate = it.fluctuationsRatio,
+                                    fluctuation = it.fluctuations,
+                                    status = it.fluctuationsType.name
+                                )
+                            } ?: emptyList()
+                        )
+                        Log.d("MarketInfoScreen", "selectedDropdownMenu: $selectedDropdownMenu")
+                    }
+                    "국내 주식" -> {
+                        // 카테고리별 Top 20 항목들
+                        StockMarketComponent(
+                            modifier = Modifier.fillMaxWidth(),
+                            marketName = selectedMarket,
+                            marketTop20List = marketTop20List,
+                            increasingTop20List = increasingTop20List,
+                            decreasingTop20List = decreasingTop20List
+                        )
+                    }
+                    "해외 주식" -> {
+                        // 시장 선택 버튼
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            foreignMarkets.forEach { market ->
+                                Button(
+                                    modifier = Modifier
+                                        .border(
+                                            width = 2.dp,
+                                            color = MoneyMateTheme.colors.deepBlue,
+                                            shape = RoundedCornerShape(25.dp)
+                                        )
+                                        .size(width = 90.dp, height = 42.dp),
+                                    shape = RoundedCornerShape(25.dp),
+                                    contentPadding = PaddingValues(0.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = if (selectedMarket == market) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
+                                        contentColor = if (selectedMarket == market) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
+                                    ),
+                                    onClick = {
+                                        selectedMarket = market
+                                        viewModel.loadMarketData(selectedMarket, false)
+                                        Log.d(
+                                            "StockMarketScreen",
+                                            "selectedMarket: $selectedMarket"
+                                        )
+                                    },
+                                ) {
+                                    Text(text = market)
+                                }
+                                if (market != foreignMarkets.last()) {
+                                    Spacer(modifier = Modifier.size(4.dp))
+                                }
                             }
                         }
+                        Spacer(modifier = Modifier.size(20.dp))
+                        // 카테고리별 Top 20 항목들
+                        StockMarketComponent(
+                            modifier = Modifier.fillMaxWidth(),
+                            marketName = selectedMarket,
+                            marketTop20List = marketTop20List,
+                            increasingTop20List = increasingTop20List,
+                            decreasingTop20List = decreasingTop20List
+                        )
                     }
-                    Spacer(modifier = Modifier.size(20.dp))
-                    // 카테고리별 Top 20 항목들
-                    StockMarketComponent(
-                        modifier = Modifier.fillMaxWidth(),
-                        marketName = selectedMarket,
-                        marketTop20List = marketTop20List,
-                        increasingTop20List = increasingTop20List,
-                        decreasingTop20List = decreasingTop20List
-                    )
-                }
-
-                "해외 주식" -> {
-                    // 시장 선택 버튼
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        foreignMarkets.forEach { market ->
-                            Button(
-                                modifier = Modifier
-                                    .border(
-                                        width = 2.dp,
-                                        color = MoneyMateTheme.colors.deepBlue,
-                                        shape = RoundedCornerShape(25.dp)
-                                    )
-                                    .size(width = 90.dp, height = 42.dp),
-                                shape = RoundedCornerShape(25.dp),
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (selectedMarket == market) MoneyMateTheme.colors.deepBlue else MoneyMateTheme.colors.white,
-                                    contentColor = if (selectedMarket == market) MoneyMateTheme.colors.white else MoneyMateTheme.colors.deepBlue
-                                ),
-                                onClick = {
-                                    selectedMarket = market
-                                    Log.d("StockMarketScreen", "selectedMarket: $selectedMarket")
-                                },
-                            ) {
-                                Text(text = market)
-                            }
-                            if (market != foreignMarkets.last()) {
-                                Spacer(modifier = Modifier.size(4.dp))
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.size(20.dp))
-                    // 카테고리별 Top 20 항목들
-                    StockMarketComponent(
-                        modifier = Modifier.fillMaxWidth(),
-                        marketName = selectedMarket,
-                        marketTop20List = marketTop20List,
-                        increasingTop20List = increasingTop20List,
-                        decreasingTop20List = decreasingTop20List
-                    )
                 }
             }
         }

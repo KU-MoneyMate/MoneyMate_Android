@@ -18,14 +18,16 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.kuit.moneymate"
+        applicationId = "com.moneymate.moneymate"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String","BASE_URL", "\"${properties["base.url"]}\"".toString())
+        buildConfigField("String","BASE_URL", "\"${properties["base.url"]}\"")
+        buildConfigField("String","FOREIGN_STOCK_BASE_URL", "\"${properties["foreign.stock.base.url"]}\"")
+        buildConfigField("String","DOMESTIC_STOCK_BASE_URL", "\"${properties["domestic.stock.base.url"]}\"")
     }
 
     buildTypes {

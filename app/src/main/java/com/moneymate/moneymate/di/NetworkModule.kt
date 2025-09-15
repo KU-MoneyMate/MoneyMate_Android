@@ -19,18 +19,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    @Provides
-    @Singleton
-    fun providesOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
-        authInterceptor: AuthInterceptor,
-        tokenAuthenticator: TokenAuthenticator
-    ): OkHttpClient =
-        OkHttpClient.Builder().apply {
-            addInterceptor(loggingInterceptor)
-            addInterceptor(authInterceptor)
-            authenticator(tokenAuthenticator)
-        }.build()
 
     @Provides
     @Singleton
@@ -46,11 +34,70 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesRetrofit(
+    fun providesDefaultOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor,
+        tokenAuthenticator: TokenAuthenticator
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(loggingInterceptor)
+            addInterceptor(authInterceptor)
+            authenticator(tokenAuthenticator)
+        }.build()
+
+    @Provides
+    @Singleton
+    @ForeignStockOkHttpClient
+    fun providesStockOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(loggingInterceptor)
+        }.build()
+
+    @Provides
+    @Singleton
+    @DomesticStockOkHttpClient
+    fun providesDomesticStockOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(loggingInterceptor)
+        }.build()
+
+    @Provides
+    @Singleton
+    @DefaultRetrofit
+    fun providesDefaultRetrofit(
         client: OkHttpClient,
         converterFactory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)
+        .client(client)
+        .addConverterFactory(converterFactory)
+        .build()
+
+    @Provides
+    @Singleton
+    @ForeignStockRetrofit
+    fun providesForeignStockRetrofit(
+        @ForeignStockOkHttpClient client: OkHttpClient,
+        converterFactory: Converter.Factory
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(BuildConfig.FOREIGN_STOCK_BASE_URL)
+        .client(client)
+        .addConverterFactory(converterFactory)
+        .build()
+
+
+    @Provides
+    @Singleton
+    @DomesticStockRetrofit
+    fun providesDomesticStockRetrofit(
+        @DomesticStockOkHttpClient client: OkHttpClient,
+        converterFactory: Converter.Factory
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(BuildConfig.DOMESTIC_STOCK_BASE_URL)
         .client(client)
         .addConverterFactory(converterFactory)
         .build()
