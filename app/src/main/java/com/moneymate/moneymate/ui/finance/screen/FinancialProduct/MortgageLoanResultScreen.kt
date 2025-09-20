@@ -30,7 +30,7 @@ import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun DepositProductResultScreen(
+fun MortgageLoanResultScreen(
     modifier: Modifier,
     //viewModel: FinanceViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
@@ -120,88 +120,175 @@ fun DepositProductResultScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "저축 금리",
+                    text = "대출금리 유형",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "1.8%",
+                    text = "변동금리",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
             }
 
-            // 최고 우대금리
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "최고 우대금리",
+                    text = "최저금리",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "3.30%",
+                    text = "4.16"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
             }
-
-            // 최고한도
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "최고한도",
+                    text = "최고금리",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "10억원",
+                    text = "5.26"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
             }
 
-            // 이자 계산 방식
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "이자 계산 방식",
+                    text = "전월취급평균금리",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
-                Text(text = "복리", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
+                Text(
+                    text = "-",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle
+                )
             }
 
-            // 만기 후 이자율
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
-                    text = "만기 후 이자율",
+                    text = "대출 부대비용",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "* 만기후 1개월 이내 : 마지막 회전주기의 약정이율과 만기일에 공시된 이 상품의 이율 중 낮은 이율\n* 만기후 1개월 초과 : 보통예금금리",
+                    text = "- 인지세 : 해당세액의 50%(대출금액 5천만원 이하시 없음)\n- 국민주택채권 매입 : 대출금액 × 120% × 1% × 채권할인율",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     textAlign = TextAlign.End
                 )
-
             }
 
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = "중도상환 수수료",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+                Text(
+                    text = "- 고정금리 : 중도상환대출금×0.74%×잔존기간÷대출기간\n- 변동금리 : 중도상환대출금×0.74%×잔존기간÷대출기간",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle,
+                    textAlign = TextAlign.End
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = "연체이자율",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle,
+                    modifier = Modifier.padding(end = 16.dp)
+                )
+                Text(
+                    text = "- 적용금리+ 3%\n(가계대출 최고연체이자율 : 12%)",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle,
+                    textAlign = TextAlign.End
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "대출한도",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle
+                )
+                Text(
+                    text = "LTV 70%",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "담보유형",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle
+                )
+                Text(
+                    text = "아파트",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "대출상환유형",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle
+                )
+                Text(
+                    text = "만기일시상환방식",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = ProductTextStyle
+                )
+            }
+            
             // 가입 방법
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
@@ -218,78 +305,6 @@ fun DepositProductResultScreen(
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
-            }
-
-            // 가입 대상
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "가입 대상",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "제한 없음",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-            }
-
-            // 가입 제한
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "가입 제한",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(text = "없음", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
-            }
-
-            // 우대조건
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "우대조건",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(text = "없음", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
-            }
-
-            // 기타 유의사항
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Text(
-                    text = "기타 유의사항",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle,
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    Text(
-                        text = "인터넷뱅킹, 스마트폰\n* 계약기간 36개월(12개월 회전주기 변동금리 상품)",
-                        color = MoneyMateTheme.colors.darkGray,
-                        style = ProductTextStyle,
-                        textAlign = TextAlign.End,
-                        lineHeight = 28.sp
-                    )
-                }
             }
 
             // 공시 시작일
@@ -351,9 +366,9 @@ fun DepositProductResultScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun SavingProductResultScreenPreview() {
+fun MortgageLoanResultScreenPreview() {
     MoneyMateTheme {
-        DepositProductResultScreen(
+        MortgageLoanResultScreen(
             modifier = Modifier,
             onNavigateBack = {}
         )
