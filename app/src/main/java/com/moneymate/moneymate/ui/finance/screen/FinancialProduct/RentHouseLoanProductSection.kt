@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -22,12 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.common.BottomFullWidthButton
-import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.FinancialProductCheckbox
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun SavingProductSection(
+fun RentHouseLoanProductSection(
     modifier: Modifier,
 
     ){
@@ -38,93 +36,9 @@ fun SavingProductSection(
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ){
-        Row (
+                Row (
             modifier = Modifier
                 .padding(top = 30.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Text(
-                modifier = Modifier.padding(top=5.dp),
-                text = "저축 금액",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                    color = MoneyMateTheme.colors.darkGray
-                )
-            )
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
-            ) {
-                MoneyMateTextField(
-                    Modifier.width(218.7.dp).align(Alignment.CenterVertically), "10000000", {}, {})
-                Text(
-                    text = "원",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                        color = MoneyMateTheme.colors.darkGray
-                    )
-                )
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ){
-            Text(
-                text = "최대 1000만원",
-                modifier = Modifier
-                    .padding(top = 4.dp),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                    color = MoneyMateTheme.colors.lightGray
-                )
-            )
-        }
-        Row (
-            modifier = Modifier
-                .padding(top = 37.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Text(
-                text = "저축 예정 기간",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                    color = MoneyMateTheme.colors.darkGray
-                )
-            )
-
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Row (
-                    modifier = Modifier,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ){
-                    FinancialProductCheckbox(Modifier, "1개월")
-                    FinancialProductCheckbox(Modifier, "3개월")
-                    FinancialProductCheckbox(Modifier, "6개월")
-                }
-                Row (
-                    modifier = Modifier,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ){
-                    FinancialProductCheckbox(Modifier, "12개월")
-                    FinancialProductCheckbox(Modifier, "24개월")
-                    FinancialProductCheckbox(Modifier, "36개월")
-                }
-            }
-        }
-        Row (
-            modifier = Modifier
-                .padding(top = 55.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
@@ -138,11 +52,12 @@ fun SavingProductSection(
             )
             Row (
                 modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ){
                 FinancialProductCheckbox(Modifier, "전체")
                 FinancialProductCheckbox(Modifier, "은행")
                 FinancialProductCheckbox(Modifier, "저축은행")
+                FinancialProductCheckbox(Modifier, "보험")
             }
 
         }
@@ -153,7 +68,43 @@ fun SavingProductSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "적립방식",
+                text = "상환방식",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
+                    color = MoneyMateTheme.colors.darkGray
+                )
+            )
+            Column (
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ){
+                Row (
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ){
+                    FinancialProductCheckbox(Modifier, "전체")
+                    FinancialProductCheckbox(Modifier, "만기일시상환")
+                }
+                Row (
+                    modifier = Modifier,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ){
+                    FinancialProductCheckbox(Modifier, "원금분리상환")
+                    FinancialProductCheckbox(Modifier, "원리금분리상환")
+                }
+            }
+
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(top = 55.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "금리방식",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontFamily = FontFamily(Font(R.font.pretendard_medium)),
@@ -165,58 +116,11 @@ fun SavingProductSection(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ){
                 FinancialProductCheckbox(Modifier, "전체")
-                FinancialProductCheckbox(Modifier, "정액적립식")
-                FinancialProductCheckbox(Modifier, "자유적립식")
+                FinancialProductCheckbox(Modifier, "변동금리")
+                FinancialProductCheckbox(Modifier, "고정금리")
             }
         }
 
-        Row(
-            modifier = Modifier
-                .padding(top = 55.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "이자계산방식",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                    color = MoneyMateTheme.colors.darkGray
-                )
-            )
-            Row (
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ){
-                FinancialProductCheckbox(Modifier, "전체")
-                FinancialProductCheckbox(Modifier, "단리")
-                FinancialProductCheckbox(Modifier, "복리")
-            }
-        }
-        Row(
-            modifier = Modifier
-                .padding(top = 55.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "가입대상",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                    color = MoneyMateTheme.colors.darkGray
-                )
-            )
-            Row (
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ){
-                FinancialProductCheckbox(Modifier, "제한없음")
-                FinancialProductCheckbox(Modifier, "서민전용")
-                FinancialProductCheckbox(Modifier, "일부제한")
-            }
-
-        }
         Row(
             modifier = Modifier
                 .padding(top = 55.dp)
@@ -346,9 +250,9 @@ fun SavingProductSection(
 
 @Preview(showBackground = true)
 @Composable
-fun SavingProductSectionPreview() {
+fun RentHouseLoanProductSectionPreview() {
     MoneyMateTheme {
-        SavingProductSection(
+        RentHouseLoanProductSection(
             modifier = Modifier,
             //onNavigateBack = {}
         )

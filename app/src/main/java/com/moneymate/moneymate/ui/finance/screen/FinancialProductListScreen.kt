@@ -32,7 +32,6 @@ import com.moneymate.moneymate.ui.finance.component.FinancialProduct.MortgageLoa
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.ProductViewType
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.RentHouseLoanInfo
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.SavingInfo
-import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable

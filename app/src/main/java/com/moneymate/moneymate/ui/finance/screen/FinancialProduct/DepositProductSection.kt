@@ -27,10 +27,10 @@ import com.moneymate.moneymate.ui.finance.component.FinancialProduct.FinancialPr
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun SavingProductSection(
+fun DepositProductSection(
     modifier: Modifier,
 
-    ){
+){
     val scrollState = rememberScrollState()
 
     Column (
@@ -75,7 +75,7 @@ fun SavingProductSection(
             horizontalArrangement = Arrangement.End
         ){
             Text(
-                text = "최대 1000만원",
+                text = "최대 10억원",
                 modifier = Modifier
                     .padding(top = 4.dp),
                 style = TextStyle(
@@ -153,30 +153,6 @@ fun SavingProductSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "적립방식",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                    color = MoneyMateTheme.colors.darkGray
-                )
-            )
-            Row (
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ){
-                FinancialProductCheckbox(Modifier, "전체")
-                FinancialProductCheckbox(Modifier, "정액적립식")
-                FinancialProductCheckbox(Modifier, "자유적립식")
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .padding(top = 55.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
                 text = "이자계산방식",
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -192,6 +168,7 @@ fun SavingProductSection(
                 FinancialProductCheckbox(Modifier, "단리")
                 FinancialProductCheckbox(Modifier, "복리")
             }
+
         }
         Row(
             modifier = Modifier
@@ -346,9 +323,9 @@ fun SavingProductSection(
 
 @Preview(showBackground = true)
 @Composable
-fun SavingProductSectionPreview() {
+fun DepositProductSectionPreview() {
     MoneyMateTheme {
-        SavingProductSection(
+        DepositProductSection(
             modifier = Modifier,
             //onNavigateBack = {}
         )

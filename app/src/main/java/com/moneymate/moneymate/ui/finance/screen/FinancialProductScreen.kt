@@ -29,9 +29,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
-import com.moneymate.moneymate.ui.finance.FinanceViewModel
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
@@ -141,8 +141,7 @@ fun FinancialProductScreen(
                 }
             }
         }
-
-        SavingProductSection(Modifier)
+        CreditLoanProductSection(Modifier)
     }
 }
 
