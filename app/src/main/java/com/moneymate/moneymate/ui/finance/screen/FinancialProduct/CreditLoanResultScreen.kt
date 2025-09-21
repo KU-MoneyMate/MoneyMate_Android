@@ -84,7 +84,7 @@ fun CreditLoanResultScreen(
 
         // 상품명
         Text(
-            text = "e-The프리미엄 회전정기예금",
+            text = "협약금리 外 신용대출상품",
             color = MoneyMateTheme.colors.darkGray,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
@@ -107,7 +107,7 @@ fun CreditLoanResultScreen(
             ) {
                 Text(text = "은행명", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
                 Text(
-                    text = "예가람저축은행",
+                    text = "우리은행",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )
@@ -142,7 +142,7 @@ fun CreditLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "일반신용대출",
+                    text = "마이너스한도대출",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -159,7 +159,7 @@ fun CreditLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "고정금리",
+                    text = "대출금리",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -179,42 +179,42 @@ fun CreditLoanResultScreen(
                     horizontalAlignment = Alignment.End
                 ){
                     Text(
-                        text = "900점 초과 : "+ "2.77" +"%",
+                        text = "900점 초과 : "+ "4.79" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
                     Text(
-                        text = "801~900점 : "+ "3.31" +"%",
+                        text = "801~900점 : "+ "5.11" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
                     Text(
-                        text = "701~800점 : "+ "3.95" +"%",
+                        text = "701~800점 : "+ "5.20" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
                     Text(
-                        text = "601~700점 : "+ "5.05" +"%",
+                        text = "601~700점 : "+ "6.91" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
                     Text(
-                        text = "501~600점 : "+ "7.26" +"%",
+                        text = "501~600점 : "+ "12.00" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
                     Text(
-                        text = "401~500점 : "+ "7.16" +"%",
+                        text = "401~500점 : "+ "-" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
                     Text(
-                        text = "301~400점 : "+ "8.99" +"%",
+                        text = "301~400점 : "+ "-" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
                     Text(
-                        text = "300점 이하 : "+ "7.92" +"%",
+                        text = "300점 이하 : "+ "-" +"%",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle
                     )
@@ -237,7 +237,7 @@ fun CreditLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "인터넷, 스마트폰",
+                    text = "영업점,인터넷,스마트폰",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -255,7 +255,7 @@ fun CreditLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "-",
+                    text = "2025-08-19",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -273,7 +273,7 @@ fun CreditLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "2027-08-21",
+                    text = "9999-12-31",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -291,7 +291,7 @@ fun CreditLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "1877-7788",
+                    text = "15885000",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )

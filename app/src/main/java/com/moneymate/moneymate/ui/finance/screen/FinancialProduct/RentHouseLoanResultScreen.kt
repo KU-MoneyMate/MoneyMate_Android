@@ -84,7 +84,7 @@ fun RentHouseLoanResultScreen(
 
         // 상품명
         Text(
-            text = "e-The프리미엄 회전정기예금",
+            text = "우리전세론(서울보증)",
             color = MoneyMateTheme.colors.darkGray,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
@@ -107,7 +107,7 @@ fun RentHouseLoanResultScreen(
             ) {
                 Text(text = "은행명", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
                 Text(
-                    text = "예가람저축은행",
+                    text = "우리은행",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )
@@ -125,7 +125,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "변동금리",
+                    text = "고정금리",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -142,7 +142,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "4.16"+"%",
+                    text = "3.48"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -158,7 +158,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "5.26"+"%",
+                    text = "4.18"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -175,7 +175,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "3.79"+"%",
+                    text = "3.75"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -193,7 +193,7 @@ fun RentHouseLoanResultScreen(
                     modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "- 인지세 : 해당세액의 50%(대출금액 5천만원 이하시 없음)\n- 국민주택채권 매입 : 대출금액 × 120% × 1% × 채권할인율",
+                    text = "- 인지세 : 해당세액의 50%(대출금액 5천만원 이하시 없음)\n- 질권설정, 채권양도통지 비용 : 3만원",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     textAlign = TextAlign.End
@@ -212,7 +212,7 @@ fun RentHouseLoanResultScreen(
                     modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "- 고정금리 : 중도상환대출금×0.74%×잔존기간÷대출기간\n- 변동금리 : 중도상환대출금×0.74%×잔존기간÷대출기간",
+                    text = "- 고정금리 : 중도상환대출금×0.52%×잔존기간÷대출기간\n- 변동금리 : 중도상환대출금×0.37%×잔존기간÷대출기간",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     textAlign = TextAlign.End
@@ -249,7 +249,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "5억원",
+                    text = "최대5억원",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -266,7 +266,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "만기일시상환방식",
+                    text = "분할상환방식",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -284,7 +284,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "인터넷, 스마트폰",
+                    text = "영업점, 모집인",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -302,7 +302,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "2025-06-13",
+                    text = "2025-08-20",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -320,7 +320,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "2027-08-21",
+                    text = "2026-08-19",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -338,7 +338,7 @@ fun RentHouseLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "1877-7788",
+                    text = "15885000",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )

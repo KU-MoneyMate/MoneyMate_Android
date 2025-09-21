@@ -84,7 +84,7 @@ fun DepositResultScreen(
 
         // 상품명
         Text(
-            text = "e-The프리미엄 회전정기예금",
+            text = "WON플러스예금",
             color = MoneyMateTheme.colors.darkGray,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
@@ -107,7 +107,7 @@ fun DepositResultScreen(
             ) {
                 Text(text = "은행명", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
                 Text(
-                    text = "예가람저축은행",
+                    text = "우리은행",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )
@@ -125,7 +125,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "1.8%",
+                    text = "2.45"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -143,7 +143,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "3.30%",
+                    text = "2.45"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -161,7 +161,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "10억원",
+                    text = "-",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -178,7 +178,7 @@ fun DepositResultScreen(
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
-                Text(text = "복리", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
+                Text(text = "단리", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
             }
 
             // 만기 후 이자율
@@ -194,7 +194,7 @@ fun DepositResultScreen(
                     modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "* 만기후 1개월 이내 : 마지막 회전주기의 약정이율과 만기일에 공시된 이 상품의 이율 중 낮은 이율\n* 만기후 1개월 초과 : 보통예금금리",
+                    text = "만기 후\n- 1개월이내 : 만기시점약정이율×50%\n- 1개월초과 6개월이내: 만기시점약정이율×30%\n- 6개월초과 : 만기시점약정이율×20%\n\n※ 만기시점 약정이율 : 일반정기예금 금리",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     textAlign = TextAlign.End
@@ -214,7 +214,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "인터넷, 스마트폰",
+                    text = "인터넷,스마트폰,전화(텔레뱅킹)",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -232,7 +232,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "제한 없음",
+                    text = "실명의 개인",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -249,21 +249,33 @@ fun DepositResultScreen(
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
-                Text(text = "없음", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
+                Text(text = "1", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
             }
 
             // 우대조건
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 Text(
                     text = "우대조건",
                     color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
+                    style = ProductTextStyle,
+                    modifier = Modifier.padding(end = 16.dp)
                 )
-                Text(text = "없음", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    Text(
+                        text = "해당사항 없음",
+                        color = MoneyMateTheme.colors.darkGray,
+                        style = ProductTextStyle,
+                        textAlign = TextAlign.End,
+                        lineHeight = 28.sp
+                    )
+                }
             }
 
             // 기타 유의사항
@@ -283,7 +295,7 @@ fun DepositResultScreen(
                     horizontalAlignment = Alignment.End,
                 ) {
                     Text(
-                        text = "인터넷뱅킹, 스마트폰\n* 계약기간 36개월(12개월 회전주기 변동금리 상품)",
+                        text = "- 가입기간: 1~36개월\n- 최소가입금액: 1만원 이상\n- 만기일을 일,월 단위로 자유롭게 선택 가능\n- 만기해지 시 신규일 당시 영업점과 인터넷 홈페이지에 고시된 계약기간별 금리 적용",
                         color = MoneyMateTheme.colors.darkGray,
                         style = ProductTextStyle,
                         textAlign = TextAlign.End,
@@ -304,7 +316,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "2025-06-13",
+                    text = "2025-08-20",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -322,7 +334,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "2027-08-21",
+                    text = "-",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -340,7 +352,7 @@ fun DepositResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "1877-7788",
+                    text = "15885000",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )
@@ -353,7 +365,7 @@ fun DepositResultScreen(
 @Composable
 fun DepositResultScreenPreview() {
     MoneyMateTheme {
-        SavingResultScreen(
+        DepositResultScreen(
             modifier = Modifier,
             onNavigateBack = {}
         )

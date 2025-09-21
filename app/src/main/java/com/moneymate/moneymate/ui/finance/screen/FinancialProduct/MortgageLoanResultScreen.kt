@@ -84,7 +84,7 @@ fun MortgageLoanResultScreen(
 
         // 상품명
         Text(
-            text = "e-The프리미엄 회전정기예금",
+            text = "아파트담보대출(일반)",
             color = MoneyMateTheme.colors.darkGray,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
@@ -107,7 +107,7 @@ fun MortgageLoanResultScreen(
             ) {
                 Text(text = "은행명", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
                 Text(
-                    text = "예가람저축은행",
+                    text = "주식회사 케이뱅크",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )
@@ -142,7 +142,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "4.16"+"%",
+                    text = "4.27"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -158,7 +158,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "5.26"+"%",
+                    text = "5.27"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -175,7 +175,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "-",
+                    text = "4.08"+"%",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -193,7 +193,7 @@ fun MortgageLoanResultScreen(
                     modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "- 인지세 : 해당세액의 50%(대출금액 5천만원 이하시 없음)\n- 국민주택채권 매입 : 대출금액 × 120% × 1% × 채권할인율",
+                    text = "1. 인지세 - 해당세액의 50%\n2. 근저당권 설정비 중 고객 부담 항목 \n   - 주택채권 매입비용 등",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     textAlign = TextAlign.End
@@ -212,7 +212,7 @@ fun MortgageLoanResultScreen(
                     modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "- 고정금리 : 중도상환대출금×0.74%×잔존기간÷대출기간\n- 변동금리 : 중도상환대출금×0.74%×잔존기간÷대출기간",
+                    text = "중도상환금액*해약금요율\n(1.40%)*(3년-대출실행 후 경과기간)/3년, \n대출 실행 3년 이후 면제",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     textAlign = TextAlign.End
@@ -231,7 +231,7 @@ fun MortgageLoanResultScreen(
                     modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "- 적용금리+ 3%\n(가계대출 최고연체이자율 : 12%)",
+                    text = "적용금리+3%(최고 15%) \n단, 대출이자가 연 15% 이상일 경우\n 연체이자 연 2%를 가산",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle,
                     textAlign = TextAlign.End
@@ -241,17 +241,19 @@ fun MortgageLoanResultScreen(
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 Text(
                     text = "대출한도",
                     color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
+                    style = ProductTextStyle,
+                    modifier = Modifier.padding(end = 16.dp)
                 )
                 Text(
-                    text = "LTV 70%",
+                    text = "LTV 최대 70%, \n신규 - 최대 2억원, \n대환 - 최대 10억원",
                     color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
+                    style = ProductTextStyle,
+                    textAlign = TextAlign.End
                 )
             }
 
@@ -283,7 +285,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "만기일시상환방식",
+                    text = "분할상환방식",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -301,7 +303,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "인터넷, 스마트폰",
+                    text = "스마트폰",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -319,7 +321,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "2025-06-13",
+                    text = "2025-08-20",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -337,7 +339,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "2027-08-21",
+                    text = "2025-09-20",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle
                 )
@@ -355,7 +357,7 @@ fun MortgageLoanResultScreen(
                     style = ProductTextStyle
                 )
                 Text(
-                    text = "1877-7788",
+                    text = "15221000",
                     color = MoneyMateTheme.colors.darkGray,
                     style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
                 )
