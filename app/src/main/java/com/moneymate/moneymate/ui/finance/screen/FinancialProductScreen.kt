@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,9 +17,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,16 +45,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.DepositProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.RentHouseLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FinancialProductScreen(
     modifier: Modifier,
     //viewModel: FinanceViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
 ) {
+
+    // 1. 드롭다운 메뉴에 표시할 항목 리스트
+    val items = listOf("정기 예금", "적금", "주택담보대출", "전세자금대출", "개인신용대출")
+
+    // 2. 메뉴의 확장 상태를 저장하는 변수 (열렸는지, 닫혔는지)
+    var expanded by remember { mutableStateOf(false) }
+
+    // 3. 현재 선택된 항목의 텍스트를 저장하는 변수
+    var selectedText by remember { mutableStateOf("선택해주세요.") }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -97,51 +124,63 @@ fun FinancialProductScreen(
             )
             Spacer(Modifier.width(17.dp))
 
-            //드롭다운
-            Box(
-                modifier = Modifier
-                    .weight(1f)
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = {
+                    expanded = !expanded //확장 상태를 반전시켜 메뉴를 열고 닫음
+                }
             ) {
-                val shape = RoundedCornerShape(10.dp)
-                Row(
+                OutlinedTextField(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(41.dp)
-                        .clip(shape)
-                        .border(
-                            width = 1.dp,
-                            color = MoneyMateTheme.colors.darkGray,
-                            shape = shape
-                        )
-                        .clickable {  },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "선택해주세요.",
-                        style = TextStyle(
-                            color = MoneyMateTheme.colors.darkGray,
-                            fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                            fontSize = 18.sp
-                        ),
-                        maxLines = 1,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 17.dp)
-                    )
+                        .menuAnchor()
+                        .padding(start = 15.dp),
+                    value = selectedText,
+                    onValueChange = {},
+                    readOnly = true,
+                    shape = RoundedCornerShape(10.dp),
+                    textStyle = TextStyle(
+                        color = MoneyMateTheme.colors.darkGray,
+                        fontFamily = FontFamily(Font(R.font.pretendard_medium)),
+                        fontSize = 18.sp,
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MoneyMateTheme.colors.darkGray,
+                        unfocusedBorderColor = MoneyMateTheme.colors.darkGray,
+                        cursorColor = MoneyMateTheme.colors.darkGray
+                    ),
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                    },
 
-                    Icon(
-                        painter = painterResource(R.drawable.ic_mypage_arrow),
-                        contentDescription = "드롭다운 아이콘",
-                        modifier = Modifier
-                            .size(25.dp)
-                            .padding(end = 13.dp)
-                            .rotate(90F),
-                    )
+                )
+
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    }
+                ) {
+                    items.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(text = item) },
+                            onClick = {
+                                selectedText = item
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
-        CreditLoanProductSection(Modifier)
+
+        when (selectedText) {
+            "정기 예금" -> DepositProductSection(Modifier)
+            "적금" -> SavingProductSection(Modifier)
+            "개인신용대출" -> CreditLoanProductSection(Modifier)
+            "주택담보대출" -> MortgageLoanProductSection(Modifier)
+            "전세자금대출" -> RentHouseLoanProductSection(Modifier)
+            else -> {  }
+        }
     }
 }
 
@@ -153,7 +192,6 @@ fun FinancialProductScreenPreview() {
     MoneyMateTheme {
         FinancialProductScreen(
             modifier = Modifier,
-
             onNavigateBack = {}
         )
     }
