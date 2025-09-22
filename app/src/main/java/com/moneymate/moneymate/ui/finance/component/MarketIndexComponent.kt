@@ -129,7 +129,7 @@ fun MarketIndexItem(
                 style = MoneyMateTheme.typography.head_04_SB_14,
                 color = when (status) {
                     "RISING", "UPPER_LIMIT" -> MoneyMateTheme.colors.stockRed
-                    "FALLING" -> MoneyMateTheme.colors.stockBlue
+                    "FALLING", "LOWER_LIMIT" -> MoneyMateTheme.colors.stockBlue
                     else -> MoneyMateTheme.colors.darkGray
                 }
             )
