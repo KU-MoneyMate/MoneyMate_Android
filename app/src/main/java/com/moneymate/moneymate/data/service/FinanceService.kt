@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.data.service
 
+import com.moneymate.moneymate.data.dto.finance.response.DepositProductResponse
 import com.moneymate.moneymate.data.dto.finance.response.NewsDetailResponse
 import com.moneymate.moneymate.data.dto.finance.response.NewsListResponse
 import retrofit2.http.GET
@@ -14,4 +15,15 @@ interface FinanceService {
         @Query("publisher") publisher : String,
         @Query("category") category: String
     ) : NewsDetailResponse
+
+    @GET("financial/products/deposit")
+    suspend fun getDepositProducts(
+        @Query("savingAmount") savingAmount: Int,
+        @Query("period") period: Int,
+        @Query("finGrpCode") finGrpCode: String,
+        @Query("region") region: String,
+        @Query("intrType") intrType: String,
+        @Query("joinDeny") joinDeny: String,
+        @Query("joinWay") joinWay: String
+    ): DepositProductResponse
 }

@@ -1,18 +1,25 @@
 package com.moneymate.moneymate.ui.navigation
 
 import SpendingStatisticsScreen
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
+import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
 import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.HomeScreen
 import com.moneymate.moneymate.ui.asset.screen.StockHoldingScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
 import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.DepositResultScreen
+import com.moneymate.moneymate.ui.finance.screen.FinancialProductListScreen
 import com.moneymate.moneymate.ui.finance.screen.FinancialProductScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
@@ -24,6 +31,7 @@ import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import java.net.URLEncoder
 
+@SuppressLint("ComposableDestinationInComposeScope")
 @Composable
 fun MoneyMateNavGraph(
     navController: NavHostController,
@@ -91,7 +99,7 @@ fun MoneyMateNavGraph(
                 }
             )
         }
-        composable(route = Route.StockHolding.route){
+        composable(route = Route.StockHolding.route) {
             StockHoldingScreen(
                 modifier = modifier,
                 onNavigateBack = {
@@ -105,13 +113,14 @@ fun MoneyMateNavGraph(
             FinanceScreen(
                 modifier = modifier,
                 onNewsClick = { navController.navigate(Route.News.route) },
-                onProductClick = { navController.navigate(Route.Product.route) }
+                onProductClick = { navController.navigate(Route.ProductGraph.route) }
             )
         }
         //경제뉴스 조회 화면
-        composable (
+        composable(
             route = Route.News.route,
-        ) { NewsScreen(
+        ) {
+            NewsScreen(
                 modifier = modifier,
                 onAddClick = { enum ->
                     navController.navigate("${Route.NewsPublisherHome.route}/$enum")
@@ -126,7 +135,7 @@ fun MoneyMateNavGraph(
             )
         }
         //언론사별 홈 화면
-        composable (
+        composable(
             route = "${Route.NewsPublisherHome.route}/{enum}",
         ) { backStackEntry ->
             val publisher = backStackEntry.arguments?.getString("enum") ?: ""
@@ -143,12 +152,12 @@ fun MoneyMateNavGraph(
             )
         }
         //기사 화면
-        composable (
+        composable(
             route = "${Route.NewsArticle.route}/{url}",
         ) { backStackEntry ->
             val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
             val url = URLDecoder.decode(encodedUrl, "UTF-8")
-            NewsArticleScreen (
+            NewsArticleScreen(
                 modifier = modifier,
                 url = url,
                 onNavigateBack = {
@@ -157,56 +166,106 @@ fun MoneyMateNavGraph(
             )
         }
         //은행 상품 정보
-        composable(route = Route.Product.route) {
-            FinancialProductScreen(
-                modifier = Modifier,
-                onNavigateBack = { navController.navigateUp() }
-            )
-        }
-
-        /* 자산 관리 */
-        composable(route = Route.Manage.route) {
-            ManageScreen(
-                modifier = modifier,
-                onRetireClick = {
-                    navController.navigate(Route.RetireGraph.route)
-                },
-                onAssetStatisticsClick = {
-                    navController.navigate(Route.AssetStatistics.route)
-                },
-                onSpendingStatisticsClick = {
-                    navController.navigate(Route.SpendingStatistics.route)
-                }
-            )
-        }
-        retireNavGraph(navController, modifier)
-        //소비통계 조회 화면
-        composable(
-            route = Route.SpendingStatistics.route
+        navigation(
+            startDestination = Route.Product.route,
+            route = Route.ProductGraph.route // 👈 1단계에서 추가한 그룹 경로 사용
         ) {
-            SpendingStatisticsScreen(
+            composable(route = Route.Product.route) {
+                FinancialProductScreen(
+                    modifier = Modifier,
+                    navController = navController, // 👈 NavController 전달
+                    onNavigateBack = { navController.navigateUp() },
+                    onNavigateToDepositList = { navController.navigate(Route.ProductList.route) }
+                )
+            }
+            composable(route = Route.ProductList.route) {
+                FinancialProductListScreen(
+                    modifier = modifier,
+                    navController = navController, // 👈 NavController 전달
+                    onNavigateBack = { navController.navigateUp() },
+                    onDepositClick = { item ->
+                        val json = Json.encodeToString(DepositProductItemDto.serializer(), item)
+                        val encoded = URLEncoder.encode(json, "UTF-8")
+                        navController.navigate("${Route.ProductDeposit.route}/$encoded")
+                    }
+                )
+            }
+            composable(
+                route = "${Route.ProductDeposit.route}/{item}",
+                arguments = listOf(navArgument("item") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val encoded = backStackEntry.arguments?.getString("item").orEmpty()
+                val json = URLDecoder.decode(encoded, "UTF-8")
+                val item = Json.decodeFromString(DepositProductItemDto.serializer(), json)
+
+                DepositResultScreen(
+                    modifier = modifier,
+                    onNavigateBack = { navController.navigateUp() },
+                    item = item
+                )
+            }
+        }
+        // 정기예금 상세
+        composable(
+            route = "${Route.ProductDeposit.route}/{item}",
+            arguments = listOf(
+                navArgument("item") { type = NavType.StringType; nullable = false }
+            )
+        ) { backStackEntry ->
+            val encoded = backStackEntry.arguments?.getString("item").orEmpty()
+            val json = URLDecoder.decode(encoded, "UTF-8")
+            val item = Json.decodeFromString(DepositProductItemDto.serializer(), json)
+
+            DepositResultScreen(
                 modifier = modifier,
-                onNavigateBack = {
-                    navController.navigateUp()
-                }
+                onNavigateBack = { navController.navigateUp() },
+                item = item
             )
 
-        }
-        // 자산 변동 통계 조회 화면
-        composable(route = Route.AssetStatistics.route){
-            AssetStatisticsScreen(
-                modifier = modifier,
-                onNavigateBack = {
-                    navController.navigateUp()
-                }
-            )
-        }
+            /* 자산 관리 */
+            composable(route = Route.Manage.route) {
+                ManageScreen(
+                    modifier = modifier,
+                    onRetireClick = {
+                        navController.navigate(Route.RetireGraph.route)
+                    },
+                    onAssetStatisticsClick = {
+                        navController.navigate(Route.AssetStatistics.route)
+                    },
+                    onSpendingStatisticsClick = {
+                        navController.navigate(Route.SpendingStatistics.route)
+                    }
+                )
+            }
+            retireNavGraph(navController, modifier)
+            //소비통계 조회 화면
+            composable(
+                route = Route.SpendingStatistics.route
+            ) {
+                SpendingStatisticsScreen(
+                    modifier = modifier,
+                    onNavigateBack = {
+                        navController.navigateUp()
+                    }
+                )
 
-        /* 마이페이지 */
-        composable(route = Route.MyPage.route) {
-            MyPageScreen(
-                modifier = modifier
-            )
+            }
+            // 자산 변동 통계 조회 화면
+            composable(route = Route.AssetStatistics.route) {
+                AssetStatisticsScreen(
+                    modifier = modifier,
+                    onNavigateBack = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+
+            /* 마이페이지 */
+            composable(route = Route.MyPage.route) {
+                MyPageScreen(
+                    modifier = modifier
+                )
+            }
         }
     }
 }

@@ -22,6 +22,9 @@ sealed class Route(val route: String){
     object NewsPublisherHome : Route(route = "news/publisher")
     object NewsArticle : Route(route = "news/newsArticle")
     object Product : Route(route = "product")
+    object ProductList : Route(route = "product/list")
+    object ProductDeposit : Route(route = "product/deposit")
+    object ProductGraph : Route(route = "product_graph")
 
     // 자산 관리
     object Manage: Route(route = "manage")

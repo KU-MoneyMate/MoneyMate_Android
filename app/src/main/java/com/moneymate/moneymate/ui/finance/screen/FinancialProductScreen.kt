@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,21 +44,37 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.moneymate.moneymate.R
-import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
+import com.moneymate.moneymate.ui.finance.FinanceViewModel
+//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.DepositProductSection
-import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
-import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.RentHouseLoanProductSection
-import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
+import com.moneymate.moneymate.ui.navigation.Route
+//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
+//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.RentHouseLoanProductSection
+//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FinancialProductScreen(
     modifier: Modifier,
-    //viewModel: FinanceViewModel = hiltViewModel(),
+    navController: NavController,
     onNavigateBack: () -> Unit,
+    onNavigateToDepositList: () -> Unit,
 ) {
+
+    val financeNavGraphEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry(Route.ProductGraph.route)
+    }
+    val viewModel: FinanceViewModel = hiltViewModel(financeNavGraphEntry)
+
+    LaunchedEffect(Unit) {
+        viewModel.navigateToDepositList.collect {
+            onNavigateToDepositList()
+        }
+    }
 
     // 1. 드롭다운 메뉴에 표시할 항목 리스트
     val items = listOf("정기 예금", "적금", "주택담보대출", "전세자금대출", "개인신용대출")
@@ -174,25 +191,29 @@ fun FinancialProductScreen(
         }
 
         when (selectedText) {
-            "정기 예금" -> DepositProductSection(Modifier)
-            "적금" -> SavingProductSection(Modifier)
-            "개인신용대출" -> CreditLoanProductSection(Modifier)
-            "주택담보대출" -> MortgageLoanProductSection(Modifier)
-            "전세자금대출" -> RentHouseLoanProductSection(Modifier)
+            "정기 예금" -> DepositProductSection(
+                modifier = modifier,
+                // [중요] 조회 버튼 클릭 시 현재 선택값을 받아 API 호출 + 리스트로 이동
+                onSearchClick = { savingAmount, periodLabel, finGrpLabel, regions, intrTypeLabel, joinDenyLabel, joinWayLabels ->
+                    viewModel.getDepositProductsByLabels(
+                        savingAmount = savingAmount,
+                        periodLabel = periodLabel,
+                        finGrpLabel = finGrpLabel,
+                        regions = regions,
+                        intrTypeLabel = intrTypeLabel,
+                        joinDenyLabel = joinDenyLabel,
+                        joinWayLabels = joinWayLabels
+                    )
+                },
+                onNavigateBack = onNavigateBack
+            )
+//            "적금" -> SavingProductSection(Modifier)
+//            "개인신용대출" -> CreditLoanProductSection(Modifier)
+//            "주택담보대출" -> MortgageLoanProductSection(Modifier)
+//            "전세자금대출" -> RentHouseLoanProductSection(Modifier)
             else -> {  }
         }
     }
 }
 
 
-
-@Preview(showBackground = true)
-@Composable
-fun FinancialProductScreenPreview() {
-    MoneyMateTheme {
-        FinancialProductScreen(
-            modifier = Modifier,
-            onNavigateBack = {}
-        )
-    }
-}
