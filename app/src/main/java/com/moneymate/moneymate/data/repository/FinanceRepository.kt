@@ -2,6 +2,7 @@ package com.moneymate.moneymate.data.repository
 
 import com.moneymate.moneymate.data.dto.finance.NewsInfo
 import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.data.service.FinanceService
 
 class FinanceRepository(
@@ -34,4 +35,20 @@ class FinanceRepository(
             joinWay = joinWayCsv
         ).data
     }
+
+    suspend fun getSavingProducts(
+        savingAmount: Int,
+        period: Int,
+        finGrpCode: String,
+        region: String,   // "all" or "seoul,busan,…"
+        rsrvType: String, // all/S/F
+        intrType: String, // all/S/M
+        joinDeny: String, // 1/2/3
+        joinWay: String   // "all" or "branch,internet,…"
+    ): List<SavingProductItemDto> {
+        return financeService.getSavingProducts(
+            savingAmount, period, finGrpCode, region, rsrvType, intrType, joinDeny, joinWay
+        ).data
+    }
+
 }

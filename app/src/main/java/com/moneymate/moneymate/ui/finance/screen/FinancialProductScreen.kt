@@ -1,5 +1,7 @@
 package com.moneymate.moneymate.ui.finance.screen
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,17 +47,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 //import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.DepositProductSection
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.navigation.Route
 //import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
 //import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.RentHouseLoanProductSection
 //import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FinancialProductScreen(
@@ -63,16 +71,25 @@ fun FinancialProductScreen(
     navController: NavController,
     onNavigateBack: () -> Unit,
     onNavigateToDepositList: () -> Unit,
+    onNavigateToSavingList: () -> Unit,
 ) {
 
-    val financeNavGraphEntry = remember(navController.currentBackStackEntry) {
+    val financeNavGraphEntry = remember(navController) {
         navController.getBackStackEntry(Route.ProductGraph.route)
     }
     val viewModel: FinanceViewModel = hiltViewModel(financeNavGraphEntry)
 
-    LaunchedEffect(Unit) {
-        viewModel.navigateToDepositList.collect {
-            onNavigateToDepositList()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    // ✅ key에 lifecycleOwner를 포함시키고, 블록 안에선 이미 캡처된 값을 사용
+    LaunchedEffect(viewModel, lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            launch { viewModel.navigateToDepositList.collect { onNavigateToDepositList() } }
+            launch {
+                viewModel.navigateToSavingList.collect {
+                    Log.d("DEBUG_SAVING", "[3] Navigation event RECEIVED in UI. Navigating now.") // 👈 로그 추가
+                    onNavigateToSavingList()
+                } }
         }
     }
 
@@ -207,7 +224,22 @@ fun FinancialProductScreen(
                 },
                 onNavigateBack = onNavigateBack
             )
-//            "적금" -> SavingProductSection(Modifier)
+            "적금" -> SavingProductSection(
+                Modifier,
+                onSearchClick = { savingAmount, periodLabel, finGrpLabel, regions, rsrvTypeLabel, intrTypeLabel, joinDenyLabel, joinWayLabels ->
+                    viewModel.getSavingProductsByLabels(
+                        savingAmount = savingAmount,
+                        periodLabel = periodLabel,
+                        finGrpLabel = finGrpLabel,
+                        regions = regions,
+                        rsrvTypeLabel = rsrvTypeLabel,
+                        intrTypeLabel = intrTypeLabel,
+                        joinDenyLabel = joinDenyLabel,
+                        joinWayLabels = joinWayLabels
+                    )
+                },
+                onNavigateBack = onNavigateBack
+            )
 //            "개인신용대출" -> CreditLoanProductSection(Modifier)
 //            "주택담보대출" -> MortgageLoanProductSection(Modifier)
 //            "전세자금대출" -> RentHouseLoanProductSection(Modifier)

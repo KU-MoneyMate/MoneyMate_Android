@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
@@ -34,12 +35,16 @@ fun SavingResultScreen(
     modifier: Modifier,
     //viewModel: FinanceViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
+    item: SavingProductItemDto?
 ) {
     val ProductTextStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontSize = 20.sp
     )
     val scrollState = rememberScrollState()
+
+    fun String.formatYmd(): String =
+        if (length == 8) "${substring(0,4)}-${substring(4,6)}-${substring(6,8)}" else this
 
 
     Column(
@@ -84,7 +89,7 @@ fun SavingResultScreen(
 
         // 상품명
         Text(
-            text = "WON적금",
+            text = item?.productName ?: "-",
             color = MoneyMateTheme.colors.darkGray,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
@@ -105,12 +110,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "은행명", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
-                Text(
-                    text = "우리은행",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
-                )
+                Text(text = "은행명", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.bankName ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 저축 금리
@@ -119,16 +120,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "저축 금리",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "2.95"+"%",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
+                Text(text = "저축 금리", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.intrRate?.let { "$it%" } ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 최고 우대금리
@@ -137,16 +130,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "최고 우대금리",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "3.15"+"%",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
+                Text(text = "최고 우대금리", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.maxIntrRate?.let { "$it%" } ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 적립 유형
@@ -155,16 +140,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "적립 유형",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "정액적립식",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
+                Text(text = "적립 유형", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.rsrvType ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 최고한도
@@ -191,12 +168,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "이자 계산 방식",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(text = "단리", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
+                Text(text = "이자 계산 방식", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.intrType ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 만기 후 이자율
@@ -205,19 +178,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = "만기 후 이자율",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle,
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Text(
-                    text = "만기 후\n- 1개월이내 : 만기시점약정이율×50%\n- 1개월초과 6개월이내: 만기시점약정이율×30%\n- 6개월초과 : 만기시점약정이율×20%\n\n※ 만기시점 약정이율 : 일반정기적금 금리",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle,
-                    textAlign = TextAlign.End
-                )
-
+                Text(text = "만기 후 이자율", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, modifier = Modifier.padding(end = 16.dp))
+                Text(text = item?.mtrtInt ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, textAlign = TextAlign.End)
             }
 
             // 가입 방법
@@ -226,16 +188,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "가입 방법",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "스마트폰,전화(텔레뱅킹)",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
+                Text(text = "가입 방법", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.joinWay ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 가입 대상
@@ -244,16 +198,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "가입 대상",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "실명의 개인",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
+                Text(text = "가입 대상", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.joinMember ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 가입 제한
@@ -262,12 +208,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "가입 제한",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(text = "1", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
+                Text(text = "가입 제한", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.joinDeny ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 우대조건
@@ -276,24 +218,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = "우대조건",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle,
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    Text(
-                        text = "1. 아래 각 항(가, 나)의 조건을 충족하는 경우 합산 최대 연 0.2%p 우대\n가. 이 적금을 우리꿈통장, WON통장에 연결하여 가입하는 경우 : 0.1%p\n나. 우리 오픈뱅킹 서비스에 타행계좌가 등록되어 있는 경우 : 연 0.1%p",
-                        color = MoneyMateTheme.colors.darkGray,
-                        style = ProductTextStyle,
-                        textAlign = TextAlign.End,
-                        lineHeight = 28.sp
-                    )
-                }
+                Text(text = "우대조건", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, modifier = Modifier.padding(end = 16.dp))
+                Text(text = item?.spclCnd ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, textAlign = TextAlign.End)
             }
 
             // 기타 유의사항
@@ -302,24 +228,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = "기타 유의사항",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle,
-                    modifier = Modifier.padding(end = 16.dp)
-                )
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    Text(
-                        text = "1. 가입기간 : 1년\n2. 가입금액 : 월 50만원 이내",
-                        color = MoneyMateTheme.colors.darkGray,
-                        style = ProductTextStyle,
-                        textAlign = TextAlign.End,
-                        lineHeight = 28.sp
-                    )
-                }
+                Text(text = "기타 유의사항", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, modifier = Modifier.padding(end = 16.dp))
+                Text(text = item?.etcNote ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, textAlign = TextAlign.End)
             }
 
             // 공시 시작일
@@ -328,16 +238,8 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "공시 시작일",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "2025-08-20",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
+                Text(text = "공시 시작일", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.dclsStrtDay?.let { it.formatYmd() } ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
             // 공시 종료
@@ -364,28 +266,20 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "상담 전화번호",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle
-                )
-                Text(
-                    text = "15885000",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
-                )
+                Text(text = "상담 전화번호", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(text = item?.callNum ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun SavingResultScreenPreview() {
-    MoneyMateTheme {
-        SavingResultScreen(
-            modifier = Modifier,
-            onNavigateBack = {}
-        )
-    }
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun SavingResultScreenPreview() {
+//    MoneyMateTheme {
+//        SavingResultScreen(
+//            modifier = Modifier,
+//            onNavigateBack = {}
+//        )
+//    }
+//}

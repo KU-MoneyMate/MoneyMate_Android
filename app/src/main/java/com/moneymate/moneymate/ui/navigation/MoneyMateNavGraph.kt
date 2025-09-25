@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.moneymate.moneymate.data.dto.account.response.AccountInfo
 import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.ui.asset.screen.AddAccountScreen
 import com.moneymate.moneymate.ui.asset.screen.AddAssetScreen
 import com.moneymate.moneymate.ui.asset.screen.HomeScreen
@@ -19,6 +20,7 @@ import com.moneymate.moneymate.ui.asset.screen.StockHoldingScreen
 import com.moneymate.moneymate.ui.asset.screen.TransactionHistoryScreen
 import com.moneymate.moneymate.ui.finance.screen.FinanceScreen
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.DepositResultScreen
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingResultScreen
 import com.moneymate.moneymate.ui.finance.screen.FinancialProductListScreen
 import com.moneymate.moneymate.ui.finance.screen.FinancialProductScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
@@ -175,21 +177,29 @@ fun MoneyMateNavGraph(
                     modifier = Modifier,
                     navController = navController, // 👈 NavController 전달
                     onNavigateBack = { navController.navigateUp() },
-                    onNavigateToDepositList = { navController.navigate(Route.ProductList.route) }
+                    onNavigateToDepositList = { navController.navigate(Route.ProductList.route) },
+                    onNavigateToSavingList = { navController.navigate(Route.ProductList.route) }
                 )
             }
+            // 공용 리스트 화면
             composable(route = Route.ProductList.route) {
                 FinancialProductListScreen(
                     modifier = modifier,
-                    navController = navController, // 👈 NavController 전달
+                    navController = navController,
                     onNavigateBack = { navController.navigateUp() },
                     onDepositClick = { item ->
                         val json = Json.encodeToString(DepositProductItemDto.serializer(), item)
                         val encoded = URLEncoder.encode(json, "UTF-8")
                         navController.navigate("${Route.ProductDeposit.route}/$encoded")
+                    },
+                    onSavingClick = { item ->                           // ★ 적금 분기
+                        val json = Json.encodeToString(SavingProductItemDto.serializer(), item)
+                        val encoded = URLEncoder.encode(json, "UTF-8")
+                        navController.navigate("${Route.ProductSaving.route}/$encoded")
                     }
                 )
             }
+
             composable(
                 route = "${Route.ProductDeposit.route}/{item}",
                 arguments = listOf(navArgument("item") { type = NavType.StringType })
@@ -197,13 +207,26 @@ fun MoneyMateNavGraph(
                 val encoded = backStackEntry.arguments?.getString("item").orEmpty()
                 val json = URLDecoder.decode(encoded, "UTF-8")
                 val item = Json.decodeFromString(DepositProductItemDto.serializer(), json)
-
                 DepositResultScreen(
                     modifier = modifier,
                     onNavigateBack = { navController.navigateUp() },
                     item = item
                 )
             }
+            composable(
+                route = "${Route.ProductSaving.route}/{item}",
+                arguments = listOf(navArgument("item") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val encoded = backStackEntry.arguments?.getString("item").orEmpty()
+                val json = URLDecoder.decode(encoded, "UTF-8")
+                val item = Json.decodeFromString(SavingProductItemDto.serializer(), json)
+                SavingResultScreen(
+                    modifier = modifier,
+                    onNavigateBack = { navController.navigateUp() },
+                    item = item
+                )
+            }
+
         }
         // 정기예금 상세
         composable(
@@ -221,6 +244,7 @@ fun MoneyMateNavGraph(
                 onNavigateBack = { navController.navigateUp() },
                 item = item
             )
+        }
 
             /* 자산 관리 */
             composable(route = Route.Manage.route) {
@@ -268,4 +292,3 @@ fun MoneyMateNavGraph(
             }
         }
     }
-}

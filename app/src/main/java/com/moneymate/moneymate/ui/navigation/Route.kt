@@ -25,6 +25,7 @@ sealed class Route(val route: String){
     object ProductList : Route(route = "product/list")
     object ProductDeposit : Route(route = "product/deposit")
     object ProductGraph : Route(route = "product_graph")
+    object ProductSaving : Route(route = "product/saving")
 
     // 자산 관리
     object Manage: Route(route = "manage")

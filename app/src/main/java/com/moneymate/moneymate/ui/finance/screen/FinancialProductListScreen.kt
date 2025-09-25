@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.CreditLoanInfo
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.DepositInfo
@@ -51,13 +52,16 @@ fun FinancialProductListScreen(
     navController: NavController,
     onNavigateBack : ()->Unit,
     onDepositClick: (DepositProductItemDto) -> Unit,
+    onSavingClick: (SavingProductItemDto) -> Unit,
 ){
     val financeNavGraphEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(Route.ProductGraph.route)
     }
     val viewModel: FinanceViewModel = hiltViewModel(financeNavGraphEntry)
 
+    val viewType by viewModel.currentViewType.collectAsStateWithLifecycle()
     val deposits by viewModel.depositList.collectAsStateWithLifecycle()
+    val savings  by viewModel.savingList.collectAsStateWithLifecycle()
 
     Log.d("DEBUG_LOG", "ListScreen: 화면이 ${deposits.size}개의 아이템으로 재구성됨")
 
@@ -103,35 +107,66 @@ fun FinancialProductListScreen(
 
         Text(
             modifier = Modifier.padding(top = 12.dp),
-            text = "정기 예금"+" 상품 목록",
+            text = when (viewType) {
+                ProductViewType.DEPOSIT -> "정기 예금 상품 목록"
+                ProductViewType.SAVING  -> "적금 상품 목록"
+                ProductViewType.MORTGAGE_LOAN -> "주택담보대출 상품 목록"
+                ProductViewType.RENT_HOUSE_LOAN -> "전세자금대출 상품 목록"
+                ProductViewType.CREDIT_LOAN -> "개인신용대출 상품 목록"
+            },
             color = MoneyMateTheme.colors.darkGray,
             style = TextStyle(
                 fontFamily = FontFamily(Font(R.font.pretendard_medium)),
                 fontSize = 18.sp
             )
         )
+
         Spacer(modifier=Modifier.height(8.dp))
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            Log.d("리스트스크린", deposits.size.toString())
-            Log.d("DEBUG_LOG", "LazyColumn: items 블록 실행됨 (아이템 수: ${deposits.size})")
-            items(
-                items = deposits,
-                key = { it.productName.orEmpty() + it.bankName.orEmpty() + it.intrType.orEmpty() } // 단순 키
-            ) { dto ->
-                val ui = DepositInfo(
-                    productName = dto.productName.orEmpty(),
-                    bankName = dto.bankName.orEmpty(),
-                    maxIntrRate = dto.maxIntrRate.orEmpty(), // ListItem에서 %를 붙이므로 원본 그대로
-                    intrType = dto.intrType.orEmpty()
-                )
-                FinancialProductListItem(
-                    product = ui,
-                    viewType = ProductViewType.DEPOSIT,
-                    onClick = { onDepositClick(dto) }
-                )
+            when (viewType) {
+                ProductViewType.DEPOSIT -> {
+                    items(
+                        items = deposits,
+                        key = { it.productName.orEmpty() + it.bankName.orEmpty() + it.intrType.orEmpty() }
+                    ) { dto ->
+                        val ui = DepositInfo(
+                            productName = dto.productName.orEmpty(),
+                            bankName = dto.bankName.orEmpty(),
+                            maxIntrRate = dto.maxIntrRate.orEmpty(),
+                            intrType = dto.intrType.orEmpty()
+                        )
+                        FinancialProductListItem(
+                            product = ui,
+                            viewType = ProductViewType.DEPOSIT,
+                            onClick = { onDepositClick(dto) }
+                        )
+                    }
+                }
+
+                ProductViewType.SAVING -> {
+                    items(
+                        items = savings,
+                        key = { it.productName.orEmpty() + it.bankName.orEmpty() + it.intrType.orEmpty() }
+                    ) { dto ->
+                        val ui = SavingInfo(
+                            productName = dto.productName.orEmpty(),
+                            bankName = dto.bankName.orEmpty(),
+                            maxIntrRate = dto.maxIntrRate.orEmpty(),
+                            intrType = dto.intrType.orEmpty()  // 리스트에선 간략 표기
+                        )
+                        FinancialProductListItem(
+                            product = ui,
+                            viewType = ProductViewType.SAVING,
+                            onClick = { onSavingClick(dto) }
+                        )
+                    }
+                }
+
+                else -> { /* 다른 상품 타입은 나중에 추가 */
+                }
             }
         }
     }
