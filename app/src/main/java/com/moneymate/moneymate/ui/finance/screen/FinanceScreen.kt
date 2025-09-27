@@ -39,6 +39,7 @@ fun FinanceScreen(
     modifier: Modifier = Modifier,
     onNewsClick: () -> Unit,
     onMarketInfoClick: () -> Unit,
+    onProductClick: () -> Unit,
     viewModel: FinanceViewModel = hiltViewModel(),
 ) {
     Column(
@@ -84,8 +85,8 @@ fun FinanceScreen(
             }
         }
         MoneyMateMenuButton("경제 뉴스 조회", 67, onNewsClick)
-        MoneyMateMenuButton("증시 정보", 67, onMarketInfoClick) /*나중에 함수 바꾸기*/
-        MoneyMateMenuButton("은행 상품 정보", 67, onNewsClick)
+        MoneyMateMenuButton("증시 정보", 67, onMarketInfoClick)
+        MoneyMateMenuButton("은행 상품 정보", 67, onProductClick)
         MoneyMateMenuButton("주택 청약 정보", 67, onNewsClick)
     }
 }

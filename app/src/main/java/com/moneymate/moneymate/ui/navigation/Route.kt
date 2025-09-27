@@ -23,6 +23,14 @@ sealed class Route(val route: String){
     object NewsPublisherHome : Route(route = "news/publisher")
     object NewsArticle : Route(route = "news/newsArticle")
     object MarketInfo: Route(route = "finance/marketInfo")
+    object Product : Route(route = "product")
+    object ProductList : Route(route = "product/list")
+    object ProductDeposit : Route(route = "product/deposit")
+    object ProductGraph : Route(route = "product_graph")
+    object ProductSaving : Route(route = "product/saving")
+    object ProductMortgageLoan : Route(route = "product/mortgageLoan")
+    object ProductRentHouseLoan : Route(route = "product/rentHouseLoan")
+    object ProductCreditLoan : Route(route = "product/creditLoan")
 
     // 자산 관리
     object Manage: Route(route = "manage")

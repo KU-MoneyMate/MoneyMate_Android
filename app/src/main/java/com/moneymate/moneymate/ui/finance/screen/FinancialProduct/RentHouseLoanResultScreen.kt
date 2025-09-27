@@ -1,0 +1,150 @@
+package com.moneymate.moneymate.ui.finance.screen.FinancialProduct
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.moneymate.moneymate.R
+import com.moneymate.moneymate.data.dto.finance.response.RentHouseLoanProductItemDto
+import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+
+@Composable
+fun RentHouseLoanResultScreen(
+    modifier: Modifier,
+    onNavigateBack: () -> Unit,
+    item: RentHouseLoanProductItemDto?
+) {
+    val ProductTextStyle = TextStyle(
+        fontFamily = FontFamily(Font(R.font.pretendard_medium)),
+        fontSize = 20.sp
+    )
+    val scrollState = rememberScrollState()
+
+    fun String.formatYmd(): String =
+        if (length == 8) "${substring(0, 4)}-${substring(4, 6)}-${substring(6, 8)}" else this
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MoneyMateTheme.colors.white)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(bottom = 24.dp)
+                .fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_mypage_arrow),
+                    contentDescription = "뒤로가기",
+                    modifier = Modifier
+                        .rotate(180f)
+                        .clickable { onNavigateBack() }
+                )
+            }
+            Box(
+                modifier = Modifier.weight(2f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "은행 상품 정보",
+                    color = MoneyMateTheme.colors.darkGray,
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+                        fontSize = 20.sp
+                    )
+                )
+            }
+            Box(modifier = Modifier.weight(1f))
+        }
+
+        Text(
+            text = item?.productName ?: "-",
+            color = MoneyMateTheme.colors.darkGray,
+            style = TextStyle(
+                fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+                fontSize = 24.sp
+            ),
+            modifier = Modifier
+                .padding(top = 36.dp, bottom = 50.dp)
+                .align(alignment = Alignment.CenterHorizontally)
+        )
+
+        Column(modifier = Modifier.verticalScroll(scrollState)) {
+            InfoRow(label = "은행명", value = item?.bankName)
+            InfoRow(label = "대출금리 유형", value = item?.lendRateType)
+            InfoRow(label = "최저금리", value = item?.lendRateMin?.let { "$it%" })
+            InfoRow(label = "최고금리", value = item?.lendRateMax?.let { "$it%" })
+            InfoRow(label = "전월취급평균금리", value = item?.lendRateAvg?.let { "$it%" })
+            InfoRow(label = "대출 부대비용", value = item?.loanInciExpn, isMultiLine = true)
+            InfoRow(label = "중도상환 수수료", value = item?.erlyRpayFee, isMultiLine = true)
+            InfoRow(label = "연체이자율", value = item?.dlyRate, isMultiLine = true)
+            InfoRow(label = "대출한도", value = item?.loanLmt, isMultiLine = true)
+            InfoRow(label = "대출상환유형", value = item?.rpayType)
+            InfoRow(label = "가입 방법", value = item?.joinWay)
+            InfoRow(label = "공시 시작일", value = item?.dclsStrtDay?.formatYmd())
+            InfoRow(
+                label = "공시 종료일",
+                value = item?.dclsEndDay?.takeUnless { it.isBlank() }?.formatYmd())
+            InfoRow(label = "상담 전화번호", value = item?.callNum)
+        }
+    }
+}
+
+@Composable
+private fun InfoRow(label: String, value: String?, isMultiLine: Boolean = false) {
+    val finalValue = if (value.isNullOrBlank()) "-" else value
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = if (isMultiLine) Alignment.Top else Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            color = MoneyMateTheme.colors.darkGray,
+            style = TextStyle(
+                fontFamily = FontFamily(Font(R.font.pretendard_medium)),
+                fontSize = 20.sp
+            ),
+            modifier = Modifier.padding(end = 16.dp)
+        )
+        Text(
+            text = finalValue,
+            color = MoneyMateTheme.colors.darkGray,
+            style = TextStyle(
+                fontFamily = FontFamily(Font(R.font.pretendard_medium)),
+                fontSize = 20.sp
+            ),
+            textAlign = TextAlign.End
+        )
+    }
+}
