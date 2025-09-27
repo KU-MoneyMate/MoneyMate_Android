@@ -32,8 +32,10 @@ import com.moneymate.moneymate.ui.finance.screen.FinancialProductScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
+import com.moneymate.moneymate.ui.finance.screen.MarketInfoScreen
 import com.moneymate.moneymate.ui.manage.screen.AssetStatisticsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
+import com.moneymate.moneymate.ui.manage.screen.PeerAssetStatisticsScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
@@ -47,7 +49,7 @@ fun MoneyMateNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "authGraph"
+        startDestination = Route.AuthGraph.route
     ) {
         /* 인증/인가 */
         authNavGraph(navController, modifier)
@@ -107,7 +109,7 @@ fun MoneyMateNavGraph(
                 }
             )
         }
-        composable(route = Route.StockHolding.route) {
+        composable(route = Route.StockHolding.route){
             StockHoldingScreen(
                 modifier = modifier,
                 onNavigateBack = {
@@ -121,14 +123,14 @@ fun MoneyMateNavGraph(
             FinanceScreen(
                 modifier = modifier,
                 onNewsClick = { navController.navigate(Route.News.route) },
+                onMarketInfoClick = { navController.navigate(Route.MarketInfo.route) },
                 onProductClick = { navController.navigate(Route.ProductGraph.route) }
             )
         }
         //경제뉴스 조회 화면
-        composable(
+        composable (
             route = Route.News.route,
-        ) {
-            NewsScreen(
+        ) { NewsScreen(
                 modifier = modifier,
                 onAddClick = { enum ->
                     navController.navigate("${Route.NewsPublisherHome.route}/$enum")
@@ -143,7 +145,7 @@ fun MoneyMateNavGraph(
             )
         }
         //언론사별 홈 화면
-        composable(
+        composable (
             route = "${Route.NewsPublisherHome.route}/{enum}",
         ) { backStackEntry ->
             val publisher = backStackEntry.arguments?.getString("enum") ?: ""
@@ -160,14 +162,23 @@ fun MoneyMateNavGraph(
             )
         }
         //기사 화면
-        composable(
+        composable (
             route = "${Route.NewsArticle.route}/{url}",
         ) { backStackEntry ->
             val encodedUrl = backStackEntry.arguments?.getString("url") ?: ""
             val url = URLDecoder.decode(encodedUrl, "UTF-8")
-            NewsArticleScreen(
+            NewsArticleScreen (
                 modifier = modifier,
                 url = url,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 증시 정보 화면
+        composable(route = Route.MarketInfo.route){
+            MarketInfoScreen(
+                modifier = modifier,
                 onNavigateBack = {
                     navController.navigateUp()
                 }
@@ -321,49 +332,61 @@ fun MoneyMateNavGraph(
             )
         }
 
-            /* 자산 관리 */
-            composable(route = Route.Manage.route) {
-                ManageScreen(
-                    modifier = modifier,
-                    onRetireClick = {
-                        navController.navigate(Route.RetireGraph.route)
-                    },
-                    onAssetStatisticsClick = {
-                        navController.navigate(Route.AssetStatistics.route)
-                    },
-                    onSpendingStatisticsClick = {
-                        navController.navigate(Route.SpendingStatistics.route)
-                    }
-                )
-            }
-            retireNavGraph(navController, modifier)
-            //소비통계 조회 화면
-            composable(
-                route = Route.SpendingStatistics.route
-            ) {
-                SpendingStatisticsScreen(
-                    modifier = modifier,
-                    onNavigateBack = {
-                        navController.navigateUp()
-                    }
-                )
+        /* 자산 관리 */
+        composable(route = Route.Manage.route) {
+            ManageScreen(
+                modifier = modifier,
+                onRetireClick = {
+                    navController.navigate(Route.RetireGraph.route)
+                },
+                onPeerAssetStatisticsClick = {
+                    navController.navigate(Route.PeerAssetStatistics.route)
+                },
+                onAssetStatisticsClick = {
+                    navController.navigate(Route.AssetStatistics.route)
+                },
+                onSpendingStatisticsClick = {
+                    navController.navigate(Route.SpendingStatistics.route)
+                }
+            )
+        }
+        retireNavGraph(navController, modifier)
+        // 소비통계 조회 화면
+        composable(
+            route = Route.SpendingStatistics.route
+        ) {
+            SpendingStatisticsScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
 
-            }
-            // 자산 변동 통계 조회 화면
-            composable(route = Route.AssetStatistics.route) {
-                AssetStatisticsScreen(
-                    modifier = modifier,
-                    onNavigateBack = {
-                        navController.navigateUp()
-                    }
-                )
-            }
+        }
+        // 또래 자산 통계 조회 화면
+        composable(route = Route.PeerAssetStatistics.route){
+            PeerAssetStatisticsScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 자산 변동 통계 조회 화면
+        composable(route = Route.AssetStatistics.route){
+            AssetStatisticsScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
 
-            /* 마이페이지 */
-            composable(route = Route.MyPage.route) {
-                MyPageScreen(
-                    modifier = modifier
-                )
-            }
+        /* 마이페이지 */
+        composable(route = Route.MyPage.route) {
+            MyPageScreen(
+                modifier = modifier
+            )
         }
     }
+}
