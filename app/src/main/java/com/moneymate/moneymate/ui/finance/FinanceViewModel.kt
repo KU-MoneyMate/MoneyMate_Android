@@ -100,78 +100,7 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
-    fun getDepositProductsByLabels(
-        savingAmount: Int,
-        periodLabel: String?,           // "1개월" 등
-        finGrpLabel: String,            // "전체"|"은행"|"저축은행"
-        regions: Set<String>,           // 라벨들
-        intrTypeLabel: String,          // "전체"|"단리"|"복리"
-        joinDenyLabel: String,          // "제한없음"|"서민전용"|"일부제한"
-        joinWayLabels: Set<String>      // 라벨들
-    ) {
-        _currentViewType.value = ProductViewType.DEPOSIT
-        val period = when (periodLabel) {
-            "1개월" -> 1; "3개월" -> 3; "6개월" -> 6
-            "12개월" -> 12; "24개월" -> 24; "36개월" -> 36
-            else -> 0
-        }
-        val finGrpCode = when (finGrpLabel) {
-            "전체" -> "all"; "은행" -> "bank"; "저축은행" -> "savingsBank"
-            else -> "all"
-        }
-        val intrType = when (intrTypeLabel) {
-            "전체" -> "all"; "단리" -> "S"; "복리" -> "M"
-            else -> "all"
-        }
-        val joinDeny = when (joinDenyLabel) {
-            "제한없음" -> "1"; "서민전용" -> "2"; "일부제한" -> "3"
-            else -> "1"
-        }
-
-        fun regionLabelToCode(label: String) = when (label) {
-            "전체" -> "all"; "서울" -> "seoul"; "부산" -> "busan"; "대구" -> "daegu"; "인천" -> "incheon"
-            "광주" -> "gwangju"; "대전" -> "daejeon"; "울산" -> "ulsan"; "세종" -> "sejong"
-            "경기" -> "gyeonggi"; "강원" -> "gangwon"; "충북" -> "chungbuk"; "충남" -> "chungnam"
-            "전북" -> "jeonbuk"; "전남" -> "jeonnam"; "경북" -> "gyeongbuk"; "경남" -> "gyeongnam"
-            "제주" -> "jeju"
-            else -> "all"
-        }
-
-        fun joinWayLabelToCode(label: String) = when (label) {
-            "전체" -> "all"; "영업점" -> "branch"; "인터넷" -> "internet"; "스마트폰" -> "smartphone"
-            "모집인" -> "recruiter"; "전화(텔레뱅킹)" -> "telephone"; "기타" -> "others"
-            else -> "all"
-        }
-
-        val regionCsv = regions.map { regionLabelToCode(it) }.toSet().joinToString(",")
-        val joinWayCsv = joinWayLabels.map { joinWayLabelToCode(it) }.toSet().joinToString(",")
-
-        viewModelScope.launch {
-            runCatching {
-                financeRepository.getDepositProducts(
-                    savingAmount = savingAmount,
-                    period = period,
-                    finGrpCode = finGrpCode,
-                    regionCsv = regionCsv,
-                    intrType = intrType,
-                    joinDeny = joinDeny,
-                    joinWayCsv = joinWayCsv
-                )
-
-            }
-                .onSuccess {
-                    _depositList.value = it
-                    Log.d("DEBUG_LOG", "ViewModel: StateFlow가 ${it.size}개의 아이템으로 업데이트됨")
-                    Log.d("FinanceViewModel", "예금상품 조회 성공: ${it.size}개 상품")
-                    _navigateToDepositList.emit(Unit)
-                }
-                .onFailure { e ->
-                    Log.d("FinanceViewModel", "예금상품 조회 실패: ${e.message.orEmpty()}")
-                }
-        }
-    }
-
-    // ---- 라벨→서버코드 (예금에서 쓰던 로직 재사용해도 됨) ----
+    //은행상품 정보 매핑 함수
     private fun mapPeriod(label: String?): Int =
         when (label) { "1개월"->1; "3개월"->3; "6개월"->6; "24개월"->24; "36개월"->36; else -> 12 }
 
@@ -187,7 +116,6 @@ class FinanceViewModel @Inject constructor(
     private fun mapJoinDeny(label: String) =
         when (label) { "서민전용"->"2"; "일부제한"->"3"; else -> "1" }
 
-    // 지역/가입방법(복수선택) 매핑
     private val regionToCode = mapOf(
         "전체" to "all","서울" to "seoul","부산" to "busan","대구" to "daegu","인천" to "incheon",
         "광주" to "gwangju","대전" to "daejeon","울산" to "ulsan","세종" to "sejong","경기" to "gyeonggi",
@@ -206,7 +134,40 @@ class FinanceViewModel @Inject constructor(
         if (labels.size == 1 && labels.first() == "전체") "all"
         else labels.mapNotNull { joinWayToCode[it] }.joinToString(",").ifEmpty { "all" }
 
-    // ---- 호출 함수 (예금과 완전히 동일 흐름) ----
+    fun getDepositProductsByLabels(
+        savingAmount: Int,
+        periodLabel: String?,
+        finGrpLabel: String,
+        regions: Set<String>,
+        intrTypeLabel: String,
+        joinDenyLabel: String,
+        joinWayLabels: Set<String>
+    ) {
+        _currentViewType.value = ProductViewType.DEPOSIT
+        viewModelScope.launch {
+            runCatching {
+                financeRepository.getDepositProducts(
+                    savingAmount = savingAmount,
+                    period = mapPeriod(periodLabel),
+                    finGrpCode = mapFinGrp(finGrpLabel),
+                    regionCsv = mapRegions(regions),
+                    intrType = mapIntrType(intrTypeLabel),
+                    joinDeny = mapJoinDeny(joinDenyLabel),
+                    joinWayCsv = mapJoinWays(joinWayLabels)
+                )
+            }
+                .onSuccess {
+                    _depositList.value = it
+                    Log.d("DEBUG_LOG", "ViewModel: StateFlow가 ${it.size}개의 아이템으로 업데이트됨")
+                    Log.d("FinanceViewModel", "예금상품 조회 성공: ${it.size}개 상품")
+                    _navigateToDepositList.emit(Unit)
+                }
+                .onFailure { e ->
+                    Log.d("FinanceViewModel", "예금상품 조회 실패: ${e.message.orEmpty()}")
+                }
+        }
+    }
+
     fun getSavingProductsByLabels(
         savingAmount: Int,
         periodLabel: String?,
@@ -232,7 +193,7 @@ class FinanceViewModel @Inject constructor(
                 )
             }.onSuccess {
                 _savingList.value = it
-                Log.d("DEBUG_SAVING", "[2] ViewModel SUCCESS. Emitting navigation event now.") // 👈 로그 추가
+                Log.d("DEBUG_SAVING", "[2] ViewModel SUCCESS. Emitting navigation event now.")
                 _navigateToSavingList.emit(Unit) // 리스트로 이동 신호
             }.onFailure {
                 // TODO: 에러 핸들링

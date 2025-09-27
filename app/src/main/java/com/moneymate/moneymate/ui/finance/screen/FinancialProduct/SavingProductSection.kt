@@ -40,19 +40,19 @@ fun SavingProductSection(
         periodLabel: String?,
         finGrpLabel: String,
         regions: Set<String>,
-        rsrvTypeLabel: String?,   // ★ 추가
+        rsrvTypeLabel: String?,
         intrTypeLabel: String,
         joinDenyLabel: String,
         joinWayLabels: Set<String>
     ) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    var savingAmountText by rememberSaveable { mutableStateOf("1000000") } // 기본 100만원
+    var savingAmountText by rememberSaveable { mutableStateOf("1000000") }
     val scrollState = rememberScrollState()
 
     var selectedPeriod by remember { mutableStateOf<String?>(null) }
     var selectedFinGrp by remember { mutableStateOf("전체") }
-    var selectedRsrvType by remember { mutableStateOf<String?>("전체") } // ★ 적금 전용
+    var selectedRsrvType by remember { mutableStateOf<String?>("전체") }
     var selectedIntrType by remember { mutableStateOf("전체") }
     var selectedJoinDeny by remember { mutableStateOf("제한없음") }
     var selectedRegions by remember { mutableStateOf(setOf("전체")) }
@@ -318,14 +318,14 @@ fun SavingProductSection(
         contentColor = MoneyMateTheme.colors.white,
         text = "조회하기"
     ) {
-        Log.d("DEBUG_SAVING", "[1] Search Button Clicked in UI") // 👈 로그 추가
+        Log.d("DEBUG_SAVING", "[1] Search Button Clicked in UI")
         val amount = savingAmountText.filter { it.isDigit() }.toIntOrNull() ?: 0
         onSearchClick(
             amount,
             selectedPeriod,
             selectedFinGrp,
             selectedRegions,
-            selectedRsrvType,   // ★ 적금만
+            selectedRsrvType,
             selectedIntrType,
             selectedJoinDeny,
             selectedJoinWays

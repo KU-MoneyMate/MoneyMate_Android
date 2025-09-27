@@ -43,11 +43,11 @@ class FinanceRepository(
         savingAmount: Int,
         period: Int,
         finGrpCode: String,
-        region: String,   // "all" or "seoul,busan,…"
-        rsrvType: String, // all/S/F
-        intrType: String, // all/S/M
-        joinDeny: String, // 1/2/3
-        joinWay: String   // "all" or "branch,internet,…"
+        region: String,
+        rsrvType: String,
+        intrType: String,
+        joinDeny: String,
+        joinWay: String
     ): List<SavingProductItemDto> {
         return financeService.getSavingProducts(
             savingAmount, period, finGrpCode, region, rsrvType, intrType, joinDeny, joinWay

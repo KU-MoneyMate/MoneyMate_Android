@@ -31,7 +31,6 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 @Composable
 fun SavingResultScreen(
     modifier: Modifier,
-    //viewModel: FinanceViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     item: SavingProductItemDto?
 ) {
@@ -85,7 +84,6 @@ fun SavingResultScreen(
             Box(modifier = Modifier.weight(1f))
         }
 
-        // 상품명
         Text(
             text = item?.productName ?: "-",
             color = MoneyMateTheme.colors.darkGray,
@@ -102,7 +100,6 @@ fun SavingResultScreen(
             modifier = Modifier
                 .verticalScroll(scrollState)
         ){
-            // 은행명
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -112,7 +109,6 @@ fun SavingResultScreen(
                 Text(text = item?.bankName ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 저축 금리
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -122,7 +118,6 @@ fun SavingResultScreen(
                 Text(text = item?.intrRate?.let { "$it%" } ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 최고 우대금리
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -132,7 +127,6 @@ fun SavingResultScreen(
                 Text(text = item?.maxIntrRate?.let { "$it%" } ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 적립 유형
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,7 +136,6 @@ fun SavingResultScreen(
                 Text(text = item?.rsrvType ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 최고한도
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -160,7 +153,6 @@ fun SavingResultScreen(
                 )
             }
 
-            // 이자 계산 방식
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -170,7 +162,6 @@ fun SavingResultScreen(
                 Text(text = item?.intrType ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 만기 후 이자율
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -180,7 +171,6 @@ fun SavingResultScreen(
                 Text(text = item?.mtrtInt ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, textAlign = TextAlign.End)
             }
 
-            // 가입 방법
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -190,7 +180,6 @@ fun SavingResultScreen(
                 Text(text = item?.joinWay ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 가입 대상
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -200,7 +189,6 @@ fun SavingResultScreen(
                 Text(text = item?.joinMember ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 가입 제한
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -210,7 +198,6 @@ fun SavingResultScreen(
                 Text(text = item?.joinDeny ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 우대조건
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -220,7 +207,6 @@ fun SavingResultScreen(
                 Text(text = item?.spclCnd ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, textAlign = TextAlign.End)
             }
 
-            // 기타 유의사항
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -230,7 +216,6 @@ fun SavingResultScreen(
                 Text(text = item?.etcNote ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray, textAlign = TextAlign.End)
             }
 
-            // 공시 시작일
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -240,7 +225,6 @@ fun SavingResultScreen(
                 Text(text = item?.dclsStrtDay?.let { it.formatYmd() } ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
             }
 
-            // 공시 종료
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -258,7 +242,6 @@ fun SavingResultScreen(
                 )
             }
 
-            // 상담 전화번호
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -270,14 +253,3 @@ fun SavingResultScreen(
         }
     }
 }
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun SavingResultScreenPreview() {
-//    MoneyMateTheme {
-//        SavingResultScreen(
-//            modifier = Modifier,
-//            onNavigateBack = {}
-//        )
-//    }
-//}

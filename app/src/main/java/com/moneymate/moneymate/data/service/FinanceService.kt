@@ -34,13 +34,13 @@ interface FinanceService {
     @GET("financial/products/saving")
     suspend fun getSavingProducts(
         @Query("savingAmount") savingAmount: Int,
-        @Query("period") period: Int,              // 1,3,6,12,24,36
-        @Query("finGrpCode") finGrpCode: String,   // all, bank, savingsBank
-        @Query("region") region: String,           // all 또는 CSV
-        @Query("rsrvType") rsrvType: String,       // all, S(정액), F(자유)
-        @Query("intrType") intrType: String,       // all, S(단리), M(복리)
-        @Query("joinDeny") joinDeny: String,       // 1,2,3
-        @Query("joinWay") joinWay: String          // all 또는 CSV
+        @Query("period") period: Int,
+        @Query("finGrpCode") finGrpCode: String,
+        @Query("region") region: String,
+        @Query("rsrvType") rsrvType: String,
+        @Query("intrType") intrType: String,
+        @Query("joinDeny") joinDeny: String,
+        @Query("joinWay") joinWay: String
     ): SavingProductResponse
 
     @GET("financial/products/mortgage-loan")

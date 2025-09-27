@@ -16,8 +16,8 @@ data class SavingProductItemDto(
     @SerialName("productName") val productName: String? = null,
     @SerialName("intrRate")    val intrRate: String? = null,
     @SerialName("maxIntrRate") val maxIntrRate: String? = null,
-    @SerialName("rsrvtype")    val rsrvType: String? = null, // 정액적립식/자유적립식
-    @SerialName("intrType")    val intrType: String? = null, // 단리/복리
+    @SerialName("rsrvtype")    val rsrvType: String? = null,
+    @SerialName("intrType")    val intrType: String? = null,
     @SerialName("joinWay")     val joinWay: String? = null,
     @SerialName("mtrtInt")     val mtrtInt: String? = null,
     @SerialName("spclCnd")     val spclCnd: String? = null,
@@ -25,13 +25,12 @@ data class SavingProductItemDto(
     @SerialName("joinMember")  val joinMember: String? = null,
     @SerialName("etcNote")     val etcNote: String? = null,
     @SerialName("maxLimit")    val maxLimit: String? = null,
-    @SerialName("dclsStrtDay") val dclsStrtDay: String? = null, // 예: 20250820
+    @SerialName("dclsStrtDay") val dclsStrtDay: String? = null,
     @SerialName("dclsEndDay")  val dclsEndDay: String? = null,
     @SerialName("url")         val url: String? = null,
     @SerialName("callNum")     val callNum: String? = null
 )
 
-// ---- 도메인 & 맵퍼 (예금과 동일 패턴) ----
 data class SavingProduct(
     val bankName: String,
     val productName: String,
@@ -42,8 +41,8 @@ data class SavingProduct(
     val callNum: String?,
     val intrRate: Double?,
     val maxIntrRate: Double?,
-    val rsrvType: String?,     // 정액/자유
-    val intrType: String?,     // 단리/복리
+    val rsrvType: String?,
+    val intrType: String?,
     val mtrtInt: String?,
     val spclCnd: String?,
     val joinDeny: String?,

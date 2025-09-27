@@ -54,15 +54,11 @@ import androidx.navigation.NavController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
-//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.DepositProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.RentHouseLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.navigation.Route
-//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
-//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.RentHouseLoanProductSection
-//import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import kotlinx.coroutines.launch
 
@@ -87,7 +83,6 @@ fun FinancialProductScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // ✅ key에 lifecycleOwner를 포함시키고, 블록 안에선 이미 캡처된 값을 사용
     LaunchedEffect(viewModel, lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             launch { viewModel.navigateToDepositList.collect { onNavigateToDepositList() } }
@@ -98,13 +93,10 @@ fun FinancialProductScreen(
         }
     }
 
-    // 1. 드롭다운 메뉴에 표시할 항목 리스트
     val items = listOf("정기 예금", "적금", "주택담보대출", "전세자금대출", "개인신용대출")
 
-    // 2. 메뉴의 확장 상태를 저장하는 변수 (열렸는지, 닫혔는지)
     var expanded by remember { mutableStateOf(false) }
 
-    // 3. 현재 선택된 항목의 텍스트를 저장하는 변수
     var selectedText by remember { mutableStateOf("선택해주세요.") }
 
     Column(
@@ -147,8 +139,6 @@ fun FinancialProductScreen(
             Box(modifier = Modifier.weight(1f))
         }
 
-
-        //상품 종류 선택
         Row(
             modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -166,7 +156,7 @@ fun FinancialProductScreen(
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = {
-                    expanded = !expanded //확장 상태를 반전시켜 메뉴를 열고 닫음
+                    expanded = !expanded
                 }
             ) {
                 OutlinedTextField(
@@ -191,7 +181,7 @@ fun FinancialProductScreen(
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                     },
 
-                )
+                    )
 
                 ExposedDropdownMenu(
                     expanded = expanded,
@@ -215,7 +205,6 @@ fun FinancialProductScreen(
         when (selectedText) {
             "정기 예금" -> DepositProductSection(
                 modifier = modifier,
-                // [중요] 조회 버튼 클릭 시 현재 선택값을 받아 API 호출 + 리스트로 이동
                 onSearchClick = { savingAmount, periodLabel, finGrpLabel, regions, intrTypeLabel, joinDenyLabel, joinWayLabels ->
                     viewModel.getDepositProductsByLabels(
                         savingAmount = savingAmount,
@@ -272,5 +261,3 @@ fun FinancialProductScreen(
         }
     }
 }
-
-

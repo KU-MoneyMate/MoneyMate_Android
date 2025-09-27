@@ -38,12 +38,12 @@ fun DepositProductSection(
     modifier: Modifier,
     onSearchClick: (
         savingAmount: Int,
-        periodLabel: String?,      // "1개월" 등
-        finGrpLabel: String,       // "전체"/"은행"/"저축은행"
-        regions: Set<String>,      // 다중 선택 라벨
-        intrTypeLabel: String,     // "전체"/"단리"/"복리"
-        joinDenyLabel: String,     // "제한없음"/"서민전용"/"일부제한"
-        joinWayLabels: Set<String> // 다중 선택 라벨
+        periodLabel: String?,
+        finGrpLabel: String,
+        regions: Set<String>,
+        intrTypeLabel: String,
+        joinDenyLabel: String,
+        joinWayLabels: Set<String>
     ) -> Unit,
     onNavigateBack: () -> Unit
 ){
@@ -370,12 +370,12 @@ fun DepositProductSection(
             val amount = savingAmountText.filter { it.isDigit() }.toIntOrNull() ?: 0
             onSearchClick(
                 amount,
-                selectedPeriod,          // String?
-                selectedFinGrp,          // String
-                selectedRegions,         // Set<String>
-                selectedIntrType,        // String
-                selectedJoinDeny,        // String
-                selectedJoinWays         // Set<String>
+                selectedPeriod,
+                selectedFinGrp,
+                selectedRegions,
+                selectedIntrType,
+                selectedJoinDeny,
+                selectedJoinWays
             )
         }
     }
