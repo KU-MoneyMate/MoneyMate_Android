@@ -29,9 +29,10 @@ import com.moneymate.moneymate.ui.finance.component.FinancialProduct.FinancialPr
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
-fun RentHouseLoanProductSection(
+fun MortgageLoanProductSection(
     modifier: Modifier,
     onSearchClick: (
+        mrtgTypeLabel: String?,
         finGrpLabel: String,
         regions: Set<String>,
         rpayTypeLabel: String,
@@ -41,6 +42,7 @@ fun RentHouseLoanProductSection(
 ) {
     val scrollState = rememberScrollState()
 
+    var selectedMrtgType by remember { mutableStateOf<String?>("아파트") }
     var selectedFinGrp by remember { mutableStateOf("전체") }
     var selectedRpayType by remember { mutableStateOf("전체") }
     var selectedLendRateType by remember { mutableStateOf("전체") }
@@ -54,6 +56,7 @@ fun RentHouseLoanProductSection(
             if (base.isEmpty()) setOf(all) else base
         }
 
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -62,6 +65,34 @@ fun RentHouseLoanProductSection(
         Row(
             modifier = Modifier
                 .padding(top = 30.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "주택 종류",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.pretendard_medium)),
+                    color = MoneyMateTheme.colors.darkGray
+                )
+            )
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                listOf("아파트", "아파트 외").forEach { label ->
+                    FinancialProductCheckbox(
+                        label = label,
+                        isChecked = selectedMrtgType == label,
+                        onToggle = { selectedMrtgType = label }
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(top = 55.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -86,6 +117,7 @@ fun RentHouseLoanProductSection(
                 }
             }
         }
+
         Row(
             modifier = Modifier
                 .padding(top = 55.dp)
@@ -104,13 +136,21 @@ fun RentHouseLoanProductSection(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                listOf("전체", "분할상환방식", "만기일시상환방식").forEach { label ->
-                    FinancialProductCheckbox(
-                        label = label,
-                        isChecked = selectedRpayType == label,
-                        onToggle = { selectedRpayType = label }
-                    )
-                }
+                listOf("전체", "분할상환방식", "만기일시상환방식")
+                        .chunked(1)
+                        .forEach { rowItems ->
+                            Column (verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                rowItems.forEach { label ->
+                                    FinancialProductCheckbox(
+                                        label = label,
+                                        isChecked = label in selectedRegions,
+                                        onToggle = {
+                                            selectedRegions = toggleMulti(selectedRegions, label)
+                                        }
+                                    )
+                                }
+                            }
+                        }
             }
         }
 
@@ -161,18 +201,39 @@ fun RentHouseLoanProductSection(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 listOf(
-                    "전체", "서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"
-                ).chunked(3).forEach { rowItems ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        rowItems.forEach { label ->
-                            FinancialProductCheckbox(
-                                label = label,
-                                isChecked = label in selectedRegions,
-                                onToggle = { selectedRegions = toggleMulti(selectedRegions, label) }
-                            )
+                    "전체",
+                    "서울",
+                    "부산",
+                    "대구",
+                    "인천",
+                    "광주",
+                    "대전",
+                    "울산",
+                    "세종",
+                    "경기",
+                    "강원",
+                    "충북",
+                    "충남",
+                    "전북",
+                    "전남",
+                    "경북",
+                    "경남",
+                    "제주"
+                )
+                    .chunked(3)
+                    .forEach { rowItems ->
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            rowItems.forEach { label ->
+                                FinancialProductCheckbox(
+                                    label = label,
+                                    isChecked = label in selectedRegions,
+                                    onToggle = {
+                                        selectedRegions = toggleMulti(selectedRegions, label)
+                                    }
+                                )
+                            }
                         }
                     }
-                }
             }
         }
 
@@ -223,6 +284,7 @@ fun RentHouseLoanProductSection(
             text = "조회하기"
         ) {
             onSearchClick(
+                selectedMrtgType,
                 selectedFinGrp,
                 selectedRegions,
                 selectedRpayType,

@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.finance.NewsInfo
+import com.moneymate.moneymate.data.dto.finance.response.CreditLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.MortgageLoanProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.RentHouseLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.data.repository.FinanceRepository
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.ProductViewType
@@ -48,6 +51,24 @@ class FinanceViewModel @Inject constructor(
 
     private val _navigateToSavingList = MutableSharedFlow<Unit>()
     val navigateToSavingList = _navigateToSavingList.asSharedFlow()
+
+    private val _mortgageLoanList = MutableStateFlow<List<MortgageLoanProductItemDto>>(emptyList())
+    val mortgageLoanList: StateFlow<List<MortgageLoanProductItemDto>> = _mortgageLoanList.asStateFlow()
+
+    private val _navigateToMortgageLoanList = MutableSharedFlow<Unit>()
+    val navigateToMortgageLoanList = _navigateToMortgageLoanList.asSharedFlow()
+
+    private val _rentHouseLoanList = MutableStateFlow<List<RentHouseLoanProductItemDto>>(emptyList())
+    val rentHouseLoanList: StateFlow<List<RentHouseLoanProductItemDto>> = _rentHouseLoanList.asStateFlow()
+
+    private val _navigateToRentHouseLoanList = MutableSharedFlow<Unit>()
+    val navigateToRentHouseLoanList = _navigateToRentHouseLoanList.asSharedFlow()
+
+    private val _creditLoanList = MutableStateFlow<List<CreditLoanProductItemDto>>(emptyList())
+    val creditLoanList: StateFlow<List<CreditLoanProductItemDto>> = _creditLoanList.asStateFlow()
+
+    private val _navigateToCreditLoanList = MutableSharedFlow<Unit>()
+    val navigateToCreditLoanList = _navigateToCreditLoanList.asSharedFlow()
 
     init {
         getNewsList()
@@ -219,4 +240,102 @@ class FinanceViewModel @Inject constructor(
         }
     }
 
+    fun getMortgageLoanProductsByLabels(
+        mrtgTypeLabel: String?,
+        finGrpLabel: String,
+        regions: Set<String>,
+        rpayTypeLabel: String,
+        lendRateTypeLabel: String,
+        joinWayLabels: Set<String>
+    ) {
+        _currentViewType.value = ProductViewType.MORTGAGE_LOAN
+        viewModelScope.launch {
+            runCatching {
+                financeRepository.getMortgageLoanProducts(
+                    mrtgType = when(mrtgTypeLabel) { "아파트" -> "A"; "아파트 외" -> "E"; else -> "A" },
+                    finGrpCode = mapFinGrp(finGrpLabel),
+                    region = mapRegions(regions),
+                    rpayType = when(rpayTypeLabel) { "분할상환방식" -> "D"; "만기일시상환방식" -> "S"; else -> "all" },
+                    lendRateType = when(lendRateTypeLabel) { "고정금리" -> "F"; "변동금리" -> "C"; else -> "all" },
+                    joinWay = mapJoinWays(joinWayLabels)
+                )
+            }.onSuccess {
+                _mortgageLoanList.value = it
+                _navigateToMortgageLoanList.emit(Unit)
+            }.onFailure {
+                Log.e("FinanceViewModel", "주택담보대출 조회 실패", it)
+            }
+        }
+    }
+
+    fun getRentHouseLoanProductsByLabels(
+        finGrpLabel: String,
+        regions: Set<String>,
+        rpayTypeLabel: String,
+        lendRateTypeLabel: String,
+        joinWayLabels: Set<String>
+    ) {
+        _currentViewType.value = ProductViewType.RENT_HOUSE_LOAN
+        viewModelScope.launch {
+            runCatching {
+                financeRepository.getRentHouseLoanProducts(
+                    finGrpCode = mapFinGrp(finGrpLabel),
+                    region = mapRegions(regions),
+                    rpayType = when (rpayTypeLabel) {
+                        "분할상환방식" -> "D"
+                        "만기일시상환방식" -> "S"
+                        else -> "all"
+                    },
+                    lendRateType = when (lendRateTypeLabel) {
+                        "고정금리" -> "F"
+                        "변동금리" -> "C"
+                        else -> "all"
+                    },
+                    joinWay = mapJoinWays(joinWayLabels)
+                )
+            }.onSuccess {
+                _rentHouseLoanList.value = it
+                _navigateToRentHouseLoanList.emit(Unit)
+            }.onFailure {
+                Log.e("FinanceViewModel", "전세자금대출 조회 실패", it)
+            }
+        }
+    }
+
+    fun getCreditLoanProductsByLabels(
+        finGrpLabel: String,
+        regions: Set<String>,
+        crdtPrdtTypeLabel: String,
+        crdtLendRateTypeLabel: String,
+        joinWayLabels: Set<String>
+    ) {
+        _currentViewType.value = ProductViewType.CREDIT_LOAN
+        viewModelScope.launch {
+            runCatching {
+                financeRepository.getCreditLoanProducts(
+                    finGrpCode = mapFinGrp(finGrpLabel),
+                    region = mapRegions(regions),
+                    crdtPrdtType = when (crdtPrdtTypeLabel) {
+                        "일반신용대출" -> "1"
+                        "마이너스한도대출" -> "2"
+                        "장기카드대출" -> "3"
+                        else -> "all"
+                    },
+                    crdtLendRateType = when (crdtLendRateTypeLabel) {
+                        "대출금리" -> "A"
+                        "기준금리" -> "B"
+                        "가산금리" -> "C"
+                        "가감조정금리" -> "D"
+                        else -> "all"
+                    },
+                    joinWay = mapJoinWays(joinWayLabels)
+                )
+            }.onSuccess {
+                _creditLoanList.value = it
+                _navigateToCreditLoanList.emit(Unit)
+            }.onFailure {
+                Log.e("FinanceViewModel", "개인신용대출 조회 실패", it)
+            }
+        }
+    }
 }

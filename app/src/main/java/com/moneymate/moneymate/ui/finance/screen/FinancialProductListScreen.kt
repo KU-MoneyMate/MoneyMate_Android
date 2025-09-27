@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +34,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.data.dto.finance.response.CreditLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.MortgageLoanProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.RentHouseLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.CreditLoanInfo
@@ -50,10 +54,13 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 fun FinancialProductListScreen(
     modifier: Modifier,
     navController: NavController,
-    onNavigateBack : ()->Unit,
+    onNavigateBack: () -> Unit,
     onDepositClick: (DepositProductItemDto) -> Unit,
     onSavingClick: (SavingProductItemDto) -> Unit,
-){
+    onMortgageLoanClick: (MortgageLoanProductItemDto) -> Unit,
+    onRentHouseLoanClick: (RentHouseLoanProductItemDto) -> Unit,
+    onCreditLoanClick: (CreditLoanProductItemDto) -> Unit
+) {
     val financeNavGraphEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry(Route.ProductGraph.route)
     }
@@ -61,9 +68,10 @@ fun FinancialProductListScreen(
 
     val viewType by viewModel.currentViewType.collectAsStateWithLifecycle()
     val deposits by viewModel.depositList.collectAsStateWithLifecycle()
-    val savings  by viewModel.savingList.collectAsStateWithLifecycle()
-
-    Log.d("DEBUG_LOG", "ListScreen: 화면이 ${deposits.size}개의 아이템으로 재구성됨")
+    val savings by viewModel.savingList.collectAsStateWithLifecycle()
+    val mortgageLoans by viewModel.mortgageLoanList.collectAsStateWithLifecycle()
+    val rentHouseLoans by viewModel.rentHouseLoanList.collectAsStateWithLifecycle()
+    val creditLoans by viewModel.creditLoanList.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -109,7 +117,7 @@ fun FinancialProductListScreen(
             modifier = Modifier.padding(top = 12.dp),
             text = when (viewType) {
                 ProductViewType.DEPOSIT -> "정기 예금 상품 목록"
-                ProductViewType.SAVING  -> "적금 상품 목록"
+                ProductViewType.SAVING -> "적금 상품 목록"
                 ProductViewType.MORTGAGE_LOAN -> "주택담보대출 상품 목록"
                 ProductViewType.RENT_HOUSE_LOAN -> "전세자금대출 상품 목록"
                 ProductViewType.CREDIT_LOAN -> "개인신용대출 상품 목록"
@@ -121,17 +129,17 @@ fun FinancialProductListScreen(
             )
         )
 
-        Spacer(modifier=Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
             when (viewType) {
                 ProductViewType.DEPOSIT -> {
-                    items(
+                    itemsIndexed(
                         items = deposits,
-                        key = { it.productName.orEmpty() + it.bankName.orEmpty() + it.intrType.orEmpty() }
-                    ) { dto ->
+                        key = { index, item -> item.productName.orEmpty() + item.bankName.orEmpty() + index }
+                    ) { _, dto ->
                         val ui = DepositInfo(
                             productName = dto.productName.orEmpty(),
                             bankName = dto.bankName.orEmpty(),
@@ -145,17 +153,16 @@ fun FinancialProductListScreen(
                         )
                     }
                 }
-
                 ProductViewType.SAVING -> {
-                    items(
+                    itemsIndexed(
                         items = savings,
-                        key = { it.productName.orEmpty() + it.bankName.orEmpty() + it.intrType.orEmpty() }
-                    ) { dto ->
+                        key = { index, item -> item.productName.orEmpty() + item.bankName.orEmpty() + index }
+                    ) { _, dto ->
                         val ui = SavingInfo(
                             productName = dto.productName.orEmpty(),
                             bankName = dto.bankName.orEmpty(),
                             maxIntrRate = dto.maxIntrRate.orEmpty(),
-                            intrType = dto.intrType.orEmpty()  // 리스트에선 간략 표기
+                            intrType = dto.intrType.orEmpty()
                         )
                         FinancialProductListItem(
                             product = ui,
@@ -164,18 +171,67 @@ fun FinancialProductListScreen(
                         )
                     }
                 }
+                ProductViewType.MORTGAGE_LOAN -> {
+                    itemsIndexed(
+                        items = mortgageLoans,
+                        key = { index, item -> item.productName.orEmpty() + item.bankName.orEmpty() + index }
+                    ) { _, dto ->
+                        val ui = MortgageLoanInfo(
+                            productName = dto.productName.orEmpty(),
+                            bankName = dto.bankName.orEmpty(),
+                            type = dto.lendRateType.orEmpty(),
+                            minRate = dto.lendRateMin.orEmpty(),
+                            maxRate = dto.lendRateMax.orEmpty()
+                        )
+                        FinancialProductListItem(
+                            product = ui,
+                            viewType = ProductViewType.MORTGAGE_LOAN,
+                            onClick = { onMortgageLoanClick(dto) }
+                        )
+                    }
+                }
+                ProductViewType.RENT_HOUSE_LOAN -> {
+                    itemsIndexed(
+                        items = rentHouseLoans,
+                        key = { index, item -> item.productName.orEmpty() + item.bankName.orEmpty() + index }
+                    ) { _, dto ->
+                        val ui = RentHouseLoanInfo(
+                            productName = dto.productName.orEmpty(),
+                            bankName = dto.bankName.orEmpty(),
+                            type = dto.lendRateType.orEmpty(),
+                            minRate = dto.lendRateMin.orEmpty(),
+                            maxRate = dto.lendRateMax.orEmpty()
+                        )
+                        FinancialProductListItem(
+                            product = ui,
+                            viewType = ProductViewType.RENT_HOUSE_LOAN,
+                            onClick = { onRentHouseLoanClick(dto) }
+                        )
+                    }
+                }
+                ProductViewType.CREDIT_LOAN -> {
+                    itemsIndexed(
+                        items = creditLoans,
+                        key = { index, item -> item.productName.orEmpty() + item.bankName.orEmpty() + item.crdtLendRateType.orEmpty() + index }
+                    ) { _, dto ->
+                        val ui = CreditLoanInfo(
+                            productName = dto.productName.orEmpty(),
+                            bankName = dto.bankName.orEmpty(),
+                            type = dto.crdtLendRateType.orEmpty(),
+                            rate = dto.crdtGrad9.orEmpty()
 
-                else -> { /* 다른 상품 타입은 나중에 추가 */
+                        )
+                        FinancialProductListItem(
+                            product = ui,
+                            viewType = ProductViewType.CREDIT_LOAN,
+                            onClick = { onCreditLoanClick(dto) }
+                        )
+                    }
                 }
             }
         }
     }
-
 }
-
-
-
-
 
 //
 //@Preview(showBackground = true)

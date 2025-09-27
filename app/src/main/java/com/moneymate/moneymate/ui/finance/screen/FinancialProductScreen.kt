@@ -53,8 +53,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
 //import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.CreditLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.DepositProductSection
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
+import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.RentHouseLoanProductSection
 import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.SavingProductSection
 import com.moneymate.moneymate.ui.navigation.Route
 //import com.moneymate.moneymate.ui.finance.screen.FinancialProduct.MortgageLoanProductSection
@@ -72,6 +75,9 @@ fun FinancialProductScreen(
     onNavigateBack: () -> Unit,
     onNavigateToDepositList: () -> Unit,
     onNavigateToSavingList: () -> Unit,
+    onNavigateToMortgageLoanList: () -> Unit,
+    onNavigateToRentHouseLoanList: () -> Unit,
+    onNavigateToCreditLoanList: () -> Unit
 ) {
 
     val financeNavGraphEntry = remember(navController) {
@@ -85,11 +91,10 @@ fun FinancialProductScreen(
     LaunchedEffect(viewModel, lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             launch { viewModel.navigateToDepositList.collect { onNavigateToDepositList() } }
-            launch {
-                viewModel.navigateToSavingList.collect {
-                    Log.d("DEBUG_SAVING", "[3] Navigation event RECEIVED in UI. Navigating now.") // 👈 로그 추가
-                    onNavigateToSavingList()
-                } }
+            launch { viewModel.navigateToSavingList.collect { onNavigateToSavingList() } }
+            launch { viewModel.navigateToMortgageLoanList.collect { onNavigateToMortgageLoanList() } }
+            launch { viewModel.navigateToRentHouseLoanList.collect { onNavigateToRentHouseLoanList() } }
+            launch { viewModel.navigateToCreditLoanList.collect { onNavigateToCreditLoanList() } }
         }
     }
 
@@ -240,10 +245,30 @@ fun FinancialProductScreen(
                 },
                 onNavigateBack = onNavigateBack
             )
-//            "개인신용대출" -> CreditLoanProductSection(Modifier)
-//            "주택담보대출" -> MortgageLoanProductSection(Modifier)
-//            "전세자금대출" -> RentHouseLoanProductSection(Modifier)
-            else -> {  }
+            "주택담보대출" -> MortgageLoanProductSection(
+                modifier = modifier,
+                onSearchClick = { mrtgTypeLabel, finGrpLabel, regions, rpayTypeLabel, lendRateTypeLabel, joinWayLabels ->
+                    viewModel.getMortgageLoanProductsByLabels(
+                        mrtgTypeLabel, finGrpLabel, regions, rpayTypeLabel, lendRateTypeLabel, joinWayLabels
+                    )
+                }
+            )
+            "전세자금대출" -> RentHouseLoanProductSection(
+                modifier = modifier,
+                onSearchClick = { finGrpLabel, regions, rpayTypeLabel, lendRateTypeLabel, joinWayLabels ->
+                    viewModel.getRentHouseLoanProductsByLabels(
+                        finGrpLabel, regions, rpayTypeLabel, lendRateTypeLabel, joinWayLabels
+                    )
+                }
+            )
+            "개인신용대출" -> CreditLoanProductSection(
+                modifier = modifier,
+                onSearchClick = { finGrpLabel, regions, crdtPrdtTypeLabel, crdtLendRateTypeLabel, joinWayLabels ->
+                    viewModel.getCreditLoanProductsByLabels(
+                        finGrpLabel, regions, crdtPrdtTypeLabel, crdtLendRateTypeLabel, joinWayLabels
+                    )
+                }
+            )
         }
     }
 }

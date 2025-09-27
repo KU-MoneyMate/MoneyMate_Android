@@ -1,7 +1,10 @@
 package com.moneymate.moneymate.data.repository
 
 import com.moneymate.moneymate.data.dto.finance.NewsInfo
+import com.moneymate.moneymate.data.dto.finance.response.CreditLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.MortgageLoanProductItemDto
+import com.moneymate.moneymate.data.dto.finance.response.RentHouseLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.data.service.FinanceService
 
@@ -51,4 +54,40 @@ class FinanceRepository(
         ).data
     }
 
+    suspend fun getMortgageLoanProducts(
+        mrtgType: String,
+        finGrpCode: String,
+        region: String,
+        rpayType: String,
+        lendRateType: String,
+        joinWay: String
+    ): List<MortgageLoanProductItemDto> {
+        return financeService.getMortgageLoanProducts(
+            mrtgType, finGrpCode, region, rpayType, lendRateType, joinWay
+        ).data
+    }
+
+    suspend fun getRentHouseLoanProducts(
+        finGrpCode: String,
+        region: String,
+        rpayType: String,
+        lendRateType: String,
+        joinWay: String
+    ): List<RentHouseLoanProductItemDto> {
+        return financeService.getRentHouseLoanProducts(
+            finGrpCode, region, rpayType, lendRateType, joinWay
+        ).data
+    }
+
+    suspend fun getCreditLoanProducts(
+        finGrpCode: String,
+        region: String,
+        crdtPrdtType: String,
+        crdtLendRateType: String,
+        joinWay: String
+    ): List<CreditLoanProductItemDto> {
+        return financeService.getCreditLoanProducts(
+            finGrpCode, region, crdtPrdtType, crdtLendRateType, joinWay
+        ).data
+    }
 }
