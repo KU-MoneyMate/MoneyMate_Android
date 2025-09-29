@@ -28,6 +28,6 @@ data class PeerStatResponse(
         @SerialName("unitName")
         val unitName: String,
         @SerialName("value")
-        val value: Double
+        val value: Double?
     )
 }
