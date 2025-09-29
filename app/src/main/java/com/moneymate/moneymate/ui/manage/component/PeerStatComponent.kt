@@ -23,8 +23,8 @@ fun PeerStatComponent(
     modifier: Modifier = Modifier,
     peerAssetData: PeerStatData,
     userTotalAsset: Long,
-    peerConsumptionData: PeerStatData,
-    peerIncomeData: PeerStatData
+    peerConsumptionData: List<PeerStatData>,
+    peerIncomeData: List<PeerStatData>
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -40,14 +40,22 @@ fun PeerStatComponent(
             color = MoneyMateTheme.colors.deepBlue
         )
         PeerStatItem(statName = "자산 평균값", statValue = peerAssetData.average)
-        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 0.5.dp, color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f))
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 0.5.dp,
+            color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+        )
         PeerStatItem(statName = "자산 중앙값", statValue = peerAssetData.median)
-        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 0.5.dp, color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f))
-        PeerStatItem(statName = "내 자산", statValue = userTotalAsset)
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 0.5.dp,
+            color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+        )
+        PeerStatItem(statName = "내 자산", statValue = if(userTotalAsset>10000) userTotalAsset / 10000 else 0)
         Spacer(modifier = Modifier.size(30.dp))
 
         Text(
-            text = "월 소비 비교",
+            text = "연 소비 비교",
             style = MoneyMateTheme.typography.head_03_B_16
         )
         Spacer(modifier = Modifier.size(8.dp))
@@ -56,13 +64,23 @@ fun PeerStatComponent(
             thickness = 1.dp,
             color = MoneyMateTheme.colors.deepBlue
         )
-        PeerStatItem(statName = "소비 평균값", statValue = peerConsumptionData.average)
-        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 0.5.dp, color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f))
-        PeerStatItem(statName = "소비 중앙값", statValue = peerConsumptionData.median)
+        peerConsumptionData.forEachIndexed { index, consumptionData ->
+            PeerStatItem(
+                statName = consumptionData.statName,
+                statValue = consumptionData.average
+            )
+            if (index < peerConsumptionData.size - 1) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 0.5.dp,
+                    color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+                )
+            }
+        }
         Spacer(modifier = Modifier.size(30.dp))
 
         Text(
-            text = "소득 비교",
+            text = "연 소득 비교",
             style = MoneyMateTheme.typography.head_03_B_16
         )
         Spacer(modifier = Modifier.size(8.dp))
@@ -71,9 +89,19 @@ fun PeerStatComponent(
             thickness = 1.dp,
             color = MoneyMateTheme.colors.deepBlue
         )
-        PeerStatItem(statName = "소득 평균값", statValue = peerIncomeData.average)
-        HorizontalDivider(modifier = Modifier.fillMaxWidth(), thickness = 0.5.dp, color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f))
-        PeerStatItem(statName = "소득 중앙값", statValue = peerIncomeData.median)
+        peerIncomeData.forEachIndexed { index, incomeData ->
+            PeerStatItem(
+                statName = incomeData.statName,
+                statValue = incomeData.average
+            )
+            if (index < peerIncomeData.size - 1) {
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 0.5.dp,
+                    color = MoneyMateTheme.colors.lightGray.copy(alpha = 0.3f)
+                )
+            }
+        }
     }
 }
 
@@ -100,13 +128,14 @@ fun PeerStatItem(
         )
         Text(
             modifier = Modifier,
-            text = statValue.toDecimalFormat()+"만 원",
+            text = statValue.toDecimalFormat() + "만 원",
             style = MoneyMateTheme.typography.head_04_SB_14,
         )
     }
 }
 
 data class PeerStatData(
+    val statName: String,
     val average: Long,
     val median: Long,
 )
@@ -120,17 +149,24 @@ private fun PeerStatComponentPreview() {
         PeerStatComponent(
             modifier = Modifier,
             peerAssetData = PeerStatData(
+                statName = "소득",
                 average = 100000,
                 median = 50000,
             ),
             userTotalAsset = 60000,
-            peerConsumptionData = PeerStatData(
-                average = 100000,
-                median = 50000,
+            peerConsumptionData = listOf(
+                PeerStatData(
+                    statName = "소비",
+                    average = 100000,
+                    median = 50000,
+                )
             ),
-            peerIncomeData = PeerStatData(
-                average = 100000,
-                median = 50000,
+            peerIncomeData = listOf(
+                PeerStatData(
+                    statName = "수입",
+                    average = 100000,
+                    median = 50000,
+                )
             )
         )
     }

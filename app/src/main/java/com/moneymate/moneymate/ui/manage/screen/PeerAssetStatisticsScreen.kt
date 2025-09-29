@@ -31,7 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.manage.PeerStatViewModel
 import com.moneymate.moneymate.ui.manage.component.PeerStatComponent
 import com.moneymate.moneymate.ui.manage.component.PeerStatData
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
@@ -41,12 +44,18 @@ import com.patrykandpatrick.vico.core.cartesian.marker.ColumnCartesianLayerMarke
 @Composable
 fun PeerAssetStatisticsScreen(
     modifier: Modifier = Modifier,
+    viewModel: PeerStatViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
     var dropdownExpanded by remember { mutableStateOf(false) }
     val dropdownList = listOf("20대", "30대", "40대", "50대", "60대 이상")
     var selectedDropdownMenu by rememberSaveable { mutableStateOf(dropdownList[0]) }
-    var selectedAgeGroup by rememberSaveable { mutableStateOf("20대") }
+
+    val peerAssetStat = viewModel.peerAssetStat.collectAsStateWithLifecycle()
+    val totalAsset = viewModel.totalAsset.collectAsStateWithLifecycle()
+    val peerConsumptionStat = viewModel.peerConsumptionStat.collectAsStateWithLifecycle()
+    val peerIncomStat = viewModel.peerIncomeStat.collectAsStateWithLifecycle()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -124,14 +133,14 @@ fun PeerAssetStatisticsScreen(
                                 dropdownList[1] -> {
                                     Log.d(
                                         "StockMarketScreen",
-                                        "selectedDropdownMenu: $selectedDropdownMenu, selectedAgeGroup: $selectedAgeGroup"
+                                        "selectedDropdownMenu: $selectedDropdownMenu"
                                     )
                                 }
 
                                 dropdownList[2] -> {
                                     Log.d(
                                         "StockMarketScreen",
-                                        "selectedDropdownMenu: $selectedDropdownMenu, selectedAgeGroup: $selectedAgeGroup"
+                                        "selectedDropdownMenu: $selectedDropdownMenu"
                                     )
                                 }
                             }
@@ -148,19 +157,10 @@ fun PeerAssetStatisticsScreen(
         ) {
             PeerStatComponent(
                 modifier = Modifier.fillMaxWidth(),
-                peerAssetData = PeerStatData(
-                    average = 100000,
-                    median = 50000,
-                ),
-                userTotalAsset = 60000,
-                peerConsumptionData = PeerStatData(
-                    average = 100000,
-                    median = 50000,
-                ),
-                peerIncomeData = PeerStatData(
-                    average = 100000,
-                    median = 50000,
-                )
+                peerAssetData = peerAssetStat.value,
+                userTotalAsset = totalAsset.value,
+                peerConsumptionData = peerConsumptionStat.value,
+                peerIncomeData = peerIncomStat.value
             )
         }
     }
