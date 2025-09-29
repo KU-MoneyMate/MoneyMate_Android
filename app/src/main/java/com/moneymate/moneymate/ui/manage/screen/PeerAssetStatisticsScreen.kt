@@ -36,9 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.manage.PeerStatViewModel
 import com.moneymate.moneymate.ui.manage.component.PeerStatComponent
-import com.moneymate.moneymate.ui.manage.component.PeerStatData
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
-import com.patrykandpatrick.vico.core.cartesian.marker.ColumnCartesianLayerMarkerTarget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +52,7 @@ fun PeerAssetStatisticsScreen(
     val peerAssetStat = viewModel.peerAssetStat.collectAsStateWithLifecycle()
     val totalAsset = viewModel.totalAsset.collectAsStateWithLifecycle()
     val peerConsumptionStat = viewModel.peerConsumptionStat.collectAsStateWithLifecycle()
-    val peerIncomStat = viewModel.peerIncomeStat.collectAsStateWithLifecycle()
+    val peerIncomeStat = viewModel.peerIncomeStat.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -122,28 +120,20 @@ fun PeerAssetStatisticsScreen(
                         onClick = {
                             selectedDropdownMenu = dropdownList[index]
                             dropdownExpanded = false
-                            when (selectedDropdownMenu) {
-                                dropdownList[0] -> {
-                                    Log.d(
-                                        "StockMarketScreen",
-                                        "selectedDropdownMenu: $selectedDropdownMenu"
-                                    )
-                                }
-
-                                dropdownList[1] -> {
-                                    Log.d(
-                                        "StockMarketScreen",
-                                        "selectedDropdownMenu: $selectedDropdownMenu"
-                                    )
-                                }
-
-                                dropdownList[2] -> {
-                                    Log.d(
-                                        "StockMarketScreen",
-                                        "selectedDropdownMenu: $selectedDropdownMenu"
-                                    )
-                                }
+                            
+                            // 연령대에 맞는 age 값 계산
+                            val age = when (selectedDropdownMenu) {
+                                "20대" -> 20
+                                "30대" -> 30
+                                "40대" -> 40
+                                "50대" -> 50
+                                "60대 이상" -> 60
+                                else -> 20
                             }
+                            viewModel.getPeerAssetStat(age)
+                            viewModel.getPeerConsumptionStat(age)
+                            viewModel.getPeerIncomeStat(age)
+                            Log.d("PeerAssetStatisticsScreen", "selectedDropdownMenu: $selectedDropdownMenu, age: $age")
                         },
                     )
                 }
@@ -160,7 +150,7 @@ fun PeerAssetStatisticsScreen(
                 peerAssetData = peerAssetStat.value,
                 userTotalAsset = totalAsset.value,
                 peerConsumptionData = peerConsumptionStat.value,
-                peerIncomeData = peerIncomStat.value
+                peerIncomeData = peerIncomeStat.value
             )
         }
     }
