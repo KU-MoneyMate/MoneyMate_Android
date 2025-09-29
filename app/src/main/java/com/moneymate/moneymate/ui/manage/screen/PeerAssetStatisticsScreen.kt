@@ -32,7 +32,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.manage.component.PeerStatComponent
+import com.moneymate.moneymate.ui.manage.component.PeerStatData
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.patrykandpatrick.vico.core.cartesian.marker.ColumnCartesianLayerMarkerTarget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -112,21 +115,53 @@ fun PeerAssetStatisticsScreen(
                             dropdownExpanded = false
                             when (selectedDropdownMenu) {
                                 dropdownList[0] -> {
-                                    Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu")
+                                    Log.d(
+                                        "StockMarketScreen",
+                                        "selectedDropdownMenu: $selectedDropdownMenu"
+                                    )
                                 }
 
                                 dropdownList[1] -> {
-                                    Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu, selectedAgeGroup: $selectedAgeGroup")
+                                    Log.d(
+                                        "StockMarketScreen",
+                                        "selectedDropdownMenu: $selectedDropdownMenu, selectedAgeGroup: $selectedAgeGroup"
+                                    )
                                 }
 
                                 dropdownList[2] -> {
-                                    Log.d("StockMarketScreen", "selectedDropdownMenu: $selectedDropdownMenu, selectedAgeGroup: $selectedAgeGroup")
+                                    Log.d(
+                                        "StockMarketScreen",
+                                        "selectedDropdownMenu: $selectedDropdownMenu, selectedAgeGroup: $selectedAgeGroup"
+                                    )
                                 }
                             }
                         },
                     )
                 }
             }
+        }
+        Spacer(modifier = Modifier.size(20.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            PeerStatComponent(
+                modifier = Modifier.fillMaxWidth(),
+                peerAssetData = PeerStatData(
+                    average = 100000,
+                    median = 50000,
+                ),
+                userTotalAsset = 60000,
+                peerConsumptionData = PeerStatData(
+                    average = 100000,
+                    median = 50000,
+                ),
+                peerIncomeData = PeerStatData(
+                    average = 100000,
+                    median = 50000,
+                )
+            )
         }
     }
 }
