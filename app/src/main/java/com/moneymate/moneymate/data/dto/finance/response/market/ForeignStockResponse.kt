@@ -36,7 +36,7 @@ data class ForeignStockDto(
     val accumulatedTradingValueKrwHangeul: String? = null, // 누적 거래대금(원)
     val localTradedAt: String? = null,
     val marketStatus: String? = null,
-    val overMarketPriceInfo: String? = null,
+    val overMarketPriceInfo: OverMarketPriceInfoDto? = null,
     val marketValue: String? = null,
     val marketValueHangeul: String? = null,
     val marketValueKrwHangeul: String? = null,
@@ -94,4 +94,16 @@ data class TradeStopTypeDto(
     val code: String,
     val text: String,
     val name: String
+)
+
+@Serializable
+data class OverMarketPriceInfoDto(
+    val tradingSessionType: String,
+    val overMarketStatus: String,
+    val overPrice: String,
+    val compareToPreviousPrice: CompareToPreviousPriceDto,
+    val compareToPreviousClosePrice: String,
+    val fluctuationsRatio: String,
+    val localTradedAt: String,
+    val tradeStopType: TradeStopTypeDto? = null
 )
