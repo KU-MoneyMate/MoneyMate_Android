@@ -32,20 +32,30 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.auth.AuthViewModel
+import com.moneymate.moneymate.ui.common.MoneyMateMenuButton
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 
 @Composable
 fun MyPageScreen(
     modifier: Modifier = Modifier,
+    onUserInfoClick : () -> Unit,
+    onResetPasswordClick: () -> Unit,
+    onLogoutClick: () -> Unit,
+    onDeleteAccountClick: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
     // 필요한 기능에 따라 다른 viewmodel 추가 될 수 있음
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
-        Text(
-            text = "MyPageScreen",
-            style = MoneyMateTheme.typography.head_02_B_20,
-            color = MoneyMateTheme.colors.black
-        )
-        Spacer(modifier = Modifier.size(10.dp))
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFFF5F5F5))
+            .padding(vertical = 16.dp, horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        MoneyMateMenuButton("사용자 정보 조회 및 업데이트", 67, onUserInfoClick)
+        MoneyMateMenuButton("비밀번호 재설정", 67, onResetPasswordClick)
+        MoneyMateMenuButton("로그아웃", 67, onLogoutClick)
+        MoneyMateMenuButton("회원 탈퇴", 67, onDeleteAccountClick)
     }
 }

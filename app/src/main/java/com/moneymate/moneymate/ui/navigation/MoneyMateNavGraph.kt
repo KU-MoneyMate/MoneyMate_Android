@@ -39,7 +39,10 @@ import com.moneymate.moneymate.ui.insight.screen.PortfolioInsightScreen
 import com.moneymate.moneymate.ui.manage.screen.AssetStatisticsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
 import com.moneymate.moneymate.ui.manage.screen.PeerAssetStatisticsScreen
+import com.moneymate.moneymate.ui.mypage.screen.DeleteAccountScreen
 import com.moneymate.moneymate.ui.mypage.screen.MyPageScreen
+import com.moneymate.moneymate.ui.mypage.screen.ResetPasswordScreen
+import com.moneymate.moneymate.ui.mypage.screen.UserInfoScreen
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -423,8 +426,40 @@ fun MoneyMateNavGraph(
         /* 마이페이지 */
         composable(route = Route.MyPage.route) {
             MyPageScreen(
-                modifier = modifier
+                modifier = modifier,
+                onUserInfoClick = { navController.navigate(Route.UserInfo.route) },
+                onResetPasswordClick = { navController.navigate(Route.ResetPassword.route) },
+                onLogoutClick = { },
+                onDeleteAccountClick = { navController.navigate(Route.DeleteAccount.route) }
             )
         }
+        // 사용자 정보 조회 화면
+        composable(route = Route.UserInfo.route){
+            UserInfoScreen (
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 비밀번호 재설정 화면
+        composable(route = Route.ResetPassword.route){
+            ResetPasswordScreen (
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 탈퇴 화면
+        composable(route = Route.DeleteAccount.route){
+            DeleteAccountScreen (
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
     }
 }
