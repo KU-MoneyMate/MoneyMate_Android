@@ -250,7 +250,7 @@ fun UserInfoScreen(
                 .fillMaxWidth(),
             containerColor = MoneyMateTheme.colors.deepBlue,
             contentColor = MoneyMateTheme.colors.white,
-            text = "조회하기"
+            text = "수정하기"
         ) {
 
         }
