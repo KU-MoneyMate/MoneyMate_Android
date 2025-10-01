@@ -4,16 +4,19 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.repository.AuthRepository
+import com.moneymate.moneymate.util.auth.TokenManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val tokenManager: TokenManager
 ) : ViewModel() {
     // 회원가입 입력 정보들
     private val _signupUserId = MutableStateFlow("")
@@ -156,4 +159,31 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    // 로그아웃 함수
+    fun logout(onLogoutSuccess: () -> Unit) {
+        viewModelScope.launch {
+            val accessToken = tokenManager.getAccessToken().first()
+            val refreshToken = tokenManager.getRefreshToken().first()
+
+            if (accessToken == null || refreshToken == null) {
+                // 토큰이 이미 없는 경우, 로컬 정리만 하고 성공 처리
+                tokenManager.clearToken()
+                onLogoutSuccess()
+                return@launch
+            }
+
+            authRepository.logout(
+                refreshToken = refreshToken
+            ).onSuccess {
+                Log.d("AuthViewModel", "로그아웃 처리 성공")
+                // Repository에서 로컬 토큰 삭제까지 처리했으므로, 네비게이션 콜백만 실행
+                onLogoutSuccess()
+            }.onFailure { e ->
+                // 로그아웃 API 실패 처리
+                Log.e("AuthViewModel", "로그아웃 실패: ${e.message}")
+                // API 실패했어도 로컬 토큰은 삭제되었으므로, 일단 로그인 화면으로 이동시켜 재로그인 유도
+                onLogoutSuccess()
+            }
+        }
+    }
 }

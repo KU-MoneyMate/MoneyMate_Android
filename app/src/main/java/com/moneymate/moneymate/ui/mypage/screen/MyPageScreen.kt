@@ -55,7 +55,11 @@ fun MyPageScreen(
     ) {
         MoneyMateMenuButton("사용자 정보 조회 및 업데이트", 67, onUserInfoClick)
         MoneyMateMenuButton("비밀번호 재설정", 67, onResetPasswordClick)
-        MoneyMateMenuButton("로그아웃", 67, onLogoutClick)
+        MoneyMateMenuButton(
+            text="로그아웃",
+            height = 67,
+            onClick = {viewModel.logout(onLogoutSuccess = onLogoutClick)}
+        )
         MoneyMateMenuButton("회원 탈퇴", 67, onDeleteAccountClick)
     }
 }

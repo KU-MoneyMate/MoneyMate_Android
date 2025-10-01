@@ -429,7 +429,15 @@ fun MoneyMateNavGraph(
                 modifier = modifier,
                 onUserInfoClick = { navController.navigate(Route.UserInfo.route) },
                 onResetPasswordClick = { navController.navigate(Route.ResetPassword.route) },
-                onLogoutClick = { },
+                onLogoutClick = {
+                    // 1. AuthGraph (인증/로그인 화면)으로 이동
+                    navController.navigate(Route.AuthGraph.route) {
+                        // 2. 현재 NavHost의 백스택을 모두 제거하여 로그인 후 뒤로 가기가 안되도록 처리
+                        popUpTo(navController.graph.id) {
+                            inclusive = true // NavHost 전체를 pop
+                        }
+                    }
+                },
                 onDeleteAccountClick = { navController.navigate(Route.DeleteAccount.route) }
             )
         }
