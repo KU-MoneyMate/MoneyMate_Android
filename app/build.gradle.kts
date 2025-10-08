@@ -91,4 +91,6 @@ dependencies {
     implementation(libs.vico.compose.m3)
     //DonutChart
     implementation("com.github.fracassi-marco:JetChart:1.4.3")
+    // splash
+    implementation(libs.splash)
 }
