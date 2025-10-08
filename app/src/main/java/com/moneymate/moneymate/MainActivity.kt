@@ -19,6 +19,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -28,11 +30,29 @@ import com.moneymate.moneymate.ui.navigation.MoneyMateNavGraph
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private var showSplash = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Splash
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            // 이 람다 안의 값이 true이면 Splash 화면이 유지됨
+            showSplash
+        }
+
+        lifecycleScope.launch { // 2초후에 Splash 화면 종료
+            delay(1500L)
+            showSplash = false
+        }
+
         enableEdgeToEdge()
         setContent {
             MoneyMateTheme {
