@@ -7,6 +7,7 @@ import com.moneymate.moneymate.data.dto.finance.response.NewsDetailResponse
 import com.moneymate.moneymate.data.dto.finance.response.NewsListResponse
 import com.moneymate.moneymate.data.dto.finance.response.RentHouseLoanProductResponse
 import com.moneymate.moneymate.data.dto.finance.response.SavingProductResponse
+import com.moneymate.moneymate.data.dto.insight.response.NewsInsightResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -70,4 +71,7 @@ interface FinanceService {
         @Query("crdtLendRateType") crdtLendRateType: String,
         @Query("joinWay") joinWay: String
     ): CreditLoanProductResponse
+
+    @GET("news/ai-summary")
+    suspend fun getNewsInsight(): NewsInsightResponse
 }
