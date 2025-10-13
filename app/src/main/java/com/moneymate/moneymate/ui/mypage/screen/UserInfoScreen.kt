@@ -18,8 +18,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,6 +29,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.manage.request.RetireInputRequest
 import com.moneymate.moneymate.ui.common.BottomFullWidthButton
@@ -38,13 +40,18 @@ import com.moneymate.moneymate.ui.manage.screen.OutlinedInputField
 import com.moneymate.moneymate.ui.manage.screen.RowWithTwoInputs
 import com.moneymate.moneymate.ui.manage.screen.SectionTitle
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import com.moneymate.moneymate.ui.mypage.MyPageViewModel
 
 @Composable
 fun UserInfoScreen(
     modifier : Modifier = Modifier,
     onNavigateBack : () -> Unit,
-
+    viewModel: MyPageViewModel = hiltViewModel()
 ) {
+    val userInfo by viewModel.userInfo.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -72,7 +79,7 @@ fun UserInfoScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "사용자 정보 조회 및 수정",
+                    text = "계정 정보 조회 및 수정",
                     color = MoneyMateTheme.colors.darkGray,
                     style = TextStyle(
                         fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
@@ -85,15 +92,15 @@ fun UserInfoScreen(
 
         OutlinedInputField(
             "이름",
-            "홍길동",
-            { },
+            userInfo.name,
+            onValueChange = viewModel::updateName,
             "",
             2
         )
         OutlinedInputField(
             "아이디",
-            "abcd",
-            { },
+            userInfo.userId,
+            viewModel::updateId,
             "",
             2
         )
@@ -118,12 +125,12 @@ fun UserInfoScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             MoneyMateTextField(
-                text = "2002",
-                onValueChange = { },
+                text = userInfo.year,
+                onValueChange = viewModel::updateYear,
                 modifier = Modifier.width(90.dp),
                 placeholder = {
                     Text(
-                        text = "010",
+                        text = "YYYY",
                         style = MoneyMateTheme.typography.body_01_M_14
                     )
                 }
@@ -137,12 +144,12 @@ fun UserInfoScreen(
                 )
             )
             MoneyMateTextField(
-                text = "2",
-                onValueChange = { },
+                text = userInfo.month,
+                onValueChange = viewModel::updateMonth,
                 modifier = Modifier.width(90.dp),
                 placeholder = {
                     Text(
-                        text = "1234",
+                        text = "MM",
                         style = MoneyMateTheme.typography.body_01_M_14
                     )
                 }
@@ -156,12 +163,12 @@ fun UserInfoScreen(
                 )
             )
             MoneyMateTextField(
-                text = "17",
-                onValueChange = { },
+                text = userInfo.day,
+                onValueChange = viewModel::updateDay,
                 modifier = Modifier.width(90.dp),
                 placeholder = {
                     Text(
-                        text = "1234",
+                        text = "DD",
                         style = MoneyMateTheme.typography.body_01_M_14
                     )
                 }
@@ -196,8 +203,8 @@ fun UserInfoScreen(
             horizontalArrangement = Arrangement.Center
         ) {
             MoneyMateTextField(
-                text = "010",
-                onValueChange = { },
+                text = userInfo.phone1,
+                onValueChange = viewModel::updatePhone1,
                 modifier = Modifier.width(100.dp),
                 placeholder = {
                     Text(
@@ -214,8 +221,8 @@ fun UserInfoScreen(
             )
 
             MoneyMateTextField(
-                text = "4058",
-                onValueChange = { },
+                text = userInfo.phone2,
+                onValueChange = viewModel::updatePhone2,
                 modifier = Modifier.width(100.dp),
                 placeholder = {
                     Text(
@@ -232,8 +239,8 @@ fun UserInfoScreen(
             )
 
             MoneyMateTextField(
-                text = "6338",
-                onValueChange = { },
+                text = userInfo.phone3,
+                onValueChange = viewModel::updatePhone3,
                 modifier = Modifier.width(100.dp),
                 placeholder = {
                     Text(
@@ -252,7 +259,7 @@ fun UserInfoScreen(
             contentColor = MoneyMateTheme.colors.white,
             text = "수정하기"
         ) {
-
+            viewModel.updateUserInfo()
         }
     }
 
@@ -261,7 +268,9 @@ fun UserInfoScreen(
 @Preview(showBackground = true)
 @Composable
 private fun UserInfoScreenPreview() {
-    UserInfoScreen {
-
-    }
+    UserInfoScreen(
+        modifier = Modifier,
+        onNavigateBack = {},
+        viewModel = hiltViewModel()
+    )
 }
