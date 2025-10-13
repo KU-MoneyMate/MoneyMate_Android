@@ -74,20 +74,44 @@ fun ResetPasswordScreen(
             }
             Box(modifier = Modifier.weight(1f))
         }
-
-        OutlinedInputField(
-            "새 비밀번호",
-            "abcd",
-            { },
-            "",
-            2
+        Text(
+            text = "새 비밀번호",
+            style = TextStyle(
+                fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                fontSize = 18.sp
+            )
         )
-        OutlinedInputField(
-            "새 비밀번호 확인",
-            "abcd",
-            { },
-            "",
-            2
+        Spacer(Modifier.height(10.dp))
+        MoneyMateTextField(
+            text = "영문, 숫자 8자리 이상",
+            onValueChange = {  },
+            placeholder = {
+                Text(
+                    text = "영문, 숫자 8자리 이상",
+                    style = MoneyMateTheme.typography.body_01_M_14
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(20.dp))
+        Text(
+            text = "새 비밀번호 확인",
+            style = TextStyle(
+                fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                fontSize = 18.sp
+            )
+        )
+        Spacer(Modifier.height(10.dp))
+        MoneyMateTextField(
+            text = "비밀번호 확인",
+            onValueChange = {  },
+            placeholder = {
+                Text(
+                    text = "새 비밀번호를 다시 입력해주세요",
+                    style = MoneyMateTheme.typography.body_01_M_14
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.weight(1f))

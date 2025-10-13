@@ -4,11 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moneymate.moneymate.data.dto.mypage.request.UpdateUserRequest
+import com.moneymate.moneymate.data.dto.mypage.request.VerifyPasswordRequest
 import com.moneymate.moneymate.data.dto.mypage.response.UserInfo
 import com.moneymate.moneymate.data.repository.MyPageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,6 +39,18 @@ class MyPageViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _showPasswordDialog = MutableStateFlow(false)
+    val showPasswordDialog: StateFlow<Boolean> = _showPasswordDialog.asStateFlow()
+
+    private val _verificationSuccessEvent = MutableSharedFlow<Unit>()
+    val verificationSuccessEvent: SharedFlow<Unit> = _verificationSuccessEvent.asSharedFlow()
+
+    private val _targetAction = MutableStateFlow<MyPageAction?>(null)
+    val targetAction: StateFlow<MyPageAction?> = _targetAction.asStateFlow()
+
+    private val _isPasswordError = MutableStateFlow(false)
+    val isPasswordError: StateFlow<Boolean> = _isPasswordError.asStateFlow()
 
     init {
         fetchUserInfo()
@@ -103,4 +119,61 @@ class MyPageViewModel @Inject constructor(
             password = null
         )
     }
+
+    //버튼 클릭시
+    fun onPasswordResetClicked() {
+        _targetAction.value = MyPageAction.RESET_PASSWORD
+        _showPasswordDialog.value = true
+    }
+    fun onDeleteAccountClicked() {
+        _targetAction.value = MyPageAction.DELETE_ACCOUNT
+        _showPasswordDialog.value = true
+    }
+
+    //다이얼로그 종료
+    fun onDialogDismissed() {
+        _showPasswordDialog.value = false
+        _isPasswordError.value = false
+    }
+
+    fun verifyCurrentPassword(password: String) {
+        if (_isLoading.value) return
+
+        _isPasswordError.value = false
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            myPageRepository.verifyCurrentPassword(password = password)
+                .onSuccess {
+                    Log.d("MyPageViewModel", "현재 비밀번호 검증 성공")
+                    onDialogDismissed()
+
+                    when (_targetAction.value) {
+                        MyPageAction.RESET_PASSWORD -> _verificationSuccessEvent.emit(Unit)
+                        // 💡 performAccountDeletion() 대신 deleteAccount() 호출
+                        MyPageAction.DELETE_ACCOUNT -> deleteAccount()
+                        else -> Log.w("MyPageViewModel", "No target action set.")
+                    }
+                    _targetAction.value = null
+                }
+                .onFailure { t ->
+                    Log.e("MyPageViewModel", "비밀번호 검증 실패: ${t.message}")
+                    _isPasswordError.value = true
+                }
+            _isLoading.value = false
+        }
+    }
+
+    private fun deleteAccount() {
+        // TODO: 회원 탈퇴 API 호출 (ViewModel에 MyPageRepository가 있으므로 여기서 처리 가능)
+        viewModelScope.launch {
+            // myPageRepository.deleteAccount()
+            // onSuccess 시: onLogoutClick 등의 콜백 호출 또는 메인 화면 이동 이벤트 발생
+        }
+    }
+}
+
+enum class MyPageAction {
+    RESET_PASSWORD, // 비밀번호 재설정 화면으로 이동
+    DELETE_ACCOUNT  // 회원 탈퇴 로직 실행
 }
