@@ -32,6 +32,11 @@ sealed class Route(val route: String){
     object ProductRentHouseLoan : Route(route = "product/rentHouseLoan")
     object ProductCreditLoan : Route(route = "product/creditLoan")
 
+    // 인사이트
+    object InsightMenu: Route(route = "insightMenu")
+    object NewsInsight: Route(route = "newsInsight")
+    object PortfolioInsight: Route(route = "portfolioInsight")
+
     // 자산 관리
     object Manage: Route(route = "manage")
     object RetireGraph : Route(route = "retireGraph")
