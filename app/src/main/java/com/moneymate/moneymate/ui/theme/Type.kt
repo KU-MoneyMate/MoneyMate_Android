@@ -26,7 +26,9 @@ data class MoneyMateTypography(
 
     // Body
     val body_01_M_14: TextStyle,
+    val body_01_M_16: TextStyle,
     val body_01_R_14: TextStyle,
+    val body_01_R_16: TextStyle,
     val body_02_SB_12: TextStyle,
     val body_02_R_12: TextStyle,
     val body_03_M_20: TextStyle,
@@ -79,10 +81,20 @@ val defaultMoneyMateTypography = MoneyMateTypography(
         fontSize = 14.sp,
         lineHeight = 14.sp
     ),
+    body_01_M_16 = TextStyle(
+        fontFamily = moneyMateFontMedium,
+        fontSize = 16.sp,
+        lineHeight = 16.sp
+    ),
     body_01_R_14 = TextStyle(
         fontFamily = moneyMateFontRegular,
         fontSize = 14.sp,
         lineHeight = 14.sp
+    ),
+    body_01_R_16 = TextStyle(
+        fontFamily = moneyMateFontRegular,
+        fontSize = 16.sp,
+        lineHeight = 16.sp
     ),
     body_02_SB_12 = TextStyle(
         fontFamily = moneyMateFontSemiBold,
