@@ -89,18 +89,34 @@ fun UserInfoScreen(
             }
             Box(modifier = Modifier.weight(1f))
         }
-
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(56.dp)
+                .padding(vertical = 4.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = "아이디",
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    fontSize = 18.sp
+                )
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = userInfo.userId,
+                style = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                    fontSize = 18.sp
+                ),
+                modifier = Modifier.width(141.dp)
+            )
+        }
         OutlinedInputField(
             "이름",
             userInfo.name,
             onValueChange = viewModel::updateName,
-            "",
-            2
-        )
-        OutlinedInputField(
-            "아이디",
-            userInfo.userId,
-            viewModel::updateId,
             "",
             2
         )

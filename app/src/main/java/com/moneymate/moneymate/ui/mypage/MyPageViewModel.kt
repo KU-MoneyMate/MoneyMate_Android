@@ -74,7 +74,6 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun updateName(name: String) { _userInfo.update { it.copy(name = name) } }
-    fun updateId(userId: String) { _userInfo.update { it.copy(userId = userId) } }
     fun updateYear(year: String) { _userInfo.update { it.copy(year = year) } }
     fun updateMonth(month: String) { _userInfo.update { it.copy(month = month) } }
     fun updateDay(day: String) { _userInfo.update { it.copy(day = day) } }
@@ -150,7 +149,6 @@ class MyPageViewModel @Inject constructor(
 
                     when (_targetAction.value) {
                         MyPageAction.RESET_PASSWORD -> _verificationSuccessEvent.emit(Unit)
-                        // 💡 performAccountDeletion() 대신 deleteAccount() 호출
                         MyPageAction.DELETE_ACCOUNT -> deleteAccount()
                         else -> Log.w("MyPageViewModel", "No target action set.")
                     }
