@@ -6,6 +6,7 @@ import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.MortgageLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.RentHouseLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
+import com.moneymate.moneymate.data.dto.insight.response.NewsSummaryData
 import com.moneymate.moneymate.data.service.FinanceService
 
 class FinanceRepository(
@@ -90,4 +91,6 @@ class FinanceRepository(
             finGrpCode, region, crdtPrdtType, crdtLendRateType, joinWay
         ).data
     }
+
+    suspend fun getNewsInsight() = runCatching { financeService.getNewsInsight() }
 }

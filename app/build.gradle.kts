@@ -93,4 +93,6 @@ dependencies {
     implementation("com.github.fracassi-marco:JetChart:1.4.3")
     // splash
     implementation(libs.splash)
+    // markdown
+    implementation(libs.markdowntext)
 }

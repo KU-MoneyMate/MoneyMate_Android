@@ -33,6 +33,9 @@ import com.moneymate.moneymate.ui.finance.screen.NewsArticleScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsPublisherHomeScreen
 import com.moneymate.moneymate.ui.finance.screen.NewsScreen
 import com.moneymate.moneymate.ui.finance.screen.MarketInfoScreen
+import com.moneymate.moneymate.ui.insight.screen.InsightMenuScreen
+import com.moneymate.moneymate.ui.insight.screen.NewsInsightScreen
+import com.moneymate.moneymate.ui.insight.screen.PortfolioInsightScreen
 import com.moneymate.moneymate.ui.manage.screen.AssetStatisticsScreen
 import com.moneymate.moneymate.ui.manage.screen.ManageScreen
 import com.moneymate.moneymate.ui.manage.screen.PeerAssetStatisticsScreen
@@ -329,6 +332,41 @@ fun MoneyMateNavGraph(
                 modifier = modifier,
                 onNavigateBack = { navController.navigateUp() },
                 item = item
+            )
+        }
+
+        /* 인사이트 */
+        // 인사이트 메뉴 화면
+        composable(route = Route.InsightMenu.route) {
+            InsightMenuScreen(
+                modifier = modifier,
+                onNavigateToNewsInsight = {
+                    navController.navigate(Route.NewsInsight.route)
+                },
+                onNavigateToPortfolioInsight = {
+                    navController.navigate(Route.PortfolioInsight.route)
+                },
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 뉴스 인사이트 화면
+        composable(route = Route.NewsInsight.route) {
+            NewsInsightScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        // 포트폴리오 인사이트 화면
+        composable(route = Route.PortfolioInsight.route) {
+            PortfolioInsightScreen(
+                modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
             )
         }
 

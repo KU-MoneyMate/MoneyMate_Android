@@ -13,8 +13,12 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -69,6 +73,11 @@ class MainActivity : ComponentActivity() {
                         icon = R.drawable.ic_bottomnav_finance
                     ),
                     BottomNavItem(
+                        label = "인사이트",
+                        route = Route.InsightMenu.route,
+                        icon = R.drawable.ic_moneymatelogo
+                    ),
+                    BottomNavItem(
                         label = "자산 관리",
                         route = Route.Manage.route,
                         icon = R.drawable.ic_bottomnav_manage
@@ -84,6 +93,7 @@ class MainActivity : ComponentActivity() {
                 val bottomNavRoutes = listOf(
                     Route.Home.route,
                     Route.Finance.route,
+                    Route.InsightMenu.route,
                     Route.Manage.route,
                     Route.MyPage.route
                 )
@@ -113,12 +123,21 @@ class MainActivity : ComponentActivity() {
                                 navBarItems.forEach { item ->
                                     val selected =
                                         currentDestination?.hierarchy?.any { it.route == item.route } == true
+                                    val isInsightMenu = item.route == Route.InsightMenu.route
+                                    
                                     NavigationBarItem(
                                         icon = {
-                                            Icon(
-                                                painter = painterResource(id = item.icon),
-                                                contentDescription = item.label,
-                                            )
+                                            Box(
+                                                modifier = Modifier.size(38.dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(id = item.icon),
+                                                    contentDescription = item.label,
+                                                    tint = if (isInsightMenu) Color.Unspecified else LocalContentColor.current,
+                                                    modifier = if (isInsightMenu) Modifier.size(38.dp) else Modifier.size(28.dp)
+                                                )
+                                            }
                                         },
                                         label = {
                                             Text(
@@ -135,13 +154,23 @@ class MainActivity : ComponentActivity() {
                                                 restoreState = true
                                             }
                                         },
-                                        colors = NavigationBarItemDefaults.colors(
-                                            indicatorColor = Color.Transparent,
-                                            selectedIconColor = MoneyMateTheme.colors.deepBlue,
-                                            selectedTextColor = MoneyMateTheme.colors.deepBlue,
-                                            unselectedIconColor = MoneyMateTheme.colors.lightGray,
-                                            unselectedTextColor = MoneyMateTheme.colors.lightGray
-                                        )
+                                        colors = if (isInsightMenu) {
+                                            NavigationBarItemDefaults.colors(
+                                                indicatorColor = Color.Transparent,
+                                                selectedIconColor = Color.Unspecified,
+                                                selectedTextColor = MoneyMateTheme.colors.deepBlue,
+                                                unselectedIconColor = Color.Unspecified,
+                                                unselectedTextColor = MoneyMateTheme.colors.lightGray
+                                            )
+                                        } else {
+                                            NavigationBarItemDefaults.colors(
+                                                indicatorColor = Color.Transparent,
+                                                selectedIconColor = MoneyMateTheme.colors.deepBlue,
+                                                selectedTextColor = MoneyMateTheme.colors.deepBlue,
+                                                unselectedIconColor = MoneyMateTheme.colors.lightGray,
+                                                unselectedTextColor = MoneyMateTheme.colors.lightGray
+                                            )
+                                        }
                                     )
                                 }
                             }
