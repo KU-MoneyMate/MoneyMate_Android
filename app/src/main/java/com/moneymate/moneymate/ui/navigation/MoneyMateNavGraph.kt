@@ -355,12 +355,18 @@ fun MoneyMateNavGraph(
         composable(route = Route.NewsInsight.route) {
             NewsInsightScreen(
                 modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
             )
         }
         // 포트폴리오 인사이트 화면
         composable(route = Route.PortfolioInsight.route) {
             PortfolioInsightScreen(
                 modifier = modifier,
+                onNavigateBack = {
+                    navController.navigateUp()
+                }
             )
         }
 
