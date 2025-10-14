@@ -28,8 +28,8 @@ fun InsightMenuScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MoneyMateMenuButton("뉴스 인사이트", 67, onNavigateToNewsInsight)
-        MoneyMateMenuButton("포트폴리오 인사이트", 67, onNavigateToPortfolioInsight)
+        MoneyMateMenuButton("AI 뉴스 요약", 67, onNavigateToNewsInsight)
+        MoneyMateMenuButton("포트폴리오 분석", 67, onNavigateToPortfolioInsight)
     }
 }
 
