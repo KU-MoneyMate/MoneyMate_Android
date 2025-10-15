@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.data.service
 
+import com.moneymate.moneymate.data.dto.mypage.request.ChangePasswordRequest
 import com.moneymate.moneymate.data.dto.mypage.request.DeleteAccountRequest
 import com.moneymate.moneymate.data.dto.mypage.request.UpdateUserRequest
 import com.moneymate.moneymate.data.dto.mypage.request.VerifyPasswordRequest
@@ -30,5 +31,10 @@ interface MyPageService {
     @HTTP(method = "DELETE", path = "user/delete", hasBody = true)
     suspend fun deleteAccount(
         @Body deleteAccountRequest: DeleteAccountRequest
+    ): Response<Unit>
+
+    @PATCH("user/change-pw")
+    suspend fun changePassword(
+        @Body changePasswordRequest: ChangePasswordRequest
     ): Response<Unit>
 }

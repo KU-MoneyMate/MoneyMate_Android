@@ -43,6 +43,10 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.moneymate.moneymate.ui.mypage.MyPageViewModel
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun UserInfoScreen(
@@ -51,6 +55,15 @@ fun UserInfoScreen(
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val userInfo by viewModel.userInfo.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.updateUserSuccessEvent.collectLatest {
+            Toast.makeText(context, "성공적으로 수정되었습니다.", Toast.LENGTH_SHORT).show()
+            onNavigateBack()
+        }
+    }
 
     Column(
         modifier = modifier

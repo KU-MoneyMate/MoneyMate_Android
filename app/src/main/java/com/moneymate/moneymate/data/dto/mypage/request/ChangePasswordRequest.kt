@@ -1,3 +1,10 @@
 package com.moneymate.moneymate.data.dto.mypage.request
 
-data class ChangePasswordRequest()
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ChangePasswordRequest(
+    @SerialName("password")
+    val password: String
+)

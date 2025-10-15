@@ -1,6 +1,7 @@
 package com.moneymate.moneymate.data.repository
 
 import android.util.Log
+import com.moneymate.moneymate.data.dto.mypage.request.ChangePasswordRequest
 import com.moneymate.moneymate.data.dto.mypage.request.DeleteAccountRequest
 import com.moneymate.moneymate.data.dto.mypage.request.UpdateUserRequest
 import com.moneymate.moneymate.data.dto.mypage.request.VerifyPasswordRequest
@@ -50,6 +51,16 @@ class MyPageRepository (
             val response = myPageService.deleteAccount(request)
             if (!response.isSuccessful) {
                 throw Exception("Failed to delete account, code: ${response.code()}")
+            }
+        }
+    }
+
+    suspend fun changePassword(password: String): Result<Unit> {
+        return runCatching {
+            val request = ChangePasswordRequest(password = password)
+            val response = myPageService.changePassword(request)
+            if (!response.isSuccessful) {
+                throw Exception("Failed to change password, code: ${response.code()}")
             }
         }
     }

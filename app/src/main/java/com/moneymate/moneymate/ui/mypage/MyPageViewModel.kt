@@ -8,6 +8,7 @@ import com.moneymate.moneymate.data.dto.mypage.request.VerifyPasswordRequest
 import com.moneymate.moneymate.data.dto.mypage.response.UserInfo
 import com.moneymate.moneymate.data.repository.MyPageRepository
 import com.moneymate.moneymate.ui.mypage.component.MypageDialogType
+import com.moneymate.moneymate.util.auth.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,9 @@ class MyPageViewModel @Inject constructor(
     private val _showConfirmDialog = MutableStateFlow<MypageDialogType?>(null)
     val showConfirmDialog: StateFlow<MypageDialogType?> = _showConfirmDialog.asStateFlow()
 
+    private val _updateUserSuccessEvent = MutableSharedFlow<Unit>()
+    val updateUserSuccessEvent = _updateUserSuccessEvent.asSharedFlow()
+
     private val _verificationSuccessEvent = MutableSharedFlow<Unit>()
     val verificationSuccessEvent: SharedFlow<Unit> = _verificationSuccessEvent.asSharedFlow()
 
@@ -58,6 +62,18 @@ class MyPageViewModel @Inject constructor(
 
     private val _isPasswordError = MutableStateFlow(false)
     val isPasswordError: StateFlow<Boolean> = _isPasswordError.asStateFlow()
+
+    private val _newPassword = MutableStateFlow("")
+    val newPassword = _newPassword.asStateFlow()
+
+    private val _confirmNewPassword = MutableStateFlow("")
+    val confirmNewPassword = _confirmNewPassword.asStateFlow()
+
+    private val _changePasswordSuccessEvent = MutableSharedFlow<Unit>()
+    val changePasswordSuccessEvent = _changePasswordSuccessEvent.asSharedFlow()
+
+    private val _errorMessage = MutableSharedFlow<String>()
+    val errorMessage = _errorMessage.asSharedFlow()
 
     init {
         fetchUserInfo()
@@ -99,11 +115,11 @@ class MyPageViewModel @Inject constructor(
             myPageRepository.updateUserInfo(request)
                 .onSuccess {
                     Log.d("MyPageViewModel", "사용자 정보 수정 성공")
-                    // TODO: 성공 메시지 토스트 표시 또는 화면 이동 이벤트 추가
+                    _updateUserSuccessEvent.emit(Unit)
                 }
                 .onFailure { t ->
                     Log.e("MyPageViewModel", "사용자 정보 수정 실패: ${t.message}")
-                    // TODO: 오류 메시지 사용자에게 표시
+                    _errorMessage.emit("정보 수정에 실패했습니다.")
                 }
             _isLoading.value = false
         }
@@ -203,6 +219,42 @@ class MyPageViewModel @Inject constructor(
                 }
                 .onFailure { t ->
                     Log.e("MyPageViewModel", "회원 탈퇴 실패: ${t.message}")
+                }
+            _isLoading.value = false
+        }
+    }
+
+    fun updateNewPassword(password: String) {
+        _newPassword.value = password
+    }
+
+    fun updateConfirmNewPassword(password: String) {
+        _confirmNewPassword.value = password
+    }
+
+    fun changePassword() {
+        viewModelScope.launch {
+            val newPw = _newPassword.value
+            val confirmPw = _confirmNewPassword.value
+
+            if (!newPw.isValidPassword()) {
+                _errorMessage.emit("영문, 숫자를 포함하여 8자 이상 입력해주세요")
+                return@launch
+            }
+            if (newPw != confirmPw) {
+                _errorMessage.emit("비밀번호가 일치하지 않습니다")
+                return@launch
+            }
+
+            _isLoading.value = true
+            myPageRepository.changePassword(newPw)
+                .onSuccess {
+                    Log.d("MyPageViewModel", "비밀번호 변경 성공")
+                    _changePasswordSuccessEvent.emit(Unit)
+                }
+                .onFailure { t ->
+                    Log.e("MyPageViewModel", "비밀번호 변경 실패: ${t.message}")
+                    _errorMessage.emit("비밀번호 변경에 실패했습니다.")
                 }
             _isLoading.value = false
         }
