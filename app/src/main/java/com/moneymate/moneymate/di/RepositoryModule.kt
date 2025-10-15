@@ -58,5 +58,5 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesMyPageRepository(myPageService: MyPageService): MyPageRepository = MyPageRepository(myPageService)
+    fun providesMyPageRepository(myPageService: MyPageService, tokenManager: TokenManager): MyPageRepository = MyPageRepository(myPageService, tokenManager)
 }

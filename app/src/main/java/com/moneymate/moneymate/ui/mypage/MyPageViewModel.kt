@@ -7,6 +7,7 @@ import com.moneymate.moneymate.data.dto.mypage.request.UpdateUserRequest
 import com.moneymate.moneymate.data.dto.mypage.request.VerifyPasswordRequest
 import com.moneymate.moneymate.data.dto.mypage.response.UserInfo
 import com.moneymate.moneymate.data.repository.MyPageRepository
+import com.moneymate.moneymate.ui.mypage.component.MypageDialogType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,8 +44,14 @@ class MyPageViewModel @Inject constructor(
     private val _showPasswordDialog = MutableStateFlow(false)
     val showPasswordDialog: StateFlow<Boolean> = _showPasswordDialog.asStateFlow()
 
+    private val _showConfirmDialog = MutableStateFlow<MypageDialogType?>(null)
+    val showConfirmDialog: StateFlow<MypageDialogType?> = _showConfirmDialog.asStateFlow()
+
     private val _verificationSuccessEvent = MutableSharedFlow<Unit>()
     val verificationSuccessEvent: SharedFlow<Unit> = _verificationSuccessEvent.asSharedFlow()
+
+    private val _logoutEvent = MutableSharedFlow<Unit>()
+    val logoutEvent: SharedFlow<Unit> = _logoutEvent.asSharedFlow()
 
     private val _targetAction = MutableStateFlow<MyPageAction?>(null)
     val targetAction: StateFlow<MyPageAction?> = _targetAction.asStateFlow()
@@ -129,10 +136,32 @@ class MyPageViewModel @Inject constructor(
         _showPasswordDialog.value = true
     }
 
+    fun onLogoutClicked() {
+        _showConfirmDialog.value = MypageDialogType.CONFIRM_LOGOUT
+    }
+
     //다이얼로그 종료
-    fun onDialogDismissed() {
+    fun onPasswordDialogDismissed() {
         _showPasswordDialog.value = false
         _isPasswordError.value = false
+    }
+    fun onConfirmDialogDismissed() {
+        _showConfirmDialog.value = null
+    }
+
+    fun onConfirmDialog() {
+        viewModelScope.launch {
+            when (_showConfirmDialog.value) {
+                MypageDialogType.CONFIRM_LOGOUT -> {
+                    _logoutEvent.emit(Unit)
+                }
+                MypageDialogType.CONFIRM_DELETE_ACCOUNT -> {
+                    deleteAccount()
+                }
+                else -> {}
+            }
+            _showConfirmDialog.value = null // 다이얼로그 닫기
+        }
     }
 
     fun verifyCurrentPassword(password: String) {
@@ -145,11 +174,13 @@ class MyPageViewModel @Inject constructor(
             myPageRepository.verifyCurrentPassword(password = password)
                 .onSuccess {
                     Log.d("MyPageViewModel", "현재 비밀번호 검증 성공")
-                    onDialogDismissed()
+                    onPasswordDialogDismissed()
 
                     when (_targetAction.value) {
                         MyPageAction.RESET_PASSWORD -> _verificationSuccessEvent.emit(Unit)
-                        MyPageAction.DELETE_ACCOUNT -> deleteAccount()
+                        MyPageAction.DELETE_ACCOUNT -> {
+                            _showConfirmDialog.value = MypageDialogType.CONFIRM_DELETE_ACCOUNT
+                        }
                         else -> Log.w("MyPageViewModel", "No target action set.")
                     }
                     _targetAction.value = null
@@ -163,10 +194,17 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun deleteAccount() {
-        // TODO: 회원 탈퇴 API 호출 (ViewModel에 MyPageRepository가 있으므로 여기서 처리 가능)
         viewModelScope.launch {
-            // myPageRepository.deleteAccount()
-            // onSuccess 시: onLogoutClick 등의 콜백 호출 또는 메인 화면 이동 이벤트 발생
+            _isLoading.value = true
+            myPageRepository.deleteAccount()
+                .onSuccess {
+                    Log.d("MyPageViewModel", "회원 탈퇴 성공")
+                    _logoutEvent.emit(Unit)
+                }
+                .onFailure { t ->
+                    Log.e("MyPageViewModel", "회원 탈퇴 실패: ${t.message}")
+                }
+            _isLoading.value = false
         }
     }
 }
