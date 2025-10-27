@@ -104,7 +104,8 @@ fun HomeScreen(
         // 주식
         StockContainer(
             stockList = totalStocks,
-            onNavigateToStockDetail = onStockClick
+            onNavigateToStockDetail = onStockClick,
+            getIconUrl = { ticker -> viewModel.getStockIconUrl(ticker) }
         )
         Spacer(modifier = Modifier.size(30.dp))
     }

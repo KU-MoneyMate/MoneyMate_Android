@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.asset.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -33,6 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.ui.asset.AssetViewModel
@@ -88,7 +94,8 @@ fun StockHoldingScreen(
                 .forEach { (accountName, stocks) ->
                     StockCompanyContainer(
                         accountName = accountName,
-                        stockList = stocks
+                        stockList = stocks,
+                        getIconUrl = { ticker -> viewModel.getStockIconUrl(ticker) }
                     )
                 }
         }
@@ -97,12 +104,12 @@ fun StockHoldingScreen(
 
 @Composable
 fun StockItemContainer(
-    //image : Int,
     stockName: String,
     ticker: String,
     quantity: String,
     totalPrice: String,
     profitRate: String,
+    iconUrl: String
 ) {
     val profitAmount = (totalPrice.toDouble() * (1 - 1 / (1 + profitRate.toDouble() / 100)))
     var priceColor = MoneyMateTheme.colors.black
@@ -126,11 +133,30 @@ fun StockItemContainer(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(iconUrl)
+                    .decoderFactory(SvgDecoder.Factory())
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "$stockName icon",
                 modifier = Modifier.size(45.dp),
-                painter = painterResource(R.drawable.img_dummy_asset),
-                contentDescription = "asset icon",
-                tint = MoneyMateTheme.colors.lightGray
+                contentScale = ContentScale.Fit,
+                error = painterResource(R.drawable.img_dummy_asset),
+                placeholder = painterResource(R.drawable.img_dummy_asset),
+                onLoading = {
+                    Log.d("StockItemContainer", "[$ticker] 이미지 로딩 중: $iconUrl")
+                },
+                onSuccess = { state ->
+                    Log.d("StockItemContainer", "[$ticker] 이미지 로딩 성공!")
+                    Log.d("StockItemContainer", "[$ticker] DataSource: ${state.result.dataSource}")
+                },
+                onError = { state ->
+                    Log.e("StockItemContainer", "[$ticker] 이미지 로딩 실패!")
+                    Log.e("StockItemContainer", "[$ticker] URL: $iconUrl")
+                    Log.e("StockItemContainer", "[$ticker] Error: ${state.result.throwable.message}")
+                    state.result.throwable.printStackTrace()
+                }
             )
             Spacer(modifier = Modifier.width(20.dp))
 
@@ -206,6 +232,7 @@ fun StockItemContainer(
 fun StockCompanyContainer(
     accountName: String,
     stockList: List<StockInfo>,
+    getIconUrl: (String) -> String
 ) {
 
     Column(
@@ -235,7 +262,8 @@ fun StockCompanyContainer(
             ticker = item.ticker,
             quantity = item.quantity,
             totalPrice = item.totalPrice,
-            profitRate = item.profit
+            profitRate = item.profit,
+            iconUrl = getIconUrl(item.ticker)
         )
     }
 

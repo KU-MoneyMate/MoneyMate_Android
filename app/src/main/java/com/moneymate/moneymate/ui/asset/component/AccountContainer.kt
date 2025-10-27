@@ -87,6 +87,7 @@ fun AccountContainer(
         if (accountList.isNotEmpty()) {
             for (asset in accountList) {
                 AccountItem(
+                    bankCode = asset.bankCode,
                     name = asset.name,
                     value = asset.balance,
                     onClick = {

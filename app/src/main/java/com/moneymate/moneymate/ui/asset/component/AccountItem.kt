@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.asset.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,16 +18,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import com.moneymate.moneymate.util.BankIconMapper
 import com.moneymate.moneymate.util.toDecimalFormat
 
 @Composable
 fun AccountItem(
     modifier: Modifier = Modifier,
+    bankCode: String,
     name: String,
     value: Int,
     onClick: () -> Unit
@@ -40,11 +44,11 @@ fun AccountItem(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
+            Image(
                 modifier = Modifier.size(45.dp),
-                painter = painterResource(R.drawable.img_dummy_asset),
-                contentDescription = "asset icon",
-                tint = MoneyMateTheme.colors.lightGray
+                painter = painterResource(BankIconMapper.getBankIcon(bankCode)),
+                contentDescription = "bank icon",
+                contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.size(17.dp))
             Column(
@@ -84,15 +88,23 @@ fun AccountItem(
 private fun AccountItemPreview() {
     Column {
         AccountItem(
+            bankCode = "004",
             name = "KB 국민은행",
             value = 888888,
         ) { }
         AccountItem(
+            bankCode = "004",
             name = "KB청년도약계좌",
             value = 888888,
         ) { }
         AccountItem(
+            bankCode = "271",
             name = "토스증권",
+            value = 888888,
+        ) { }
+        AccountItem(
+            bankCode = "999",
+            name = "미등록증권",
             value = 888888,
         ) { }
     }
