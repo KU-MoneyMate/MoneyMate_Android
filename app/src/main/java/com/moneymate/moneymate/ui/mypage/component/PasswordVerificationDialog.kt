@@ -59,7 +59,7 @@ fun PasswordVerificationDialog(
                 if (isError) {
                     Text(
                         text = "비밀번호가 일치하지 않습니다.",
-                        color = MoneyMateTheme.colors.stockRed, // 💡 색상 테마 사용
+                        color = MoneyMateTheme.colors.stockRed, // 색상 테마 사용
                         style = TextStyle(fontSize = 14.sp) // 폰트 스타일 지정
                     )
                 }

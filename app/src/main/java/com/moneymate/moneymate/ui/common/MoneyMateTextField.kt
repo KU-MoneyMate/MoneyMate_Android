@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
@@ -23,6 +24,7 @@ fun MoneyMateTextField(
     text: String,
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit)? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
         modifier = modifier
@@ -32,6 +34,7 @@ fun MoneyMateTextField(
         placeholder = {
             placeholder?.invoke()
         },
+        visualTransformation = visualTransformation,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MoneyMateTheme.colors.backgroundWhite,
             focusedTextColor = MoneyMateTheme.colors.darkGray,
