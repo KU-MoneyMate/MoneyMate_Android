@@ -67,16 +67,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @StockIconOkHttpClient
-    fun providesStockIconOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
-    ): OkHttpClient =
-        OkHttpClient.Builder().apply {
-            addInterceptor(loggingInterceptor)
-        }.build()
-
-    @Provides
-    @Singleton
     @DefaultRetrofit
     fun providesDefaultRetrofit(
         client: OkHttpClient,
@@ -108,18 +98,6 @@ object NetworkModule {
         converterFactory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.DOMESTIC_STOCK_BASE_URL)
-        .client(client)
-        .addConverterFactory(converterFactory)
-        .build()
-
-    @Provides
-    @Singleton
-    @StockIconRetrofit
-    fun providesStockIconRetrofit(
-        @StockIconOkHttpClient client: OkHttpClient,
-        converterFactory: Converter.Factory
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.STOCK_ICON_BASE_URL)
         .client(client)
         .addConverterFactory(converterFactory)
         .build()

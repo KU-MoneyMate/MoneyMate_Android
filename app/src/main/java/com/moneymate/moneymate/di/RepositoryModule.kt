@@ -13,7 +13,6 @@ import com.moneymate.moneymate.data.service.FinanceService
 import com.moneymate.moneymate.data.service.ManageService
 import com.moneymate.moneymate.data.service.ForeignStockService
 import com.moneymate.moneymate.data.service.DomesticStockService
-import com.moneymate.moneymate.data.service.StockIconService
 import com.moneymate.moneymate.util.auth.TokenManager
 import dagger.Module
 import dagger.Provides
@@ -53,5 +52,5 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesStockIconRepository(stockIconService: StockIconService): StockIconRepository = StockIconRepository(stockIconService)
+    fun providesStockIconRepository(): StockIconRepository = StockIconRepository()
 }

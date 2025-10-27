@@ -22,11 +22,3 @@ annotation class DomesticStockRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DomesticStockOkHttpClient
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class StockIconRetrofit
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class StockIconOkHttpClient
