@@ -67,6 +67,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @StockIconOkHttpClient
+    fun providesStockIconOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(loggingInterceptor)
+        }.build()
+
+    @Provides
+    @Singleton
     @DefaultRetrofit
     fun providesDefaultRetrofit(
         client: OkHttpClient,
