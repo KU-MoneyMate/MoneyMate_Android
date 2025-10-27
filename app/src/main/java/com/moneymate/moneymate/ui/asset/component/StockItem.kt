@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.asset.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,9 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
@@ -27,7 +34,8 @@ fun StockItem(
     stockName: String,
     ticker: String,
     stockValue: String,
-    profitRate: String
+    profitRate: String,
+    iconUrl: String
 ) {
     Box(
         modifier = modifier
@@ -38,11 +46,30 @@ fun StockItem(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(iconUrl)
+                    .decoderFactory(SvgDecoder.Factory())
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "$stockName icon",
                 modifier = Modifier.size(45.dp),
-                painter = painterResource(R.drawable.img_dummy_asset),
-                contentDescription = "asset icon",
-                tint = MoneyMateTheme.colors.lightGray
+                contentScale = ContentScale.Fit,
+                error = painterResource(R.drawable.img_dummy_asset),
+                placeholder = painterResource(R.drawable.img_dummy_asset),
+                onLoading = {
+                    Log.d("StockItem", "[$ticker] 이미지 로딩 중: $iconUrl")
+                },
+                onSuccess = { state ->
+                    Log.d("StockItem", "[$ticker] 이미지 로딩 성공!")
+                    Log.d("StockItem", "[$ticker] DataSource: ${state.result.dataSource}")
+                },
+                onError = { state ->
+                    Log.e("StockItem", "[$ticker] 이미지 로딩 실패!")
+                    Log.e("StockItem", "[$ticker] URL: $iconUrl")
+                    Log.e("StockItem", "[$ticker] Error: ${state.result.throwable.message}")
+                    state.result.throwable.printStackTrace()
+                }
             )
             Spacer(modifier = Modifier.size(17.dp))
             Column(
@@ -77,6 +104,7 @@ private fun StockItemPreview() {
         stockName = "테슬라",
         ticker = "TSLA",
         stockValue = "1000000.0",
-        profitRate = "5.0"
+        profitRate = "5.0",
+        iconUrl = ""
     )
 }

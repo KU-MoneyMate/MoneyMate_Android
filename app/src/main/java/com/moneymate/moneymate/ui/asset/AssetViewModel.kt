@@ -8,6 +8,7 @@ import com.moneymate.moneymate.data.dto.asset.response.AssetInfo
 import com.moneymate.moneymate.data.dto.account.response.TransactionInfo
 import com.moneymate.moneymate.data.dto.asset.response.StockInfo
 import com.moneymate.moneymate.data.repository.AssetRepository
+import com.moneymate.moneymate.data.repository.StockIconRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AssetViewModel @Inject constructor(
-    private val assetRepository: AssetRepository
+    private val assetRepository: AssetRepository,
+    private val stockIconRepository: StockIconRepository
 ) : ViewModel() {
     // 홈 화면에서 조회할 전체 계좌 정보
     private val _totalAccounts = MutableStateFlow<List<AccountInfo>>(emptyList())
@@ -106,11 +108,21 @@ class AssetViewModel @Inject constructor(
             assetRepository.getStockList()
                 .onSuccess { response ->
                     _totalStocks.value = response.data
-                    Log.d("AssetViewModel", response.data.toString())
+                    Log.d("AssetViewModel", "주식 목록 조회 성공: ${response.data.size}개")
+                    response.data.forEach { stock ->
+                        Log.d("AssetViewModel", "주식 정보: ${stock.stockName} (${stock.ticker})")
+                    }
                 }
                 .onFailure { response ->
-                    response.message?.let { Log.d("AssetViewModel", "주식 조회 실패") }
+                    response.message?.let { Log.e("AssetViewModel", "주식 조회 실패: $it") }
                 }
         }
+    }
+
+    // 주식 아이콘 URL 조회
+    fun getStockIconUrl(ticker: String): String {
+        val url = stockIconRepository.getStockIconUrl(ticker)
+        Log.d("AssetViewModel", "ViewModel에서 아이콘 URL 요청 [$ticker]: $url")
+        return url
     }
 }

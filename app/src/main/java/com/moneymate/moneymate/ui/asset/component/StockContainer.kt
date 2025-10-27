@@ -33,7 +33,8 @@ import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 fun StockContainer(
     modifier: Modifier = Modifier,
     stockList : List<StockInfo>,
-    onNavigateToStockDetail : () -> Unit
+    onNavigateToStockDetail : () -> Unit,
+    getIconUrl: (String) -> String
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -86,7 +87,8 @@ fun StockContainer(
                     stockName = stock.stockName,
                     ticker = stock.ticker,
                     stockValue = stock.totalPrice,
-                    profitRate = stock.profit
+                    profitRate = stock.profit,
+                    iconUrl = getIconUrl(stock.ticker)
                 )
             }
         } else {
@@ -105,11 +107,12 @@ fun StockContainer(
 @Composable
 private fun StockContainerPreview() {
     val stockList = listOf(
-        StockInfo("키움증권", "테슬라", "TSL", "2", "130000", "30"),
+        StockInfo("키움증권", "테슬라", "TSLA", "2", "130000", "30"),
         StockInfo("삼성증권", "애플", "AAPL", "5", "150000", "-20")
     )
     StockContainer(
         stockList = stockList,
-        onNavigateToStockDetail = {}
+        onNavigateToStockDetail = {},
+        getIconUrl = { "" }
     )
 }
