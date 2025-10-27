@@ -96,4 +96,7 @@ dependencies {
     implementation(libs.splash)
     // markdown
     implementation(libs.markdowntext)
+    // Coil for image loading (SVG support)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 }
