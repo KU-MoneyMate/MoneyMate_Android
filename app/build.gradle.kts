@@ -28,6 +28,7 @@ android {
         buildConfigField("String","BASE_URL", "\"${properties["base.url"]}\"")
         buildConfigField("String","FOREIGN_STOCK_BASE_URL", "\"${properties["foreign.stock.base.url"]}\"")
         buildConfigField("String","DOMESTIC_STOCK_BASE_URL", "\"${properties["domestic.stock.base.url"]}\"")
+        buildConfigField("String","STOCK_ICON_BASE_URL", "\"${properties["stock.icon.base.url"]}\"")
     }
 
     buildTypes {
