@@ -27,7 +27,11 @@ fun NavGraphBuilder.authNavGraph(
             LoginScreen(
                 modifier = modifier,
                 onLoginClick = {
-                    navController.navigate(Route.Home.route)
+                    navController.navigate(Route.Home.route) {
+                        popUpTo(Route.AuthGraph.route) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onRegisterClick = {
                     navController.navigate(Route.SignUpID.route)
