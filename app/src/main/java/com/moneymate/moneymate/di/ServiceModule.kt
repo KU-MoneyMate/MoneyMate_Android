@@ -6,6 +6,7 @@ import com.moneymate.moneymate.data.service.FinanceService
 import com.moneymate.moneymate.data.service.ForeignStockService
 import com.moneymate.moneymate.data.service.DomesticStockService
 import com.moneymate.moneymate.data.service.ManageService
+import com.moneymate.moneymate.data.service.StockIconService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,4 +46,9 @@ object ServiceModule {
     @Singleton
     fun providesDomesticStockService(@DomesticStockRetrofit retrofit: Retrofit): DomesticStockService =
         retrofit.create(DomesticStockService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesStockIconService(@StockIconRetrofit retrofit: Retrofit): StockIconService =
+        retrofit.create(StockIconService::class.java)
 }
