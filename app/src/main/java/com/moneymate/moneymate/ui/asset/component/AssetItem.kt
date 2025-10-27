@@ -36,13 +36,13 @@ fun AssetItem(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                modifier = Modifier.size(45.dp),
-                painter = painterResource(R.drawable.ic_moneymatelogo),
-                contentDescription = "asset icon",
-                contentScale = ContentScale.Fit
-            )
-            Spacer(modifier = Modifier.size(17.dp))
+//            Image(
+//                modifier = Modifier.size(45.dp),
+//                painter = painterResource(R.drawable.ic_moneymatelogo),
+//                contentDescription = "asset icon",
+//                contentScale = ContentScale.Fit
+//            )
+//            Spacer(modifier = Modifier.size(17.dp))
             Column(
                 modifier = Modifier,
             ) {
