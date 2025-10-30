@@ -48,5 +48,8 @@ sealed class Route(val route: String){
 
     // 마이페이지
     object MyPage: Route(route = "myPage")
+    object UserInfo: Route(route = "myPage/userInfo")
+    object ResetPassword: Route(route = "myPage/resetPassword")
+    object DeleteAccount: Route(route = "myPage/deleteAccount")
 
 }

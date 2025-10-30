@@ -2,6 +2,7 @@ package com.moneymate.moneymate.data.repository
 
 import android.util.Log
 import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
+import com.moneymate.moneymate.data.dto.auth.request.LogoutRequest
 import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
 import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationRequest
 import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
@@ -100,5 +101,23 @@ class AuthRepository(
         response
     }.onFailure {
         Log.d("AuthRepository", "전화번호 인증 실패: ${it.message}")
+    }
+
+    //로그아웃
+    suspend fun logout(
+        refreshToken: String
+    ) = runCatching {
+        authService.logout(
+            request = LogoutRequest(refreshToken = refreshToken)
+        )
+        // API 요청 성공 시 로컬 토큰 삭제
+        tokenManager.clearToken()
+        Log.d("AuthRepository", "로그아웃 성공 및 로컬 토큰 삭제 완료")
+    }.onFailure {
+        // API 요청 실패 시 (예: 네트워크 오류, 5xx 에러)
+        // 보안상 실패하더라도 로컬 토큰은 삭제하여 강제 로그아웃 상태로 만드는 것이 일반적입니다.
+        tokenManager.clearToken()
+        Log.e("AuthRepository", "로그아웃 API 요청 실패. 로컬 토큰은 삭제됩니다: ${it.message}")
+        throw it // ViewModel에서 실패를 처리할 수 있도록 예외 던지기
     }
 }

@@ -6,6 +6,7 @@ import com.moneymate.moneymate.data.repository.FinanceRepository
 import com.moneymate.moneymate.data.repository.ManageRepository
 import com.moneymate.moneymate.data.repository.ForeignStockRepository
 import com.moneymate.moneymate.data.repository.DomesticStockRepository
+import com.moneymate.moneymate.data.repository.MyPageRepository
 import com.moneymate.moneymate.data.repository.StockIconRepository
 import com.moneymate.moneymate.data.service.AssetService
 import com.moneymate.moneymate.data.service.AuthService
@@ -13,6 +14,7 @@ import com.moneymate.moneymate.data.service.FinanceService
 import com.moneymate.moneymate.data.service.ManageService
 import com.moneymate.moneymate.data.service.ForeignStockService
 import com.moneymate.moneymate.data.service.DomesticStockService
+import com.moneymate.moneymate.data.service.MyPageService
 import com.moneymate.moneymate.util.auth.TokenManager
 import dagger.Module
 import dagger.Provides
@@ -53,4 +55,8 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun providesStockIconRepository(): StockIconRepository = StockIconRepository()
+
+    @Provides
+    @Singleton
+    fun providesMyPageRepository(myPageService: MyPageService, tokenManager: TokenManager): MyPageRepository = MyPageRepository(myPageService, tokenManager)
 }
