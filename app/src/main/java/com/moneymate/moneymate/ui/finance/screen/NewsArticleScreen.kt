@@ -1,6 +1,7 @@
 package com.moneymate.moneymate.ui.finance.screen
 
-import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +42,8 @@ fun NewsArticleScreen(
     viewModel: FinanceViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
 ) {
+    var isLoading by rememberSaveable { mutableStateOf(true) }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -80,15 +84,61 @@ fun NewsArticleScreen(
         }
 
         // WebView 컴포넌트가 들어갈 자리
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { context ->
-                WebView(context).apply {
-                    webViewClient = WebViewClient()
-                    settings.javaScriptEnabled = true
-                    loadUrl(url)
+        Box(modifier = Modifier.fillMaxSize()) {
+            AndroidView(
+                modifier = Modifier.fillMaxSize(),
+                factory = { context ->
+                    WebView(context).apply {
+                        webViewClient = object : WebViewClient() {
+                            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                                super.onPageStarted(view, url, favicon)
+                                isLoading = true
+                            }
+
+                            override fun onPageFinished(view: WebView?, url: String?) {
+                                super.onPageFinished(view, url)
+                                isLoading = false
+                            }
+                        }
+                        
+                        webChromeClient = object : WebChromeClient() {
+                            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                                super.onProgressChanged(view, newProgress)
+                                // 80% 이상 로딩되면 인디케이터 숨김
+                                if (newProgress >= 80) {
+                                    isLoading = false
+                                }
+                            }
+                        }
+                        
+                        settings.apply {
+                            javaScriptEnabled = true
+                            domStorageEnabled = true // localStorage, sessionStorage 활성화
+                            loadWithOverviewMode = true
+                            useWideViewPort = true
+                            setSupportZoom(true)
+                            builtInZoomControls = false
+                            cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+                            mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                        }
+                        loadUrl(url)
+                    }
+                }
+            )
+            
+            // 로딩 인디케이터
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MoneyMateTheme.colors.white.copy(alpha = 0.7f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MoneyMateTheme.colors.deepBlue
+                    )
                 }
             }
-        )
+        }
     }
 }
