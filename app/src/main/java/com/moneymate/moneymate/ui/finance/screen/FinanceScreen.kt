@@ -50,43 +50,43 @@ fun FinanceScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
-            shape = RoundedCornerShape(20.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MoneyMateTheme.colors.white
-            )
-
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 22.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "오늘의 경제 이슈",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = TextStyle(
-                        fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
-                        fontSize = 20.sp
-                    )
-                )
-                Spacer(
-                    modifier = Modifier
-                        .padding(top = 21.dp)
-                        .width(312.5.dp)
-                        .height(1.dp)
-                        .background(color = MoneyMateTheme.colors.deepBlue)
-                )
-            }
-        }
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(250.dp),
+//            shape = RoundedCornerShape(20.dp),
+//            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+//            colors = CardDefaults.cardColors(
+//                containerColor = MoneyMateTheme.colors.white
+//            )
+//
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(top = 22.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Text(
+//                    text = "오늘의 경제 이슈",
+//                    color = MoneyMateTheme.colors.darkGray,
+//                    style = TextStyle(
+//                        fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+//                        fontSize = 20.sp
+//                    )
+//                )
+//                Spacer(
+//                    modifier = Modifier
+//                        .padding(top = 21.dp)
+//                        .width(312.5.dp)
+//                        .height(1.dp)
+//                        .background(color = MoneyMateTheme.colors.deepBlue)
+//                )
+//            }
+//        }
         MoneyMateMenuButton("경제 뉴스 조회", 67, onNewsClick)
         MoneyMateMenuButton("증시 정보", 67, onMarketInfoClick)
         MoneyMateMenuButton("은행 상품 정보", 67, onProductClick)
-        MoneyMateMenuButton("주택 청약 정보", 67, onNewsClick)
+//        MoneyMateMenuButton("주택 청약 정보", 67, onNewsClick)
     }
 }
