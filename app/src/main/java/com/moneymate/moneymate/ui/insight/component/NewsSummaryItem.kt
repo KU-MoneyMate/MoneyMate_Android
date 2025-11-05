@@ -47,7 +47,32 @@ fun NewsSummaryItem(
             LocalTextStyle provides MoneyMateTheme.typography.insightArticleStyle
         ) {
             Material3RichText(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                style = RichTextStyle(
+                    headingStyle = { level, textStyle ->
+                        when (level) {
+                            0 -> textStyle.copy( // H1
+                                fontSize = 24.sp,
+                                lineHeight = 32.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            1 -> textStyle.copy( // H2
+                                fontSize = 20.sp,
+                                lineHeight = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            2 -> textStyle.copy( // H3
+                                fontSize = 18.sp,
+                                lineHeight = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            else -> textStyle.copy(
+                                fontSize = 16.sp,
+                                lineHeight = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                )
             ) {
                 Markdown(content = content)
             }
