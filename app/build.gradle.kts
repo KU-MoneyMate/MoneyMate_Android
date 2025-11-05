@@ -94,8 +94,9 @@ dependencies {
     implementation("com.github.fracassi-marco:JetChart:1.4.3")
     // splash
     implementation(libs.splash)
-    // markdown
-    implementation(libs.markdowntext)
+    // richtext markdown
+    implementation(libs.richtext.ui)
+    implementation(libs.richtext.commonmark)
     // Coil for image loading (SVG support)
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
