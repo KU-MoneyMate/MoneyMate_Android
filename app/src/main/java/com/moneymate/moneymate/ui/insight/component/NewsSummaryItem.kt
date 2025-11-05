@@ -7,13 +7,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.ui.RichTextStyle
+import com.halilibo.richtext.ui.material3.Material3RichText
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
-import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun NewsSummaryItem(
@@ -25,11 +31,16 @@ fun NewsSummaryItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-
     ) {
         Text(
-            text = title,
+            text = when(title) {
+                "stock" -> "증시 뉴스 요약"
+                "realestate" -> "부동산 뉴스 요약"
+                "economy" -> "경제 뉴스 요약"
+                else -> "뉴스 요약"
+            },
             style = MoneyMateTheme.typography.head_01_B_24
+                .copy(color = MoneyMateTheme.colors.deepBlue)
         )
         HorizontalDivider(
             modifier = Modifier
@@ -38,11 +49,40 @@ fun NewsSummaryItem(
             thickness = 1.dp,
             color = MoneyMateTheme.colors.deepBlue
         )
-        MarkdownText(
-            modifier = Modifier.padding(horizontal = 4.dp),
-            markdown = content,
-            style = MoneyMateTheme.typography.body_01_R_16
-        )
+        CompositionLocalProvider(
+            LocalTextStyle provides MoneyMateTheme.typography.insightArticleStyle
+        ) {
+            Material3RichText(
+                style = RichTextStyle(
+                    headingStyle = { level, textStyle ->
+                        when (level) {
+                            0 -> textStyle.copy( // H1
+                                fontSize = 24.sp,
+                                lineHeight = 32.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            1 -> textStyle.copy( // H2
+                                fontSize = 20.sp,
+                                lineHeight = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            2 -> textStyle.copy( // H3
+                                fontSize = 18.sp,
+                                lineHeight = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            else -> textStyle.copy(
+                                fontSize = 16.sp,
+                                lineHeight = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                )
+            ) {
+                Markdown(content = content)
+            }
+        }
     }
 }
 
