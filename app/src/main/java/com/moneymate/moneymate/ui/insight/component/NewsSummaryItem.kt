@@ -33,8 +33,14 @@ fun NewsSummaryItem(
             .fillMaxWidth()
     ) {
         Text(
-            text = title,
+            text = when(title) {
+                "stock" -> "증시 뉴스 요약"
+                "realestate" -> "부동산 뉴스 요약"
+                "economy" -> "경제 뉴스 요약"
+                else -> "뉴스 요약"
+            },
             style = MoneyMateTheme.typography.head_01_B_24
+                .copy(color = MoneyMateTheme.colors.deepBlue)
         )
         HorizontalDivider(
             modifier = Modifier
