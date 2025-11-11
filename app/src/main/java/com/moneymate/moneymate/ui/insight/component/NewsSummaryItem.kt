@@ -15,6 +15,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +35,11 @@ fun NewsSummaryItem(
     generatedTime: String
 ) {
     val scrollState = rememberScrollState()
+
+    // title이 변경될 때마다 스크롤을 맨 위로 리셋
+    LaunchedEffect(title) {
+        scrollState.scrollTo(0)
+    }
 
     Column(
         modifier = Modifier
