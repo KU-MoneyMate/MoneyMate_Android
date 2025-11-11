@@ -93,4 +93,6 @@ class FinanceRepository(
     }
 
     suspend fun getNewsInsight() = runCatching { financeService.getNewsInsight() }
+
+    suspend fun getPortfolioInsight() = runCatching { financeService.getPortfolioInsight() }
 }
