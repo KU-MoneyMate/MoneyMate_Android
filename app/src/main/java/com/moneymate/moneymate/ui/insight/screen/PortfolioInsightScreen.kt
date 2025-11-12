@@ -61,7 +61,7 @@ fun PortfolioInsightScreen(
                     )
                     Text(
                         modifier = Modifier.align(Alignment.Center),
-                        text = "AI 뉴스 요약",
+                        text = "AI 포트폴리오 분석",
                         style = MoneyMateTheme.typography.head_02_B_20
                     )
                 }
