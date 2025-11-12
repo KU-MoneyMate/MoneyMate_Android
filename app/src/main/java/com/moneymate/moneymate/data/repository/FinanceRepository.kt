@@ -6,11 +6,12 @@ import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.MortgageLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.RentHouseLoanProductItemDto
 import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
-import com.moneymate.moneymate.data.dto.insight.response.NewsSummaryData
+import com.moneymate.moneymate.data.service.InsightService
 import com.moneymate.moneymate.data.service.FinanceService
 
 class FinanceRepository(
-    private val financeService: FinanceService
+    private val financeService: FinanceService,
+    private val aiInsightService: InsightService
 ) {
     suspend fun getNewsList() : List<NewsInfo> {
         return financeService.getNewsList().data
@@ -92,7 +93,7 @@ class FinanceRepository(
         ).data
     }
 
-    suspend fun getNewsInsight() = runCatching { financeService.getNewsInsight() }
+    suspend fun getNewsInsight() = runCatching { aiInsightService.getNewsInsight() }
 
-    suspend fun getPortfolioInsight() = runCatching { financeService.getPortfolioInsight() }
+    suspend fun getPortfolioInsight() = runCatching { aiInsightService.getPortfolioInsight() }
 }
