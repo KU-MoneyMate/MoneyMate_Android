@@ -1,10 +1,8 @@
 package com.moneymate.moneymate.ui.insight
 
 import android.util.Log
-import androidx.compose.foundation.rememberPlatformOverscrollFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.moneymate.moneymate.data.dto.insight.response.PortfolioInsightData
 import com.moneymate.moneymate.data.repository.FinanceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +14,7 @@ import javax.inject.Inject
 
 data class PortfolioInsightUiState(
     val isLoading: Boolean = false,
-    val insight: List<PortfolioInsightData> = emptyList(),
+    val insight: String = "",
     val errorMessage: String? = null
 )
 

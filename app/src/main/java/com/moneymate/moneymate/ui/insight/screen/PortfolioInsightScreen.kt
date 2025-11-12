@@ -2,6 +2,7 @@ package com.moneymate.moneymate.ui.insight.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,8 +43,6 @@ fun PortfolioInsightScreen(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
-    // TODO: 타입 수정하여 uiState에서 가져오도록
-    val content = ""
 
     Column(
         modifier = Modifier
@@ -73,9 +72,10 @@ fun PortfolioInsightScreen(
         )
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(horizontal = 20.dp)
-                .verticalScroll(state = scrollState)
+                .verticalScroll(state = scrollState),
+            verticalArrangement = Arrangement.Center
         ) {
 
             when (uiState.value.isLoading) {
@@ -84,7 +84,8 @@ fun PortfolioInsightScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MoneyMateTheme.colors.deepBlue
                         )
                     }
                 }
@@ -120,7 +121,7 @@ fun PortfolioInsightScreen(
                                 }
                             )
                         ) {
-                            Markdown(content = content)
+                            Markdown(content = uiState.value.insight)
                         }
                     }
                 }
