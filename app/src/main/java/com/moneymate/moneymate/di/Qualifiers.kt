@@ -22,3 +22,11 @@ annotation class DomesticStockRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DomesticStockOkHttpClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class InsightRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class InsightOkHttpClient

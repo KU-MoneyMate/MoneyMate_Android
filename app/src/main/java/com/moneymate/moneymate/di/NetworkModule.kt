@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -59,10 +60,28 @@ object NetworkModule {
     @Singleton
     @DomesticStockOkHttpClient
     fun providesDomesticStockOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
+loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient =
         OkHttpClient.Builder().apply {
             addInterceptor(loggingInterceptor)
+        }.build()
+
+    @Provides
+    @Singleton
+    @InsightOkHttpClient
+    fun providesInsightOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor,
+        tokenAuthenticator: TokenAuthenticator
+    ): OkHttpClient =
+        OkHttpClient.Builder().apply {
+            addInterceptor(loggingInterceptor)
+            addInterceptor(authInterceptor)
+            authenticator(tokenAuthenticator)
+            // AI 요약 요청은 시간이 오래 걸리므로 타임아웃을 60초로 설정
+            connectTimeout(60, TimeUnit.SECONDS)
+            readTimeout(60, TimeUnit.SECONDS)
+            writeTimeout(60, TimeUnit.SECONDS)
         }.build()
 
     @Provides
@@ -98,6 +117,18 @@ object NetworkModule {
         converterFactory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.DOMESTIC_STOCK_BASE_URL)
+        .client(client)
+        .addConverterFactory(converterFactory)
+        .build()
+
+    @Provides
+    @Singleton
+    @InsightRetrofit
+    fun providesInsightRetrofit(
+        @InsightOkHttpClient client: OkHttpClient,
+        converterFactory: Converter.Factory
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(BuildConfig.BASE_URL)
         .client(client)
         .addConverterFactory(converterFactory)
         .build()

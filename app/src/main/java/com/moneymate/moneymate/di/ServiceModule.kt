@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.di
 
+import com.moneymate.moneymate.data.service.InsightService
 import com.moneymate.moneymate.data.service.AssetService
 import com.moneymate.moneymate.data.service.AuthService
 import com.moneymate.moneymate.data.service.FinanceService
@@ -51,4 +52,9 @@ object ServiceModule {
     @Singleton
     fun providesMyPageService(@DefaultRetrofit retrofit: Retrofit): MyPageService =
         retrofit.create(MyPageService::class.java)
+
+    @Provides
+    @Singleton
+    fun providesInsightService(@InsightRetrofit retrofit: Retrofit): InsightService =
+        retrofit.create(InsightService::class.java)
 }
