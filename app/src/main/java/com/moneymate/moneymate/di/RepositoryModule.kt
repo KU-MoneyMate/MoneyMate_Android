@@ -8,6 +8,7 @@ import com.moneymate.moneymate.data.repository.ForeignStockRepository
 import com.moneymate.moneymate.data.repository.DomesticStockRepository
 import com.moneymate.moneymate.data.repository.MyPageRepository
 import com.moneymate.moneymate.data.repository.StockIconRepository
+import com.moneymate.moneymate.data.service.InsightService
 import com.moneymate.moneymate.data.service.AssetService
 import com.moneymate.moneymate.data.service.AuthService
 import com.moneymate.moneymate.data.service.FinanceService
@@ -38,7 +39,10 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun providesFinanceRepository(financeService: FinanceService): FinanceRepository = FinanceRepository(financeService)
+    fun providesFinanceRepository(
+        financeService: FinanceService,
+        insightService: InsightService
+    ): FinanceRepository = FinanceRepository(financeService, insightService)
 
     @Provides
     @Singleton
