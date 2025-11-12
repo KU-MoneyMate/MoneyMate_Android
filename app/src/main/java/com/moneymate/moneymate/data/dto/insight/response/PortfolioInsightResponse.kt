@@ -11,10 +11,5 @@ data class PortfolioInsightResponse(
     @SerialName("status")
     val status: String,
     @SerialName("data")
-    val data: List<PortfolioInsightData>,
-)
-@Serializable
-data class PortfolioInsightData(
-    @SerialName("text")
-    val text: String
+    val data: String,
 )
