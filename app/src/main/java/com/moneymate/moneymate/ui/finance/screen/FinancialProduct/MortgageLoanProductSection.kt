@@ -277,8 +277,7 @@ fun MortgageLoanProductSection(
         Spacer(modifier = Modifier.height(32.dp))
         BottomFullWidthButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+                .fillMaxWidth(),
             containerColor = MoneyMateTheme.colors.deepBlue,
             contentColor = MoneyMateTheme.colors.white,
             text = "조회하기"
