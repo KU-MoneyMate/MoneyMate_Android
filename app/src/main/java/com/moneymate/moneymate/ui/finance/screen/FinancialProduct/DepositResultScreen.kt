@@ -1,5 +1,6 @@
 package com.moneymate.moneymate.ui.finance.screen.FinancialProduct
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -26,6 +28,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.finance.response.DepositProductItemDto
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
@@ -42,7 +45,7 @@ fun DepositResultScreen(
         fontSize = 20.sp
     )
     val scrollState = rememberScrollState()
-
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -250,11 +253,21 @@ fun DepositResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val num = item?.callNum ?: "-"
                 Text(text = "상담 전화번호", color = MoneyMateTheme.colors.darkGray, style = ProductTextStyle)
                 Text(
-                    text = item?.callNum ?: "-",
+                    text = num,
                     color = MoneyMateTheme.colors.darkGray,
-                    style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline)
+                    style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline),
+                    modifier = Modifier.clickable {
+                        val cleanNum = num.replace(Regex("[^0-9]"), "")
+                        if (cleanNum.isNotEmpty()) {
+                            val intent = Intent(Intent.ACTION_DIAL).apply {
+                                data = "tel:$cleanNum".toUri()
+                            }
+                            context.startActivity(intent)
+                        }
+                    }
                 )
             }
         }
