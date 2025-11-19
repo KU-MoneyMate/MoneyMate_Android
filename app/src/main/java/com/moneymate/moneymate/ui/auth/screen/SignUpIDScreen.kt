@@ -23,9 +23,14 @@ import com.moneymate.moneymate.ui.common.MoneyMateTextField
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.moneymate.moneymate.ui.theme.defaultMoneyMateTypography
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.util.auth.isValidId
 import kotlinx.coroutines.launch
@@ -41,6 +46,8 @@ fun SignUpIDScreen(
     val idCheckStatus by viewModel.idCheckStatus.collectAsStateWithLifecycle()
     var buttonEnabled by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    val keyboardFocusManager = LocalFocusManager.current
 
     LaunchedEffect(idCheckStatus) {
         when (idCheckStatus) {
@@ -114,7 +121,9 @@ fun SignUpIDScreen(
                                 text = "아이디를 입력해주세요.",
                                 style = MoneyMateTheme.typography.body_01_M_14
                             )
-                        }
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(onDone = {keyboardFocusManager.clearFocus()})
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                     Button(
