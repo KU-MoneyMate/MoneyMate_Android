@@ -4,16 +4,21 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,6 +38,8 @@ fun SignUpPhoneScreen(
     var phone1 by rememberSaveable { mutableStateOf("") }
     var phone2 by rememberSaveable { mutableStateOf("") }
     var phone3 by rememberSaveable { mutableStateOf("") }
+
+    val keyboardFocusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
@@ -69,7 +76,9 @@ fun SignUpPhoneScreen(
                             text = "010",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {keyboardFocusManager.moveFocus(FocusDirection.Down)})
                 )
 
                 Image(
@@ -87,7 +96,9 @@ fun SignUpPhoneScreen(
                             text = "1234",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {keyboardFocusManager.moveFocus(FocusDirection.Down)})
                 )
 
                 Image(
@@ -105,7 +116,9 @@ fun SignUpPhoneScreen(
                             text = "1234",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {keyboardFocusManager.clearFocus()})
                 )
             }
         }

@@ -2,6 +2,8 @@ package com.moneymate.moneymate.ui.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -13,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +27,9 @@ fun MoneyMateTextField(
     text: String,
     onValueChange: (String) -> Unit,
     placeholder: @Composable (() -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.None),
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     TextField(
         modifier = modifier
@@ -35,6 +40,8 @@ fun MoneyMateTextField(
             placeholder?.invoke()
         },
         visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MoneyMateTheme.colors.backgroundWhite,
             focusedTextColor = MoneyMateTheme.colors.darkGray,

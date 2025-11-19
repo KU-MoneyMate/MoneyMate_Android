@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,8 +32,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,6 +57,8 @@ fun AddAccountScreen(
 ) {
     var bankName by rememberSaveable { mutableStateOf("") }
     var accountNumber by rememberSaveable { mutableStateOf("") }
+
+    val keyboardFocusManager = LocalFocusManager.current
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -111,7 +118,9 @@ fun AddAccountScreen(
                             text = "등록할 계좌의 은행명을 입력해주세요.",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {keyboardFocusManager.moveFocus(FocusDirection.Down)})
                 )
                 // 계좌번호
                 Spacer(modifier = Modifier.size(34.dp))
@@ -131,7 +140,9 @@ fun AddAccountScreen(
                             text = "등록할 계좌의 계좌번호를 입력해주세요.",
                             style = MoneyMateTheme.typography.body_01_M_14
                         )
-                    }
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {keyboardFocusManager.clearFocus()})
                 )
             }
         }
