@@ -1,5 +1,7 @@
 package com.moneymate.moneymate.ui.finance.screen.FinancialProduct
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,28 +19,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import androidx.core.net.toUri
 
 @Composable
 fun SavingResultScreen(
     modifier: Modifier,
     onNavigateBack: () -> Unit,
-    item: SavingProductItemDto?
+    item: SavingProductItemDto?,
 ) {
     val ProductTextStyle = TextStyle(
         fontFamily = FontFamily(Font(R.font.pretendard_medium)),
         fontSize = 20.sp
     )
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     fun String.formatYmd(): String =
         if (length == 8) "${substring(0,4)}-${substring(4,6)}-${substring(6,8)}" else this
@@ -247,8 +253,22 @@ fun SavingResultScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val num = item?.callNum ?: "-"
                 Text(text = "상담 전화번호", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
-                Text(text = item?.callNum ?: "-", style = ProductTextStyle, color = MoneyMateTheme.colors.darkGray)
+                Text(
+                    text = num,
+                    style = ProductTextStyle.copy(textDecoration = TextDecoration.Underline),
+                    color = MoneyMateTheme.colors.darkGray,
+                    modifier = Modifier.clickable {
+                        val cleanNum = num.replace(Regex("[^0-9]"), "")
+                        if (cleanNum.isNotEmpty()) {
+                            val intent = Intent(Intent.ACTION_DIAL).apply {
+                                data = "tel:$cleanNum".toUri()
+                            }
+                            context.startActivity(intent)
+                        }
+                    }
+                )
             }
         }
     }

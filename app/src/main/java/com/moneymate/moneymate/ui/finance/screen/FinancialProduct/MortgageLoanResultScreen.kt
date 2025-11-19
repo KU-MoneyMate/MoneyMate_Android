@@ -22,8 +22,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.moneymate.moneymate.R
@@ -98,52 +96,39 @@ fun MortgageLoanResultScreen(
         )
 
         Column(modifier = Modifier.verticalScroll(scrollState)) {
-            InfoRow(label = "은행명", value = item?.bankName)
-            InfoRow(label = "대출금리 유형", value = item?.lendRateType)
-            InfoRow(label = "최저금리", value = item?.lendRateMin?.let { "$it%" })
-            InfoRow(label = "최고금리", value = item?.lendRateMax?.let { "$it%" })
-            InfoRow(label = "전월취급평균금리", value = item?.lendRateAvg?.let { "$it%" })
-            InfoRow(label = "대출 부대비용", value = item?.loanInciExpn, isMultiLine = true)
-            InfoRow(label = "중도상환 수수료", value = item?.erlyRpayFee, isMultiLine = true)
-            InfoRow(label = "연체이자율", value = item?.dlyRate, isMultiLine = true)
-            InfoRow(label = "대출한도", value = item?.loanLmt, isMultiLine = true)
-            InfoRow(label = "담보유형", value = item?.mrtgType)
-            InfoRow(label = "대출상환유형", value = item?.rpayType)
-            InfoRow(label = "가입 방법", value = item?.joinWay)
-            InfoRow(label = "공시 시작일", value = item?.dclsStrtDay?.formatYmd())
-            InfoRow(label = "공시 종료일", value = item?.dclsEndDay?.takeUnless { it.isBlank() }?.formatYmd())
-            InfoRow(label = "상담 전화번호", value = item?.callNum)
+            InfoRow(label = "은행명", value = item?.bankName, isPhoneNum = false)
+            InfoRow(label = "대출금리 유형", value = item?.lendRateType, isPhoneNum = false)
+            InfoRow(label = "최저금리", value = item?.lendRateMin?.let { "$it%" }, isPhoneNum = false)
+            InfoRow(label = "최고금리", value = item?.lendRateMax?.let { "$it%" }, isPhoneNum = false)
+            InfoRow(
+                label = "전월취급평균금리",
+                value = item?.lendRateAvg?.let { "$it%" },
+                isPhoneNum = false
+            )
+            InfoRow(
+                label = "대출 부대비용",
+                value = item?.loanInciExpn,
+                isMultiLine = true,
+                isPhoneNum = false
+            )
+            InfoRow(
+                label = "중도상환 수수료",
+                value = item?.erlyRpayFee,
+                isMultiLine = true,
+                isPhoneNum = false
+            )
+            InfoRow(label = "연체이자율", value = item?.dlyRate, isMultiLine = true, isPhoneNum = false)
+            InfoRow(label = "대출한도", value = item?.loanLmt, isMultiLine = true, isPhoneNum = false)
+            InfoRow(label = "담보유형", value = item?.mrtgType, isPhoneNum = false)
+            InfoRow(label = "대출상환유형", value = item?.rpayType, isPhoneNum = false)
+            InfoRow(label = "가입 방법", value = item?.joinWay, isPhoneNum = false)
+            InfoRow(label = "공시 시작일", value = item?.dclsStrtDay?.formatYmd(), isPhoneNum = false)
+            InfoRow(
+                label = "공시 종료일",
+                value = item?.dclsEndDay?.takeUnless { it.isBlank() }?.formatYmd(),
+                isPhoneNum = false
+            )
+            InfoRow(label = "상담 전화번호", value = item?.callNum, isPhoneNum = true)
         }
-    }
-}
-
-@Composable
-private fun InfoRow(label: String, value: String?, isMultiLine: Boolean = false) {
-    val finalValue = if (value.isNullOrBlank()) "-" else value
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = if (isMultiLine) Alignment.Top else Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            color = MoneyMateTheme.colors.darkGray,
-            style = TextStyle(
-                fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                fontSize = 20.sp
-            ),
-            modifier = Modifier.padding(end = 16.dp)
-        )
-        Text(
-            text = finalValue,
-            color = MoneyMateTheme.colors.darkGray,
-            style = TextStyle(
-                fontFamily = FontFamily(Font(R.font.pretendard_medium)),
-                fontSize = 20.sp
-            ),
-            textAlign = TextAlign.End
-        )
     }
 }
