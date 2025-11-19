@@ -184,6 +184,7 @@ fun FinancialProductScreen(
                     )
 
                 ExposedDropdownMenu(
+                    modifier = Modifier.background(color = MoneyMateTheme.colors.backgroundWhite),
                     expanded = expanded,
                     onDismissRequest = {
                         expanded = false
@@ -191,6 +192,7 @@ fun FinancialProductScreen(
                 ) {
                     items.forEach { item ->
                         DropdownMenuItem(
+                            modifier = Modifier.background(color = MoneyMateTheme.colors.backgroundWhite),
                             text = { Text(text = item) },
                             onClick = {
                                 selectedText = item
