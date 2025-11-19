@@ -32,6 +32,9 @@ class AssetViewModel @Inject constructor(
     // 계좌 거래 내역 정보
     private val _transactionInfoHistory = MutableStateFlow<List<TransactionInfo>>(emptyList())
     val transactionHistory = _transactionInfoHistory.asStateFlow()
+    // 주식 로딩 상태
+    private val _isStocksLoading = MutableStateFlow(false)
+    val isStocksLoading = _isStocksLoading.asStateFlow()
 
     init {
         getTotalAccountList()
@@ -105,15 +108,18 @@ class AssetViewModel @Inject constructor(
 
     fun getStockList(){
         viewModelScope.launch {
+            _isStocksLoading.value = true
             assetRepository.getStockList()
                 .onSuccess { response ->
                     _totalStocks.value = response.data
+                    _isStocksLoading.value = false
                     Log.d("AssetViewModel", "주식 목록 조회 성공: ${response.data.size}개")
                     response.data.forEach { stock ->
                         Log.d("AssetViewModel", "주식 정보: ${stock.stockName} (${stock.ticker})")
                     }
                 }
                 .onFailure { response ->
+                    _isStocksLoading.value = false
                     response.message?.let { Log.e("AssetViewModel", "주식 조회 실패: $it") }
                 }
         }

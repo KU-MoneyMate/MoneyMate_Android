@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -56,6 +57,7 @@ fun StockHoldingScreen(
 ) {
     val scrollState = rememberScrollState()
     val stockList = viewModel.totalStocks.collectAsStateWithLifecycle()
+    val isLoading = viewModel.isStocksLoading.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -83,21 +85,36 @@ fun StockHoldingScreen(
                 containerColor = MoneyMateTheme.colors.white
             )
         )
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 30.dp)
-                .verticalScroll(scrollState)
-        ) {
-            // accountName을 기준으로 stockList를 그룹화하여 각 증권사별로 StockCompanyContainer 생성
-            stockList.value
-                .groupBy { it.accountName }
-                .forEach { (accountName, stocks) ->
-                    StockCompanyContainer(
-                        accountName = accountName,
-                        stockList = stocks,
-                        getIconUrl = { ticker -> viewModel.getStockIconUrl(ticker) }
-                    )
-                }
+        
+        if (isLoading.value) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(50.dp),
+                    color = MoneyMateTheme.colors.deepBlue,
+                    strokeWidth = 4.dp
+                )
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 30.dp)
+                    .verticalScroll(scrollState)
+            ) {
+                // accountName을 기준으로 stockList를 그룹화하여 각 증권사별로 StockCompanyContainer 생성
+                stockList.value
+                    .groupBy { it.accountName }
+                    .forEach { (accountName, stocks) ->
+                        StockCompanyContainer(
+                            accountName = accountName,
+                            stockList = stocks,
+                            getIconUrl = { ticker -> viewModel.getStockIconUrl(ticker) }
+                        )
+                    }
+            }
         }
     }
 }

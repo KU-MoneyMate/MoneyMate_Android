@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -34,7 +35,8 @@ fun StockContainer(
     modifier: Modifier = Modifier,
     stockList : List<StockInfo>,
     onNavigateToStockDetail : () -> Unit,
-    getIconUrl: (String) -> String
+    getIconUrl: (String) -> String,
+    isLoading: Boolean = false
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -81,7 +83,16 @@ fun StockContainer(
                 color = MoneyMateTheme.colors.deepBlue
             )
         }
-        if (stockList.isNotEmpty()){
+        
+        if (isLoading) {
+            Spacer(modifier = Modifier.size(40.dp))
+            CircularProgressIndicator(
+                modifier = Modifier.size(40.dp),
+                color = MoneyMateTheme.colors.deepBlue,
+                strokeWidth = 4.dp
+            )
+            Spacer(modifier = Modifier.size(40.dp))
+        } else if (stockList.isNotEmpty()){
             for(stock in stockList) {
                 StockItem(
                     stockName = stock.stockName,
