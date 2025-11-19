@@ -1,18 +1,23 @@
 package com.moneymate.moneymate.ui.insight.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -77,16 +83,41 @@ fun PortfolioInsightScreen(
                 .verticalScroll(state = scrollState),
             verticalArrangement = Arrangement.Center
         ) {
-
             when (uiState.value.isLoading) {
                 true -> {
                     Box(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        CircularProgressIndicator(
+                        Column(
                             modifier = Modifier.align(Alignment.Center),
-                            color = MoneyMateTheme.colors.deepBlue
-                        )
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                modifier = Modifier.size(80.dp),
+                                painter = painterResource(id = R.drawable.ic_moneymatelogo),
+                                contentDescription = "MoneyMate Logo",
+                            )
+                            Spacer(modifier = Modifier.height(48.dp))
+                            LinearProgressIndicator(
+                                color = MoneyMateTheme.colors.deepBlue,
+                                trackColor = MoneyMateTheme.colors.neutral300
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Text(
+                                text = "AI가 포트폴리오를 분석하고 있습니다",
+                                style = MoneyMateTheme.typography.body_01_M_16,
+                                color = MoneyMateTheme.colors.deepBlue,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "잠시만 기다려주세요",
+                                style = MoneyMateTheme.typography.body_01_M_16,
+                                color = MoneyMateTheme.colors.deepBlue,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
                 false -> {
