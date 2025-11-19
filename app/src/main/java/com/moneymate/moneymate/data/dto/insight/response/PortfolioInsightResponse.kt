@@ -11,5 +11,15 @@ data class PortfolioInsightResponse(
     @SerialName("status")
     val status: String,
     @SerialName("data")
-    val data: String,
+    val data: PortfolioInsightInfo,
+)
+
+@Serializable
+data class PortfolioInsightInfo(
+    @SerialName("userCount")
+    val userCount: Int,
+    @SerialName("context")
+    val context: String,
+    @SerialName("currentTime")
+    val currentTime: String,
 )
