@@ -39,6 +39,8 @@ fun HomeScreen(
     val totalAssets = viewModel.totalAssets.collectAsStateWithLifecycle().value
     // 전체 주식
     val totalStocks = viewModel.totalStocks.collectAsStateWithLifecycle().value
+    // 주식 로딩 상태
+    val isStocksLoading = viewModel.isStocksLoading.collectAsStateWithLifecycle().value
 
     LaunchedEffect(Unit) {
         viewModel.getAssetList()
@@ -102,11 +104,21 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.size(30.dp))
         // 주식
-        StockContainer(
-            stockList = totalStocks,
-            onNavigateToStockDetail = onStockClick,
-            getIconUrl = { ticker -> viewModel.getStockIconUrl(ticker) }
-        )
+        if (isStocksLoading) {
+            StockContainer(
+                stockList = emptyList(),
+                onNavigateToStockDetail = onStockClick,
+                getIconUrl = { "" },
+                isLoading = true
+            )
+        } else {
+            StockContainer(
+                stockList = totalStocks,
+                onNavigateToStockDetail = onStockClick,
+                getIconUrl = { ticker -> viewModel.getStockIconUrl(ticker) },
+                isLoading = false
+            )
+        }
         Spacer(modifier = Modifier.size(30.dp))
     }
 }
