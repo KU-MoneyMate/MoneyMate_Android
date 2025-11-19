@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -35,6 +36,7 @@ import com.moneymate.moneymate.ui.auth.AuthViewModel
 import com.moneymate.moneymate.ui.manage.ManageViewModel
 import com.moneymate.moneymate.ui.navigation.Route
 import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun RetireResultScreen(
@@ -43,92 +45,109 @@ fun RetireResultScreen(
     onNavigateBack: () -> Unit
 ) {
     val result = viewModel.retireResult.collectAsState().value
+    val isLoading = viewModel.isLoadingSimulation.collectAsStateWithLifecycle()
 
     BackHandler {
+        viewModel.clearRetireResult()
         onNavigateBack()
     }
 
-    LazyColumn(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MoneyMateTheme.colors.white)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-        item {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+        if (isLoading.value) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MoneyMateTheme.colors.deepBlue
+            )
+        } else {
+            LazyColumn(
                 modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .fillMaxWidth()
+                    .fillMaxSize()
+                    .background(MoneyMateTheme.colors.white)
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
-                Box(
-                    modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_mypage_arrow),
-                        contentDescription = "뒤로가기",
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .rotate(180f)
-                            .clickable {
-                                viewModel.clearRetireResult()
-                                onNavigateBack()
-                            }
-                    )
-                }
-                Box(
-                    modifier = Modifier.weight(2f),
-                    contentAlignment = Alignment.Center
-                ) {
+                            .padding(bottom = 24.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Box(
+                            modifier = Modifier.weight(1f),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_mypage_arrow),
+                                contentDescription = "뒤로가기",
+                                modifier = Modifier
+                                    .rotate(180f)
+                                    .clickable {
+                                        viewModel.clearRetireResult()
+                                        onNavigateBack()
+                                    }
+                            )
+                        }
+                        Box(
+                            modifier = Modifier.weight(2f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "노후 설계 시뮬레이션",
+                                color = MoneyMateTheme.colors.darkGray,
+                                style = TextStyle(
+                                    fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+                                    fontSize = 20.sp
+                                )
+                            )
+                        }
+                        Box(modifier = Modifier.weight(1f))
+                    }
+
                     Text(
-                        text = "노후 설계 시뮬레이션",
-                        color = MoneyMateTheme.colors.darkGray,
+                        text = "입력된 정보를 바탕으로 조회한\n사용자의 노후 설계 시뮬레이션 결과입니다.\n(단위 : 만원)",
+                        color = Color.Gray,
+                        modifier = Modifier.padding(bottom = 24.dp),
                         style = TextStyle(
-                            fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
-                            fontSize = 20.sp
+                            fontFamily = FontFamily(Font(R.font.pretendard_regular)),
+                            fontSize = 16.sp
                         )
                     )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        TableHeader("나이", modifier=Modifier.weight(1f))
+                        TableHeader("자산", modifier=Modifier.weight(4f))
+                        TableHeader("연 소비", modifier=Modifier.weight(2.5f))
+                        TableHeader("연 수입", modifier=Modifier.weight(2.5f))
+                    }
+
+                    Divider(color = Color.Gray.copy(alpha = 0.4f), thickness = 1.dp)
                 }
-                Box(modifier = Modifier.weight(1f))
-            }
 
-            Text(
-                text = "입력된 정보를 바탕으로 조회한\n사용자의 노후 설계 시뮬레이션 결과입니다.\n(단위 : 만원)",
-                color = Color.Gray,
-                modifier = Modifier.padding(bottom = 24.dp),
-                style = TextStyle(
-                    fontFamily = FontFamily(Font(R.font.pretendard_regular)),
-                    fontSize = 16.sp
-                )
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                TableHeader("나이", modifier=Modifier.weight(1f))
-                TableHeader("자산", modifier=Modifier.weight(4f))
-                TableHeader("연 소비", modifier=Modifier.weight(2.5f))
-                TableHeader("연 수입", modifier=Modifier.weight(2.5f))
-            }
-
-            Divider(color = Color.Gray.copy(alpha = 0.4f), thickness = 1.dp)
-        }
-
-        items(result.orEmpty()) { row ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                TableCell("${row.age}", modifier=Modifier.weight(1f))
-                TableCell("${row.asset / 10_000}", modifier=Modifier.weight(4f))
-                TableCell("${row.expense / 10_000}", modifier=Modifier.weight(2.5f))
-                TableCell("${row.income / 10_000}", modifier=Modifier.weight(2.5f))
+                items(result.orEmpty()) { row ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        TableCell("${row.age}", modifier=Modifier.weight(1f))
+                        TableCell("${row.asset / 10_000}", modifier=Modifier.weight(4f))
+                        TableCell("${row.expense / 10_000}", modifier=Modifier.weight(2.5f))
+                        TableCell("${row.income / 10_000}", modifier=Modifier.weight(2.5f))
+                    }
+                }
             }
         }
     }
+
+
 }
 
 @Composable

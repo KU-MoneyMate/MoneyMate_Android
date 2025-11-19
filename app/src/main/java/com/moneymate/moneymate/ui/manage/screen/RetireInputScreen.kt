@@ -63,6 +63,8 @@ fun RetireInputScreen(
     val totalAsset = viewModel.totalAsset.collectAsStateWithLifecycle()
     val retireResult by viewModel.retireResult.collectAsStateWithLifecycle()
 
+    val isLoading by viewModel.isLoadingSimulation.collectAsStateWithLifecycle()
+
     BackHandler {
         onNavigateBack()
     }
@@ -84,12 +86,6 @@ fun RetireInputScreen(
     val consumptionDropRate = viewModel.consumptionDropRate.collectAsStateWithLifecycle().value
     val crashCycle = viewModel.crashCycle.collectAsStateWithLifecycle().value
     val crashImpactRate = viewModel.crashImpactRate.collectAsStateWithLifecycle().value
-
-    //총자산조회 결과 조회, 반영
-    LaunchedEffect(Unit){
-        viewModel.getTotalAsset()
-    }
-    
 
     Column(
         modifier = modifier
@@ -175,7 +171,8 @@ fun RetireInputScreen(
                 .align(Alignment.CenterHorizontally),
             containerColor = MoneyMateTheme.colors.deepBlue,
             contentColor = MoneyMateTheme.colors.white,
-            text = "조회하기"
+            text = "조회하기",
+            enabled = !isLoading
         ) {
             val request = RetireInputRequest(
                 age = age.toIntOrNull() ?: 0,
@@ -197,10 +194,8 @@ fun RetireInputScreen(
                 crashCycle = crashCycle.toIntOrNull() ?: 0,
                 crashImpactRate = crashImpactRate.toDoubleOrNull()?.div(100) ?: 0.0
             )
-
             viewModel.postRetirementSimulation(request)
             onNavigateToRetireResult()
-
         }
         Spacer(modifier=Modifier.height(28.dp))
     }
