@@ -14,6 +14,7 @@ import com.moneymate.moneymate.util.API_DATE_FMT
 import com.moneymate.moneymate.util.endOfMonth
 import com.moneymate.moneymate.util.startOfMonth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -82,6 +83,9 @@ class ManageViewModel @Inject constructor(
     // 시뮬레이션 결과 전체 응답을 담는 상태
     private val _retireResult = MutableStateFlow<List<Asset>>(emptyList())
     val retireResult = _retireResult.asStateFlow()
+    // 시뮬레이션 로딩
+    private val _isLoadingSimulation = MutableStateFlow(false)
+    val isLoadingSimulation = _isLoadingSimulation.asStateFlow()
 
     // 자산 변동 조회 결과
     private val _assetStatHistory = MutableStateFlow<List<AssetStatHistoryData>>(emptyList())
@@ -116,6 +120,9 @@ class ManageViewModel @Inject constructor(
     // 시뮬레이션 요청
     fun postRetirementSimulation(request: RetireInputRequest) {
         viewModelScope.launch {
+            _isLoadingSimulation.value = true
+            val startTime = System.currentTimeMillis() // 현재 시간 기록
+
             manageRepository.postRetireSimulation(request)
                 .onSuccess { response ->
                     _retireResult.value = response
@@ -124,6 +131,14 @@ class ManageViewModel @Inject constructor(
                 .onFailure { throwable ->
                     Log.d("RetireViewModel", "시뮬레이션 실패: ${throwable.message}")
                 }
+            //적어도 1초 대기하도록
+            val endTime = System.currentTimeMillis()
+            val elapsedTime = endTime - startTime
+            val minDelay = 1500L
+            if (elapsedTime < minDelay) {
+                delay(minDelay - elapsedTime)
+            }
+            _isLoadingSimulation.value = false
         }
     }
 
