@@ -141,7 +141,7 @@ fun PortfolioInsightScreen(
                                 style = MoneyMateTheme.typography.body_01_M_14,
                             )
                             Text(
-                                text = "남은 횟수 3회", // TODO: 남은 횟수 동적 처리
+                                text = "남은 횟수 ${3 - uiState.value.dailyRequest}회",
                                 style = MoneyMateTheme.typography.body_01_M_14,
                             )
                         }
@@ -152,9 +152,9 @@ fun PortfolioInsightScreen(
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MoneyMateTheme.colors.deepBlue,
                                 contentColor = MoneyMateTheme.colors.white,
-                                disabledContainerColor = MoneyMateTheme.colors.darkGray
+                                disabledContainerColor = MoneyMateTheme.colors.disabled
                             ),
-                            enabled = !uiState.value.isLoading,
+                            enabled = !uiState.value.isLoading && uiState.value.dailyRequest < 3,
                             onClick = { viewModel.getPortfolioInsight() }
                         ) {
                             Text(
