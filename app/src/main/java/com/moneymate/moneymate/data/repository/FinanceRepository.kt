@@ -96,4 +96,6 @@ class FinanceRepository(
     suspend fun getNewsInsight() = runCatching { aiInsightService.getNewsInsight() }
 
     suspend fun getPortfolioInsight() = runCatching { aiInsightService.getPortfolioInsight() }
+
+    suspend fun getPortfolioUserCount() = runCatching { financeService.getPortfolioUserCount() }
 }

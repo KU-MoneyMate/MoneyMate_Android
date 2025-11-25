@@ -9,6 +9,7 @@ val Black = Color(0xFF000000)
 val BackgroundWhite = Color(0xFFF5F5F5)
 val DarkGray = Color(0xFF333333)
 val LightGray = Color(0x99333333)
+val Disabled = Color(0xFFC2C2C4)
 
 val Neutral100 = Color(0xFFF7F7F9)
 val Neutral300 = Color(0xFFE5E5E7)
@@ -26,6 +27,7 @@ data class MoneyMateColors(
     val backgroundWhite: Color,
     val darkGray: Color,
     val lightGray: Color,
+    val disabled: Color,
     val neutral100: Color,
     val neutral300: Color,
     val neutral500: Color,
@@ -40,6 +42,7 @@ val defaultMoneyMateColors = MoneyMateColors(
     backgroundWhite = BackgroundWhite,
     darkGray = DarkGray,
     lightGray = LightGray,
+    disabled = Disabled,
     neutral100 = Neutral100,
     neutral300 = Neutral300,
     neutral500 = Neutral500,
