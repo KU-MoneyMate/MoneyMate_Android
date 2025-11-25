@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 data class PortfolioInsightUiState(
     val isLoading: Boolean = false,
+    val dailyRequest: Int = 3,
     val insight: String = "",
     val insightDate: String = "",
     val errorMessage: String? = null
@@ -31,12 +32,11 @@ class PortfolioInsightViewModel@Inject constructor(
     val uiState: StateFlow<PortfolioInsightUiState> = _uiState.asStateFlow()
 
     init {
+        getDailyRequestCount()
         loadCachedInsight()
     }
 
-    /**
-     * 캐시된 인사이트를 먼저 로드합니다.
-     */
+    // 캐시된 분석을 먼저 로드합니다.
     private fun loadCachedInsight() {
         viewModelScope.launch {
             val cachedInsight = insightCacheManager.getPortfolioInsight().first()
@@ -57,9 +57,7 @@ class PortfolioInsightViewModel@Inject constructor(
         }
     }
 
-    /**
-     * 새로운 포트폴리오 인사이트를 요청합니다.
-     */
+    // 새로운 포트폴리오 분석 요청
     fun getPortfolioInsight() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -79,11 +77,44 @@ class PortfolioInsightViewModel@Inject constructor(
                         ) 
                     }
                     Log.d("PortfolioInsightViewModel", "포트폴리오 분석 조회 성공")
+                    
+                    // 분석 요청 후 남은 횟수 업데이트
+                    getDailyRequestCount()
                 }
                 .onFailure { response ->
                     val errorMessage = response.message ?: "포트폴리오 요약 조회 실패"
                     _uiState.update { it.copy(isLoading = false, errorMessage = errorMessage) }
                     Log.d("PortfolioInsightViewModel", "포트폴리오 분석 조회 실패")
+                }
+        }
+    }
+
+    // 분석 요청 횟수를 가져옵니다
+    fun getDailyRequestCount() {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(isLoading = true)
+            }
+            repository.getPortfolioUserCount()
+                .onSuccess { response ->
+                    val count = response.data.userCount
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            dailyRequest = count
+                        )
+                    }
+                    Log.d("PortfolioInsightViewModel", "포트폴리오 분석 요청 횟수 조회 성공")
+                }
+                .onFailure { response ->
+                    val errorMessage = response.message ?: "포트폴리오 분석 요청 횟수 조회 실패"
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = errorMessage
+                        )
+                    }
+                    Log.d("PortfolioInsightViewModel", "포트폴리오 분석 요청 횟수 조회 실패")
                 }
         }
     }
