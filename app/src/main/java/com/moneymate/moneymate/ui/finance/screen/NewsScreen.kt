@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.moneymate.moneymate.R
 import com.moneymate.moneymate.ui.finance.FinanceViewModel
 import com.moneymate.moneymate.ui.finance.component.ArticleData
@@ -46,6 +48,7 @@ fun NewsScreen(
 ) {
     val scrollState = rememberScrollState()
 
+    val isLoading = viewModel.isLoadingNews.collectAsStateWithLifecycle()
     val newsList = viewModel.newsList.value
     val newsGroupedByPublisher = newsList.groupBy { it.publisher }
 
@@ -62,66 +65,84 @@ fun NewsScreen(
         }
     }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
             .background(MoneyMateTheme.colors.backgroundWhite)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MoneyMateTheme.colors.white)
-                .padding(horizontal = 16.dp, vertical = 20.dp)
-        ) {
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.CenterStart
+        if (isLoading.value) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MoneyMateTheme.colors.deepBlue
+            )
+        } else if (newsList.isEmpty()) {
+            Text(
+                text = "뉴스 목록을 불러올 수 없습니다.",
+                modifier = Modifier.align(Alignment.Center)
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .background(MoneyMateTheme.colors.backgroundWhite)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_mypage_arrow),
-                    contentDescription = "뒤로가기",
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .rotate(180f)
-                        .clickable { onNavigateBack() }
+                        .fillMaxWidth()
+                        .background(MoneyMateTheme.colors.white)
+                        .padding(horizontal = 16.dp, vertical = 20.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_mypage_arrow),
+                            contentDescription = "뒤로가기",
+                            modifier = Modifier
+                                .rotate(180f)
+                                .clickable { onNavigateBack() }
+                        )
+                    }
+                    Box(
+                        modifier = Modifier.weight(2f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "경제 뉴스 조회",
+                            color = MoneyMateTheme.colors.darkGray,
+                            style = TextStyle(
+                                fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
+                                fontSize = 20.sp
+                            )
+                        )
+                    }
+                    Box(modifier = Modifier.weight(1f))
+                }
+                Spacer(
+                    modifier = Modifier
+                        .height(20.dp)
+                        .fillMaxWidth()
                 )
-            }
-            Box(
-                modifier = Modifier.weight(2f),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "경제 뉴스 조회",
-                    color = MoneyMateTheme.colors.darkGray,
-                    style = TextStyle(
-                        fontFamily = FontFamily(Font(R.font.pretendard_semibold)),
-                        fontSize = 20.sp
-                    )
-                )
-            }
-            Box(modifier = Modifier.weight(1f))
-        }
-        Spacer(
-            modifier = Modifier
-                .height(20.dp)
-                .fillMaxWidth()
-        )
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            items(newsData) { articles ->
-                NewsContainer(
-                    news = articles,
-                    onAddClick = {
-                        onAddClick(articles.publisher.enum)
-                    },
-                    onArticleClick = onArticleClick
-                )
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(newsData) { articles ->
+                        NewsContainer(
+                            news = articles,
+                            onAddClick = {
+                                onAddClick(articles.publisher.enum)
+                            },
+                            onArticleClick = onArticleClick
+                        )
+                    }
+                }
+
             }
         }
-
     }
 }

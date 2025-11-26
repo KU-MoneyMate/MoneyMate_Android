@@ -84,7 +84,14 @@ fun FinanceScreen(
 //                )
 //            }
 //        }
-        MoneyMateMenuButton("경제 뉴스 조회", 67, onNewsClick)
+        MoneyMateMenuButton(
+            "경제 뉴스 조회",
+            67,
+            onClick = {
+                viewModel.getNewsList()
+                onNewsClick()
+            }
+        )
         MoneyMateMenuButton("증시 정보", 67, onMarketInfoClick)
         MoneyMateMenuButton("은행 상품 정보", 67, onProductClick)
 //        MoneyMateMenuButton("주택 청약 정보", 67, onNewsClick)
