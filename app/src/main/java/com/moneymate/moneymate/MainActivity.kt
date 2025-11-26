@@ -147,10 +147,14 @@ class MainActivity : ComponentActivity() {
                                         selected = selected,
                                         onClick = {
                                             navController.navigate(item.route) {
-                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                // Home 화면까지 모든 백스택 제거 (Bottom Nav의 첫 화면)
+                                                popUpTo(Route.Home.route) {
+                                                    inclusive = false
                                                     saveState = true
                                                 }
+                                                // 같은 화면이 스택에 있으면 재사용
                                                 launchSingleTop = true
+                                                // 이전 상태 복원
                                                 restoreState = true
                                             }
                                         },
