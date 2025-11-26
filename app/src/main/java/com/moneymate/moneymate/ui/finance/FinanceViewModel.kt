@@ -14,6 +14,7 @@ import com.moneymate.moneymate.data.dto.finance.response.SavingProductItemDto
 import com.moneymate.moneymate.data.repository.FinanceRepository
 import com.moneymate.moneymate.ui.finance.component.FinancialProduct.ProductViewType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,9 @@ class FinanceViewModel @Inject constructor(
 
     private val _newsList = mutableStateOf<List<NewsInfo>>(emptyList())
     val newsList: State<List<NewsInfo>> = _newsList
+
+    private val _isLoadingNews = MutableStateFlow(false)
+    val isLoadingNews: StateFlow<Boolean> = _isLoadingNews.asStateFlow()
 
     private val _categoryNewsList = mutableStateOf<List<NewsInfo>>(emptyList())
     val categoryNewsList: State<List<NewsInfo>> = _categoryNewsList
@@ -76,6 +80,8 @@ class FinanceViewModel @Inject constructor(
 
     fun getNewsList(){
         viewModelScope.launch {
+            _isLoadingNews.value = true
+            val startTime = System.currentTimeMillis()
             runCatching { financeRepository.getNewsList() }
                 .onSuccess {
                     _newsList.value = it
@@ -84,6 +90,14 @@ class FinanceViewModel @Inject constructor(
                 .onFailure { response ->
                     response.message?.let { Log.d("FinanceViewModel", response.message.toString()) }
                 }
+            val endTime = System.currentTimeMillis()
+            val elapsedTime = endTime - startTime
+            val minDelay = 500L
+
+            if (elapsedTime < minDelay) {
+                delay(minDelay - elapsedTime)
+            }
+            _isLoadingNews.value = false
         }
     }
 
