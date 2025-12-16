@@ -1,0 +1,189 @@
+package com.moneymate.moneymate.ui.auth
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.moneymate.moneymate.data.repository.AuthRepository
+import com.moneymate.moneymate.util.auth.TokenManager
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
+    private val tokenManager: TokenManager
+) : ViewModel() {
+    // 회원가입 입력 정보들
+    private val _signupUserId = MutableStateFlow("")
+    val signupUserId: StateFlow<String> = _signupUserId.asStateFlow()
+
+    // ID 중복 확인 상태
+    private val _idCheckStatus = MutableStateFlow<String?>(null)
+    val idCheckStatus: StateFlow<String?> = _idCheckStatus.asStateFlow()
+
+    private val _signupPassword = MutableStateFlow("")
+    val signupPassword: StateFlow<String> = _signupPassword.asStateFlow()
+
+    private val _signupName = MutableStateFlow("")
+    val signupName: StateFlow<String> = _signupName.asStateFlow()
+
+    private val _signupPhone = MutableStateFlow("")
+    val signupPhone: StateFlow<String> = _signupPhone.asStateFlow()
+
+    private val _signupBirthday = MutableStateFlow("")
+    val signupBirthday: StateFlow<String> = _signupBirthday.asStateFlow()
+
+    fun saveSignupId(userId: String, onSaveSuccess: () -> Unit) {
+        _signupUserId.value = userId
+        Log.d("AuthViewModel", "회원가입 아이디 저장: ${signupUserId.value}")
+        onSaveSuccess()
+    }
+
+    fun saveSignupPassword(password: String, onSaveSuccess: () -> Unit) {
+        _signupPassword.value = password
+        Log.d("AuthViewModel", "회원가입 비밀번호 저장: ${signupPassword.value}")
+        onSaveSuccess()
+    }
+
+    fun saveSignupName(name: String, onSaveSuccess: () -> Unit) {
+        _signupName.value = name
+        Log.d("AuthViewModel", "회원가입 이름 저장: ${signupName.value}")
+        onSaveSuccess()
+    }
+
+    fun saveSignupPhone(phone: String, onSaveSuccess: () -> Unit) {
+        _signupPhone.value = phone
+        Log.d("AuthViewModel", "회원가입 전화번호 저장: ${signupPhone.value}")
+        onSaveSuccess()
+    }
+
+    fun saveSignupBirthday(birthday: String, onSaveSuccess: () -> Unit) {
+        _signupBirthday.value = birthday
+        Log.d("AuthViewModel", "회원가입 생일 저장: ${signupBirthday.value}")
+        onSaveSuccess()
+    }
+
+    fun clearIdCheckStatus() {
+        _idCheckStatus.value = null
+    }
+
+    // 회원가입
+    fun registerUser(onSignupSuccess: () -> Unit) {
+        viewModelScope.launch {
+            authRepository.registerUser(
+                userId = _signupUserId.value,
+                userName = _signupName.value,
+                password = _signupPassword.value,
+                phoneNumber = _signupPhone.value,
+                birthday = _signupBirthday.value
+            ).onSuccess { response ->
+                Log.d("AuthViewModel", "회원가입 성공:${response}")
+                onSignupSuccess()
+            }.onFailure { response ->
+                Log.d("AuthViewModel", "회원가입 실패:${response.message.toString()}")
+            }
+        }
+    }
+
+    // 로그인
+    fun login(
+        userId: String,
+        password: String,
+        onLoginSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            authRepository.login(
+                userId = userId,
+                password = password
+            ).onSuccess {
+                Log.d("AuthViewModel", "로그인 성공")
+                onLoginSuccess()
+            }.onFailure {
+                Log.d("AuthViewModel", "로그인 실패: ${it.message.toString()}")
+            }
+        }
+    }
+
+    // ID 중복 확인
+    fun checkUserId(
+        userId: String,
+    ) {
+        viewModelScope.launch {
+            authRepository.checkUserId(userId)
+                .onSuccess { response ->
+                    _idCheckStatus.value = response.status
+                    Log.d(
+                        "AuthViewModel",
+                        "Id 중복 확인 성공: ${response.status}"
+                    )
+                }.onFailure {
+                    _idCheckStatus.value = "ERROR"
+                    Log.d("AuthViewModel", "ID 중복 확인 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
+    // sms 인증 요청
+    fun requestPhoneVerification(
+        phoneNumber: String,
+    ) {
+        viewModelScope.launch {
+            authRepository.requestPhoneVerification(phoneNumber)
+                .onSuccess { response ->
+                    Log.d("AuthViewModel", "SMS 인증 요청 성공: ${response.message}")
+                }.onFailure {
+                    Log.d("AuthViewModel", "SMS 인증 요청 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
+    // sms 인증 검증
+    fun verifyPhoneNumber(
+        phoneNumber: String,
+        verificationCode: Int,
+        onVerificationSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            authRepository.verifyPhoneNumber(phoneNumber, verificationCode)
+                .onSuccess { response ->
+                    Log.d("AuthViewModel", "SMS 인증 검증 성공: ${response.message}")
+                    onVerificationSuccess()
+                }.onFailure {
+                    Log.d("AuthViewModel", "SMS 인증 검증 실패: ${it.message.toString()}")
+                }
+        }
+    }
+
+    // 로그아웃 함수
+    fun logout(onLogoutSuccess: () -> Unit) {
+        viewModelScope.launch {
+            val accessToken = tokenManager.getAccessToken().first()
+            val refreshToken = tokenManager.getRefreshToken().first()
+
+            if (accessToken == null || refreshToken == null) {
+                // 토큰이 이미 없는 경우, 로컬 정리만 하고 성공 처리
+                tokenManager.clearToken()
+                onLogoutSuccess()
+                return@launch
+            }
+
+            authRepository.logout(
+                refreshToken = refreshToken
+            ).onSuccess {
+                Log.d("AuthViewModel", "로그아웃 처리 성공")
+                // Repository에서 로컬 토큰 삭제까지 처리했으므로, 네비게이션 콜백만 실행
+                onLogoutSuccess()
+            }.onFailure { e ->
+                // 로그아웃 API 실패 처리
+                Log.e("AuthViewModel", "로그아웃 실패: ${e.message}")
+                // API 실패했어도 로컬 토큰은 삭제되었으므로, 일단 로그인 화면으로 이동시켜 재로그인 유도
+                onLogoutSuccess()
+            }
+        }
+    }
+}

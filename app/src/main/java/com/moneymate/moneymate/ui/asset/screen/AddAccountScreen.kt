@@ -1,0 +1,171 @@
+package com.moneymate.moneymate.ui.asset.screen
+
+import android.graphics.Paint.Align
+import android.widget.Space
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import com.moneymate.moneymate.R
+import com.moneymate.moneymate.ui.asset.AssetViewModel
+import com.moneymate.moneymate.ui.common.BottomFullWidthButton
+import com.moneymate.moneymate.ui.common.MoneyMateTextField
+import com.moneymate.moneymate.ui.theme.MoneyMateTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddAccountScreen(
+    modifier: Modifier = Modifier,
+    accountType: String,
+    onNavigateBack: () -> Unit,
+//    viewModel: AssetViewModel = hiltViewModel()
+) {
+    var bankName by rememberSaveable { mutableStateOf("") }
+    var accountNumber by rememberSaveable { mutableStateOf("") }
+
+    val keyboardFocusManager = LocalFocusManager.current
+
+    Box(
+        modifier = modifier.fillMaxSize(),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MoneyMateTheme.colors.white)
+        ) {
+            TopAppBar(
+                modifier = Modifier,
+                title = {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Icon(
+                            modifier = Modifier
+                                .clickable { onNavigateBack() },
+                            painter = painterResource(id = R.drawable.ic_back),
+                            contentDescription = "back icon"
+                        )
+                        Text(
+                            modifier = Modifier.align(Alignment.Center),
+                            text = "$accountType 등록",
+                            style = MoneyMateTheme.typography.head_02_B_20
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MoneyMateTheme.colors.white
+                )
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+                    .background(MoneyMateTheme.colors.white)
+            ) {
+                Spacer(modifier = Modifier.size(12.dp))
+                Text(
+                    text = "사용자의 보유 $accountType 등록 절차입니다.\n은행명과 계좌번호를 입력해주세요.",
+                    style = MoneyMateTheme.typography.head_03_R_16
+                )
+                // 은행명
+                Spacer(modifier = Modifier.size(34.dp))
+                Text(
+                    text = "은행명",
+                    style = MoneyMateTheme.typography.head_03_SB_16
+                )
+                Spacer(modifier = Modifier.size(15.dp))
+                MoneyMateTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = bankName,
+                    onValueChange = {
+                        bankName = it
+                    },
+                    placeholder = {
+                        Text(
+                            text = "등록할 계좌의 은행명을 입력해주세요.",
+                            style = MoneyMateTheme.typography.body_01_M_14
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {keyboardFocusManager.moveFocus(FocusDirection.Down)})
+                )
+                // 계좌번호
+                Spacer(modifier = Modifier.size(34.dp))
+                Text(
+                    text = "계좌번호",
+                    style = MoneyMateTheme.typography.head_03_SB_16
+                )
+                Spacer(modifier = Modifier.size(15.dp))
+                MoneyMateTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = accountNumber,
+                    onValueChange = {
+                        accountNumber = it
+                    },
+                    placeholder = {
+                        Text(
+                            text = "등록할 계좌의 계좌번호를 입력해주세요.",
+                            style = MoneyMateTheme.typography.body_01_M_14
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {keyboardFocusManager.clearFocus()})
+                )
+            }
+        }
+        BottomFullWidthButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+            containerColor = MoneyMateTheme.colors.deepBlue,
+            contentColor = MoneyMateTheme.colors.white,
+            text = "등록"
+        ) {
+            // TODO
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AddAccountScreenPreview() {
+    AddAccountScreen(
+        modifier = Modifier,
+        accountType = "입출금",
+        onNavigateBack = {}
+    )
+}

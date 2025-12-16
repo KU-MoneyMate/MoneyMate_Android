@@ -1,0 +1,62 @@
+package com.moneymate.moneymate.data.service
+
+import com.moneymate.moneymate.data.dto.auth.request.IdPhoneCheckRequest
+import com.moneymate.moneymate.data.dto.auth.request.LoginRequest
+import com.moneymate.moneymate.data.dto.auth.request.LogoutRequest
+import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationCodeRequest
+import com.moneymate.moneymate.data.dto.auth.request.PhoneVerificationRequest
+import com.moneymate.moneymate.data.dto.auth.request.RegisterRequest
+import com.moneymate.moneymate.data.dto.auth.response.CheckExistingIdResponse
+import com.moneymate.moneymate.data.dto.auth.response.IdPhoneCheckResponse
+import com.moneymate.moneymate.data.dto.auth.response.LoginResponse
+import com.moneymate.moneymate.data.dto.auth.response.PhoneVerificationCodeResponse
+import com.moneymate.moneymate.data.dto.auth.response.PhoneVerificationResponse
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+
+interface AuthService {
+    // 회원가입
+    @POST("register")
+    suspend fun registerUser(
+        @Body request: RegisterRequest
+    )
+
+    // id 중복 확인
+    @GET("user/check-id")
+    suspend fun checkUserId(
+        @Query("userId") userId: String
+    ): CheckExistingIdResponse
+
+    // id-전화번호 일치 검증
+    @GET("user/check-id-ph")
+    suspend fun checkIdPhone(
+        @Body request: IdPhoneCheckRequest
+    ): IdPhoneCheckResponse
+
+    // 전화번호 인증 요청
+    @POST("user/verify/sms-send")
+    suspend fun requestPhoneVerification(
+        @Body request: PhoneVerificationCodeRequest
+    ): PhoneVerificationCodeResponse
+
+    // 전화번호 인증
+    @POST("user/verify/sms-request")
+    suspend fun verifyPhoneNumber(
+        @Body request: PhoneVerificationRequest
+    ): PhoneVerificationResponse
+
+    // 로그인
+    @POST("login")
+    suspend fun login(
+        @Body request: LoginRequest
+    ): LoginResponse
+
+    // 로그아웃
+    @POST("logout")
+    suspend fun logout(
+        @Body request: LogoutRequest
+    )
+}
